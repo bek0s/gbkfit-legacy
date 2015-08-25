@@ -1,6 +1,7 @@
 
 #include "gbkfit/core.hpp"
 #include "gbkfit/model.hpp"
+#include "gbkfit/nddataset.hpp"
 #include "gbkfit/fitter.hpp"
 #include "gbkfit/fits_util.hpp"
 

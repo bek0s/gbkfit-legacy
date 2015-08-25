@@ -2,22 +2,12 @@
 #ifndef GBKFIT_FITS_UTIL_HPP
 #define GBKFIT_FITS_UTIL_HPP
 
-#include "nddataset.hpp"
-#include <map>
-#include <memory>
-#include <complex>
-#include <boost/any.hpp>
+#include "gbkfit/prerequisites.hpp"
 #include <boost/lexical_cast.hpp>
-#include <fitsio2.h>
+
 namespace gbkfit {
 
 namespace fits {
-
-
-
-
-
-
 
 
 enum class value_type
@@ -162,52 +152,7 @@ void attribute::set_value(const T& value)
 
 
 
-/*
-tnull,
-tbit,
-tubyte,
-tbyte,
-tbool,
-tstring,
-tushort,
-tshort,
-tuint,
-tint,
-tint32,
-tulong,
-tlong,
-tlonglong,
-tfloat,
-tdouble,
-tfloatcomplex,
-tdoublecomplex
-*/
 
-/*
-template <> value_type select_value_type<unsigned char> (void) {return value_type::tubyte;}
-template <> value_type select_value_type<char>          (void) {return value_type::tbyte;}
-
-template <> value_type select_value_type<bool>(void) {return value_type::tbool;}
-
-
-
-template <> value_type select_value_type<unsigned short>(void) {return value_type::tushort;}
-
-template <> value_type select_value_type<short>(void) {return value_type::tshort;}
-
-template <> value_type select_value_type<unsigned int>(void) {return value_type::tuint;}
-
-template <> value_type select_value_type<int>(void) {return value_type::tint;}
-template <> value_type select_value_type<long>(void) {return value_type::tlong;}
-
-template <> value_type select_value_type<float>(void) {return value_type::tfloat;}
-template <> value_type select_value_type<double>(void) {return value_type::tdouble;}
-
-template <> value_type select_value_type<std::complex<float>>(void) {return value_type::tcomplexfloat;}
-template <> value_type select_value_type<std::complex<double>>(void) {return value_type::tcomplexdouble;}
-template <> value_type select_value_type<std::string>(void) {return value_type::tstring;}
-
-*/
 
 
 template<typename T>
@@ -290,8 +235,6 @@ header get_header(const std::string& name);
 
 
 
-
-
 //!
 //! \brief get_data
 //! \param filename
@@ -369,9 +312,6 @@ void del_keyword(const std::string& filename, const std::string& keyname);
 namespace fits_util {
 
 
-
-
-
 void get_header(const std::string& name);
 
 ndarray* get_data(const std::string& name);
@@ -381,8 +321,7 @@ void write_to(const std::string& name, const ndarray& data);
 void write_to2(const std::string& name, const ndarray& data);
 
 
-//template<typename T>
-//id writeto(const std::string& name, const)
+
 
 
 } // namespace fits_utils

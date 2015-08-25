@@ -143,6 +143,22 @@ ndarray* get_data2(const std::string& filename)
     status = 0;
     fits_open_file(&fp,filename.c_str(),READONLY,&status);
 
+    int naxis;
+    status = 0;
+    fits_get_img_dim(fp,&naxis,&status);
+
+    LONGLONG naxes[512];
+    status = 0;
+    fits_get_img_sizell(fp,naxis,naxes,&status);
+
+    status = 0;
+    float nullval = std::numeric_limits<float>::quiet_NaN();
+    fits_read_pixll(fp,0,0,0,nullptr,nullptr,nullptr,&status);
+
+    status = 0;
+    fits_close_file(fp,&status);
+
+    return nullptr;
 }
 
 template<typename T>
