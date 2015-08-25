@@ -287,31 +287,80 @@ public:
 
 header get_header(const std::string& name);
 
+
+
+
+
+
+//!
+//! \brief get_data
+//! \param filename
+//! \return
+//!
+ndarray* get_data2(const std::string& filename);
+
+
+
+//!
+//! \brief get_keyword
+//! \param filename
+//! \param keyname
+//! \param value
+//! \param comment
+//!
 template<typename T>
-T get_keyword_value(const std::string& filename, const std::string& name);
+void get_keyword(const std::string& filename, const std::string& keyname, T& value, std::string& comment);
 
+//!
+//! \brief get_keyword_value
+//! \param filename
+//! \param keyname
+//! \param value
+//!
 template<typename T>
-void set_keyword_value(const std::string& filename, const std::string& name, const T& value);
+void get_keyword_value(const std::string& filename, const std::string& keyname, T& value);
 
-std::string get_keyword_comment(const std::string& filename, const std::string& name);
+//!
+//! \brief get_keyword_comment
+//! \param filename
+//! \param keyname
+//! \param comment
+//!
+void get_keyword_comment(const std::string& filename, const std::string& keyname, std::string& comment);
 
-void set_keyword_comment(const std::string& filename, const std::string& name, const std::string& comment);
-
-
+//!
+//! \brief set_keyword
+//! \param filename
+//! \param keyname
+//! \param value
+//! \param comment
+//!
 template<typename T>
-void set_keyword(const std::string& filename, const std::string& name, const T& value, const std::string& comment);
+void set_keyword(const std::string& filename, const std::string& keyname, const T& value, const std::string& comment);
+
+//!
+//! \brief set_keyword_value
+//! \param filename
+//! \param keyname
+//! \param keyvalue
+//!
 template<typename T>
-void get_keyword(const std::string& filename, const std::string& name,       T& value,       std::string& comment);
+void set_keyword_value(const std::string& filename, const std::string& keyname, const T& value);
 
+//!
+//! \brief set_keyword_comment
+//! \param filename
+//! \param keyname
+//! \param comment
+//!
+void set_keyword_comment(const std::string& filename, const std::string& keyname, const std::string& comment);
 
-void del_keyword(const std::string& name);
-
-template<typename T>
-void set_keyword_value(const std::string& filename, const std::string& name, const T& value, const std::string& comment);
-
-
-
-
+//!
+//! \brief del_keyword
+//! \param filename
+//! \param keyname
+//!
+void del_keyword(const std::string& filename, const std::string& keyname);
 
 
 }

@@ -135,7 +135,124 @@ void write_to2(const std::string& name, const ndarray& data)
 
 }
 
+ndarray* get_data2(const std::string& filename)
+{
+    int status = 0;
+    fitsfile* fp;
 
+    status = 0;
+    fits_open_file(&fp,filename.c_str(),READONLY,&status);
+
+}
+
+template<typename T>
+void get_keyword(const std::string& filename, const std::string& keyname, T& value, std::string& comment)
+{
+    int status = 0;
+    fitsfile* fp;
+
+    status = 0;
+    fits_open_file(&fp,filename.c_str(),READONLY,&status);
+
+    status = 0;
+    fits_read_key(fp,0,keyname.c_str(),value,nullptr);
+
+    status = 0;
+    fits_close_file(fp,&status);
+}
+
+template<typename T>
+void get_keyword_value(const std::string& filename, const std::string& keyname, T& value)
+{
+    int status = 0;
+    fitsfile* fp;
+
+    status = 0;
+    fits_open_file(&fp,filename.c_str(),READONLY,&status);
+
+    status = 0;
+    fits_read_key(fp,0,keyname.c_str(),value,nullptr);
+
+    status = 0;
+    fits_close_file(fp,&status);
+}
+
+void get_keyword_comment(const std::string& filename, const std::string& keyname, std::string& comment)
+{
+    int status = 0;
+    fitsfile* fp;
+
+    status = 0;
+    fits_open_file(&fp,filename.c_str(),READONLY,&status);
+
+    status = 0;
+    fits_read_keyword(fp,nullptr,nullptr,nullptr,&status);
+
+    status = 0;
+    fits_close_file(fp,&status);
+}
+
+template<typename T>
+void set_keyword(const std::string& filename, const std::string& keyname, const T& value, const std::string& comment)
+{
+    int status = 0;
+    fitsfile* fp;
+
+    status = 0;
+    fits_open_file(&fp,filename.c_str(),READWRITE,&status);
+
+    status = 0;
+    fits_update_key(fp,0,keyname.c_str(),value,comment.c_str(),&status);
+
+    status = 0;
+    fits_close_file(fp,&status);
+}
+
+template<typename T>
+void set_keyword_value(const std::string& filename, const std::string& keyname, const T& value)
+{
+    int status = 0;
+    fitsfile* fp;
+
+    status = 0;
+    fits_open_file(&fp,filename.c_str(),READWRITE,&status);
+
+    status = 0;
+    fits_update_key(fp,0,keyname.c_str(),value,nullptr,&status);
+
+    status = 0;
+    fits_close_file(fp,&status);
+}
+
+void set_keyword_comment(const std::string& filename, const std::string& keyname, const std::string& comment)
+{
+    int status = 0;
+    fitsfile* fp;
+
+    status = 0;
+    fits_open_file(&fp,filename.c_str(),READWRITE,&status);
+
+    status = 0;
+    fits_modify_comment(fp,keyname.c_str(),comment.c_str(),&status);
+
+    status = 0;
+    fits_close_file(fp,&status);
+}
+
+void del_keyword(const std::string& filename, const std::string& keyname)
+{
+    int status = 0;
+    fitsfile* fp;
+
+    status = 0;
+    fits_open_file(&fp,filename.c_str(),READWRITE,&status);
+
+    status = 0;
+    fits_delete_key(fp,keyname.c_str(),&status);
+
+    status = 0;
+    fits_close_file(fp,&status);
+}
 
 
 } // namespace fits_util
