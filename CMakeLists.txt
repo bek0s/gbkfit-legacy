@@ -65,4 +65,3 @@ configure_file("cmake/templates/cmake_uninstall.cmake.in"
 	       @ONLY)
 
 add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
-
