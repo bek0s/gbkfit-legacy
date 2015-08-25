@@ -34,7 +34,7 @@ add_library(target_gbkfit_fftw3_object OBJECT ${HEADER_FILES} ${SOURCE_FILES})
 add_library(target_gbkfit_fftw3_static STATIC $<TARGET_OBJECTS:target_gbkfit_fftw3_object>)
 add_library(target_gbkfit_fftw3_shared SHARED $<TARGET_OBJECTS:target_gbkfit_fftw3_object>)
 
-target_include_directories(target_gbkfit_fftw3_object PUBLIC include)
+target_include_directories(target_gbkfit_fftw3_object PUBLIC "include")
 target_include_directories(target_gbkfit_fftw3_object PRIVATE ${GBKFIT_INCLUDE_DIRS})
 target_include_directories(target_gbkfit_fftw3_object PRIVATE ${FFTW3_INCLUDE_DIRS})
 

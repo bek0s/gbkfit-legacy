@@ -46,8 +46,6 @@ option(GBKFIT_BUILD_GBKFIT_MODELS_GALAXY_2D "build gbkfit_models_galaxy_2d" TRUE
 option(GBKFIT_BUILD_GBKFIT_MODELS_GALAXY_2D_CUDA "build gbkfit_models_galaxy_2d_cuda" TRUE)
 option(GBKFIT_BUILD_GBKFIT_MODELS_GALAXY_2D_OMP "build gbkfit_models_galaxy_2d_omp" TRUE)
 
-option(GBKFIT_BUILD_GBKFIT_MODEL_THINDISK "build gbkfit_model_thindisk" TRUE)
-
 # ==============================================================================
 #
 #   Add subdirectories
