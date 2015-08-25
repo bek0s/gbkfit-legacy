@@ -16,7 +16,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 #
-#  Setup default search paths and hints to help CMake find the dependencies.
+# Setup default search paths and hints to help CMake find the dependencies.
 #
 
 if(WIN32)
