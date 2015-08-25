@@ -16,7 +16,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 #
-#   Setup default search paths and hints to help CMake find the dependencies.
+# Setup default search paths and hints to help CMake find the dependencies.
 #
 
 if(WIN32)
@@ -63,12 +63,12 @@ elseif(UNIX)
 
 else()
 
-    message(FATAL_ERROR "unsupported operating system")
+    message(FATAL_ERROR "Unsupported operating system.")
 
 endif()
 
 #
-#   Detect include paths based on the above search paths and hints.
+# Detect include paths based on the above search paths and hints.
 #
 
 find_path(CCFITS_INCLUDE_DIR
@@ -78,11 +78,11 @@ find_path(CCFITS_INCLUDE_DIR
             ${INCLUDE_SEARCH_HINTS}
             PATHS
             ${INCLUDE_SEARCH_PATHS}
-            DOC "absolute path to ccfits include directory")
+            DOC "Absolute path to ccfits include directory.")
 
 
 #
-#   Set library names.
+# Set library names.
 #
 set(LIBRARY_LIB_NAME_LIST
     "CCfits"
@@ -97,8 +97,8 @@ set(LIBRARY_LIB_VARIABLE_NAME_LIST
 )
 
 #
-#   Detect the paths of the above libraries and save them in the appropriate
-#   variable.
+# Detect the paths of the above libraries and save them in the appropriate
+# variable.
 #
 
 list(LENGTH LIBRARY_LIB_VARIABLE_NAME_LIST LIBRARY_LIB_NAME_LIST_LENGTH)
@@ -113,13 +113,13 @@ foreach(i RANGE ${LIBRARY_LIB_NAME_LIST_LENGTH})
                     ${LIBRARY_SEARCH_HINTS}
                     PATHS
                     ${LIBRARY_SEARCH_PATHS}
-                    DOC "absolute path to ${LIB_NAME} library")
+                    DOC "Absolute path to ${LIB_NAME} library.")
     unset(LIB_VAR_NAME)
     unset(LIB_NAME)
 endforeach(i)
 
 #
-#   Combine all library paths into one variable.
+# Combine all library paths into one variable.
 #
 
 set(CCFITS_INCLUDE_DIRS
@@ -131,7 +131,7 @@ set(CCFITS_LIBRARIES
 )
 
 #
-#   Deal with the find_module() args and some other stuff.
+# Deal with the find_module() args and some other stuff.
 #
 
 include(FindPackageHandleStandardArgs)
@@ -139,7 +139,7 @@ find_package_handle_standard_args(CCFITS DEFAULT_MSG
                                   CCFITS_LIBRARIES CCFITS_INCLUDE_DIRS)
 
 #
-#   Unset all the temporary variables.
+# Unset all the temporary variables.
 #
 
 unset(LIBRARY_LIB_VARIABLE_NAME_LIST)

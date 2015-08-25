@@ -24,7 +24,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 #
-#   Setup default search paths and hints to help CMake find the dependencies.
+# Setup default search paths and hints to help CMake find the dependencies.
 #
 
 if(WIN32)
@@ -71,12 +71,12 @@ elseif(UNIX)
 
 else()
 
-    message(FATAL_ERROR "unsupported operating system")
+    message(FATAL_ERROR "Unsupported operating system.")
 
 endif()
 
 #
-#   Detect include paths based on the above search paths and hints.
+# Detect include paths based on the above search paths and hints.
 #
 
 find_path(FFTW3_INCLUDE_DIR
@@ -86,10 +86,10 @@ find_path(FFTW3_INCLUDE_DIR
             ${INCLUDE_SEARCH_HINTS}
             PATHS
             ${INCLUDE_SEARCH_PATHS}
-            DOC "absolute path to fftw3 include directory")
+            DOC "Absolute path to fftw3 include directory.")
 
 #
-#   Set library names.
+# Set library names.
 #
 
 set(LIBRARY_LIB_NAME_LIST
@@ -105,7 +105,7 @@ set(LIBRARY_LIB_NAME_LIST
 )
 
 #
-#   Set a variable name for each library.
+# Set a variable name for each library.
 #
 
 set(LIBRARY_LIB_VARIABLE_NAME_LIST
@@ -121,8 +121,8 @@ set(LIBRARY_LIB_VARIABLE_NAME_LIST
 )
 
 #
-#   Detect the paths of the above libraries and save them in the appropriate 
-#   variable.
+# Detect the paths of the above libraries and save them in the appropriate
+# variable.
 #
 
 list(LENGTH LIBRARY_LIB_VARIABLE_NAME_LIST LIBRARY_LIB_NAME_LIST_LENGTH)
@@ -137,13 +137,13 @@ foreach(i RANGE ${LIBRARY_LIB_NAME_LIST_LENGTH})
                     ${LIBRARY_SEARCH_HINTS}
                     PATHS
                     ${LIBRARY_SEARCH_PATHS}
-                    DOC "absolute path to ${LIB_NAME} library")
+                    DOC "Absolute path to ${LIB_NAME} library.")
     unset(LIB_NAME_VAR)
     unset(LIB_NAME)
 endforeach(i)
 
 #
-#   Combine all library paths into one variable.
+# Combine all library paths into one variable.
 #
 
 set(FFTW3_INCLUDE_DIRS
@@ -163,7 +163,7 @@ set(FFTW3_LIBRARIES
 )
 
 #
-#   Deal with the find_module() args and some other stuff.
+# Deal with the find_module() args and some other stuff.
 #
 
 include(FindPackageHandleStandardArgs)
@@ -171,7 +171,7 @@ find_package_handle_standard_args(FFTW3 DEFAULT_MSG
                                   FFTW3_LIBRARIES FFTW3_INCLUDE_DIRS)
 
 #
-#   Unset all the temporary variables.
+# Unset all the temporary variables.
 #
 
 unset(LIBRARY_LIB_VARIABLE_NAME_LIST)

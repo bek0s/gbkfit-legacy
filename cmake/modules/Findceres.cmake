@@ -78,7 +78,7 @@ find_path(CERES_INCLUDE_DIR
             ${INCLUDE_SEARCH_HINTS}
             PATHS
             ${INCLUDE_SEARCH_PATHS}
-            DOC "absolute path to ceres include directory")
+            DOC "Absolute path to ceres include directory.")
 
 #
 #   Set library names.
@@ -113,7 +113,7 @@ foreach(i RANGE ${LIBRARY_LIB_NAME_LIST_LENGTH})
                     ${LIBRARY_SEARCH_HINTS}
                     PATHS
                     ${LIBRARY_SEARCH_PATHS}
-                    DOC "absolute path to ${LIB_NAME} library")
+                    DOC "Absolute path to ${LIB_NAME} library.")
     unset(LIB_VAR_NAME)
     unset(LIB_NAME)
 endforeach(i)
