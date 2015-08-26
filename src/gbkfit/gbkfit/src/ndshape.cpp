@@ -4,13 +4,13 @@
 namespace gbkfit {
 
 
-ndshape::ndshape(const std::vector<size_type>& shape)
+ndshape::ndshape(const std::vector<value_type>& shape)
     : m_shape(shape)
 {
 }
 
-ndshape::ndshape(const std::initializer_list<size_type>& shape)
-    : ndshape(std::vector<size_type>(shape))
+ndshape::ndshape(const std::initializer_list<value_type>& shape)
+    : ndshape(std::vector<value_type>(shape))
 {
 }
 
@@ -23,22 +23,22 @@ ndshape::size_type ndshape::get_dim_count(void) const
     return m_shape.size();
 }
 
-ndshape::size_type ndshape::get_dim_length(size_type idx) const
+ndshape::value_type ndshape::get_dim_length(size_type idx) const
 {
     return m_shape[idx];
 }
 
-ndshape::size_type ndshape::get_dim_length_product(void) const
+ndshape::value_type ndshape::get_dim_length_product(void) const
 {
     return std::accumulate(m_shape.begin(),m_shape.end(),static_cast<size_type>(1),std::multiplies<size_type>());
 }
 
-const ndshape::size_type& ndshape::operator[](size_type idx) const
+const ndshape::value_type& ndshape::operator[](size_type idx) const
 {
     return m_shape[idx];
 }
 
-ndshape::size_type& ndshape::operator[](size_type idx)
+ndshape::value_type& ndshape::operator[](size_type idx)
 {
     return m_shape[idx];
 }

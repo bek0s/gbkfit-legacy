@@ -18,93 +18,69 @@ std::string get_errstatus_string(int status)
 }
 
 
-void get_header(const std::string& name)
+}
+
+namespace fits {
+
+
+template <typename T> int select_fits_data_type();
+template <> int select_fits_data_type<bool>(void) { return TLOGICAL; }
+template <> int select_fits_data_type<unsigned char>(void) { return TBYTE; }
+template <> int select_fits_data_type<char>(void) { return TSBYTE; }
+template <> int select_fits_data_type<unsigned short>(void) { return TUSHORT; }
+template <> int select_fits_data_type<short>(void) { return TSHORT; }
+template <> int select_fits_data_type<unsigned int>(void) { return TUINT; }
+template <> int select_fits_data_type<int>(void) { return TINT; }
+template <> int select_fits_data_type<unsigned long>(void) { return TULONG; }
+template <> int select_fits_data_type<long>(void) { return TLONG; }
+template <> int select_fits_data_type<long long>(void) { return TLONGLONG; }
+template <> int select_fits_data_type<float>(void) { return TFLOAT; }
+template <> int select_fits_data_type<double>(void) { return TDOUBLE; }
+template <> int select_fits_data_type<std::complex<float>>(void) { return TCOMPLEX; }
+template <> int select_fits_data_type<std::complex<double>>(void) { return TDBLCOMPLEX; }
+
+ndarray* get_data(const std::string& filename)
 {
-
-
     int status = 0;
-    fitsfile* file;
+    fitsfile* fp = nullptr;
 
-    std::cout << "file: " << name << std::endl;
+    status = 0;
+    fits_open_file(&fp,filename.c_str(),READONLY,&status);
 
-    fits_open_file(&file,name.c_str(),READONLY,&status);
-
-    int card_count;
-
-    fits_get_hdrspace(file,&card_count,nullptr,&status);
-
-    std::cout << "n: " << card_count << std::endl;
-
-    for(int i = 0; i < card_count; ++i)
-    {
-
-    }
+    int naxis;
+    status = 0;
+    fits_get_img_dim(fp,&naxis,&status);
 
 
-    std::complex<float> foo;
-    foo.real(4);
-    foo.imag(6);
+    long int naxes[512];
+    status = 0;
+    fits_get_img_size(fp,naxis,naxes,&status);
 
-    std::cout << foo << std::endl;
+    ndshape shape(std::vector<ndshape::value_type>(naxes,naxes+naxis));
+    ndarray_host* array = new ndarray_host(shape);
 
-    float foo2 = 10;
+    int datatype = select_fits_data_type<float>();
+    long int firstpix[512] = {1};
+    long long int nelem = shape.get_dim_length_product();
+    int anynul = 0;
+    status = 0;
+    fits_read_pix(fp,datatype,firstpix,nelem,nullptr,array->get_host_ptr(),&anynul,&status);
 
-//  fits_write_key(file,TCOMPLEX,"NEW2",&foo,nullptr,&status);
+    status = 0;
+    fits_close_file(fp,&status);
 
-    std::cout << "status: " << status << std::endl;
-
-//  fits_delete_key(file,"HISTORY",&status);
-
-//  fits_delete_str(file,"comment",&status);
-
-    char foo3[80];
-    fits_read_key(file,TSTRING,"COMMENT",foo3,nullptr,&status);
-
-    std::cout << "status (2): " << status << "--" << get_errstatus_string(status) << std::endl;
-
-    fits_close_file(file,&status);
-
-
-
+    return array;
 }
 
-ndarray* get_data(const std::string& name)
+void write_to(const std::string& filename, const ndarray& data)
 {
-    std::shared_ptr<CCfits::FITS> fits = std::make_shared<CCfits::FITS>(name,CCfits::Read,true);
-    CCfits::PHDU& fits_img = fits->pHDU();
 
-    std::valarray<float> valarray;
-    fits_img.read<float>(valarray);
-
-    double vv;
-    fits->pHDU().readKey("NAXIS",vv);
-
-    std::vector<std::string> names;
-    std::vector<long> values;
-    auto foo = fits->pHDU().keyWord();
-
-
-    foo["NAXIS"]->value<double>(vv);
-
-    std::cout << vv << std::endl;
-
-
-
-    std::vector<size_t> axes;
-    for(long int i = 0; i < fits_img.axes(); ++i)
-        axes.push_back(static_cast<size_t>(fits_img.axis(i)));
-
-    return new ndarray_host(ndshape(axes),std::begin(valarray));
-}
-
-void write_to(const std::string& name, const ndarray& data)
-{
     long naxis = data.get_shape().get_dim_count();
     std::vector<long> naxes;
     for(std::size_t i = 0; i < static_cast<std::size_t>(naxis); ++i)
         naxes.push_back(data.get_shape().get_dim_length(i));
 
-    std::shared_ptr<CCfits::FITS> fits = std::make_shared<CCfits::FITS>(name,FLOAT_IMG,naxis,naxes.data());
+    std::shared_ptr<CCfits::FITS> fits = std::make_shared<CCfits::FITS>(filename,FLOAT_IMG,naxis,naxes.data());
 
 
     auto length = data.get_shape().get_dim_length_product();
@@ -118,76 +94,55 @@ void write_to(const std::string& name, const ndarray& data)
     long fpixel(1);
     fits->pHDU().write(fpixel,length,data_val);
 
-}
 
-void write_to2(const std::string& name, const ndarray& data)
-{
-    long naxis = data.get_shape().get_dim_count();
-    std::vector<long> naxes;
-    for(std::size_t i = 0; i < static_cast<std::size_t>(naxis); ++i)
-        naxes.push_back(data.get_shape().get_dim_length(i));
-
-    std::shared_ptr<CCfits::FITS> fits = std::make_shared<CCfits::FITS>(name,FLOAT_IMG,naxis,naxes.data());
-
-    long fpixel(1);
-//  fits->pHDU().write(fpixel,data.get_data().size(),data.get_data());
-
-
-}
-
-ndarray* get_data2(const std::string& filename)
-{
+    /*
     int status = 0;
-    fitsfile* fp;
+    fitsfile* fp = nullptr;
 
     status = 0;
-    fits_open_file(&fp,filename.c_str(),READONLY,&status);
+    fits_create_file(&fp,filename.c_str(),&status);
 
-    int naxis;
-    status = 0;
-    fits_get_img_dim(fp,&naxis,&status);
+    int datatype = select_fits_data_type<float>();
+    long int firstpix[512] = {1};
+    long long int nelem = data.get_shape().get_dim_length_product();
 
-    LONGLONG naxes[512];
-    status = 0;
-    fits_get_img_sizell(fp,naxis,naxes,&status);
 
-    status = 0;
-    float nullval = std::numeric_limits<float>::quiet_NaN();
-    fits_read_pixll(fp,0,0,0,nullptr,nullptr,nullptr,&status);
+    float* data_raw = new float[nelem];
+    data.read_data(data_raw);
+
+    fits_write_pix(fp,datatype,firstpix,nelem,data_raw,&status);
+
+    delete [] data_raw;
 
     status = 0;
     fits_close_file(fp,&status);
 
-    return nullptr;
+    */
+
+
 }
+
 
 template<typename T>
 void get_keyword(const std::string& filename, const std::string& keyname, T& value, std::string& comment)
 {
-    int status = 0;
-    fitsfile* fp;
-
-    status = 0;
-    fits_open_file(&fp,filename.c_str(),READONLY,&status);
-
-    status = 0;
-    fits_read_key(fp,0,keyname.c_str(),value,nullptr);
-
-    status = 0;
-    fits_close_file(fp,&status);
+    get_keyword_value<T>(filename,keyname,value);
+    get_keyword_comment(filename,keyname,comment);
 }
 
 template<typename T>
 void get_keyword_value(const std::string& filename, const std::string& keyname, T& value)
 {
     int status = 0;
-    fitsfile* fp;
+    fitsfile* fp = nullptr;
 
     status = 0;
     fits_open_file(&fp,filename.c_str(),READONLY,&status);
 
+    int datatype = select_fits_data_type<T>();
+    char* comm = nullptr;
     status = 0;
-    fits_read_key(fp,0,keyname.c_str(),value,nullptr);
+    fits_read_key(fp,datatype,keyname.c_str(),&value,comm,&status);
 
     status = 0;
     fits_close_file(fp,&status);
@@ -196,13 +151,16 @@ void get_keyword_value(const std::string& filename, const std::string& keyname, 
 void get_keyword_comment(const std::string& filename, const std::string& keyname, std::string& comment)
 {
     int status = 0;
-    fitsfile* fp;
+    fitsfile* fp = nullptr;
 
     status = 0;
     fits_open_file(&fp,filename.c_str(),READONLY,&status);
 
+    char keyval[512];
+    char comm[512];
     status = 0;
-    fits_read_keyword(fp,nullptr,nullptr,nullptr,&status);
+    fits_read_keyword(fp,keyname.c_str(),keyval,comm,&status);
+    comment = std::string(comm);
 
     status = 0;
     fits_close_file(fp,&status);
@@ -211,30 +169,22 @@ void get_keyword_comment(const std::string& filename, const std::string& keyname
 template<typename T>
 void set_keyword(const std::string& filename, const std::string& keyname, const T& value, const std::string& comment)
 {
-    int status = 0;
-    fitsfile* fp;
-
-    status = 0;
-    fits_open_file(&fp,filename.c_str(),READWRITE,&status);
-
-    status = 0;
-    fits_update_key(fp,0,keyname.c_str(),value,comment.c_str(),&status);
-
-    status = 0;
-    fits_close_file(fp,&status);
+    set_keyword_value<T>(filename,keyname,value);
+    set_keyword_comment(filename,keyname,comment);
 }
 
 template<typename T>
 void set_keyword_value(const std::string& filename, const std::string& keyname, const T& value)
 {
     int status = 0;
-    fitsfile* fp;
+    fitsfile* fp = nullptr;
 
     status = 0;
     fits_open_file(&fp,filename.c_str(),READWRITE,&status);
 
+    int datatype = select_fits_data_type<T>();
     status = 0;
-    fits_update_key(fp,0,keyname.c_str(),value,nullptr,&status);
+    fits_update_key(fp,datatype,keyname.c_str(),const_cast<T*>(&value),nullptr,&status);
 
     status = 0;
     fits_close_file(fp,&status);
@@ -243,7 +193,7 @@ void set_keyword_value(const std::string& filename, const std::string& keyname, 
 void set_keyword_comment(const std::string& filename, const std::string& keyname, const std::string& comment)
 {
     int status = 0;
-    fitsfile* fp;
+    fitsfile* fp = nullptr;
 
     status = 0;
     fits_open_file(&fp,filename.c_str(),READWRITE,&status);
@@ -258,7 +208,7 @@ void set_keyword_comment(const std::string& filename, const std::string& keyname
 void del_keyword(const std::string& filename, const std::string& keyname)
 {
     int status = 0;
-    fitsfile* fp;
+    fitsfile* fp = nullptr;
 
     status = 0;
     fits_open_file(&fp,filename.c_str(),READWRITE,&status);
@@ -270,6 +220,11 @@ void del_keyword(const std::string& filename, const std::string& keyname)
     fits_close_file(fp,&status);
 }
 
+template void get_keyword<float>(const std::string& filename, const std::string& keyname, float& value, std::string& comment);
+template void get_keyword_value<float>(const std::string& filename, const std::string& keyname, float& value);
+template void set_keyword<float>(const std::string& filename, const std::string& keyname, const float& value, const std::string& comment);
+template void set_keyword_value<float>(const std::string& filename, const std::string& keyname, const float& value);
 
-} // namespace fits_util
+
+} // namespace fits
 } // namespace gbkfit

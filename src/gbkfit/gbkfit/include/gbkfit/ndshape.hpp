@@ -10,37 +10,35 @@ namespace gbkfit {
 //!
 //! \brief The ndshape class
 //!
-//! \todo Validate sizes during construction.
-//! \todo Validate index in operator[].
-//!
 class ndshape
 {
 
 public:
 
-    typedef typename std::vector<std::size_t>::size_type size_type;
+    typedef int value_type;
+    typedef std::vector<value_type>::size_type size_type;
 
 private:
 
-    std::vector<size_type> m_shape;
+    std::vector<value_type> m_shape;
 
 public:
 
-    ndshape(const std::vector<size_type>& shape);
+    ndshape(const std::vector<value_type>& shape);
 
-    ndshape(const std::initializer_list<size_type>& shape);
+    ndshape(const std::initializer_list<value_type>& shape);
 
     virtual ~ndshape();
 
     size_type get_dim_count(void) const;
 
-    size_type get_dim_length(size_type idx) const;
+    value_type get_dim_length(size_type idx) const;
 
-    size_type get_dim_length_product(void) const;
+    value_type get_dim_length_product(void) const;
 
-    const size_type& operator[](size_type idx) const;
+    const value_type& operator[](size_type idx) const;
 
-    size_type& operator[](size_type idx);
+    value_type& operator[](size_type idx);
 
     bool operator==(const ndshape& rhs) const;
 

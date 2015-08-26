@@ -65,7 +65,7 @@ nddataset* core::create_dataset(std::stringstream& info) const
     {
         std::string data_name = ptree_data.second.get<std::string>("<xmlattr>.name");
         std::string data_file = ptree_data.second.get<std::string>("<xmlattr>.value");
-        ndarray* data = fits_util::get_data(data_file);
+        ndarray* data = fits::get_data(data_file);
 
         dataset->get().emplace(data_name,data);
 
