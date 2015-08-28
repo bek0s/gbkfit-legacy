@@ -2,9 +2,10 @@
 #ifndef GBKFIT_SPREAD_FUNCTION_HPP
 #define GBKFIT_SPREAD_FUNCTION_HPP
 
-#include <vector>
+#include "gbkfit/prerequisites.hpp"
 
 namespace gbkfit {
+
 
 //!
 //! \brief The line_spread_function class
@@ -14,7 +15,15 @@ class line_spread_function
 public:
     line_spread_function(void);
     virtual ~line_spread_function();
-    virtual void as_array(std::size_t length, float step, float* data) const = 0;
+    virtual void as_array(int length, float step, float* data) const = 0;
+}; // class line_spread_function
+
+class line_spread_function_factory
+{
+public:
+    line_spread_function_factory(void);
+    virtual ~line_spread_function_factory();
+    line_spread_function* create(const std::string& info) const;
 };
 
 //!
@@ -24,13 +33,13 @@ class line_spread_function_array : public line_spread_function
 {
 private:
     std::vector<float> m_data;
-    std::size_t m_length;
+    int m_length;
     float m_step;
 public:
-    line_spread_function_array(float* data, std::size_t length, float step);
+    line_spread_function_array(float* data, int length, float step);
     ~line_spread_function_array();
-    void as_array(std::size_t length, float step, float* data) const final;
-};
+    void as_array(int length, float step, float* data) const final;
+}; // class line_spread_function_array
 
 //!
 //! \brief The line_spread_function_gaussian class
@@ -42,8 +51,8 @@ private:
 public:
     line_spread_function_gaussian(float fwhm);
     ~line_spread_function_gaussian();
-    void as_array(std::size_t length, float step, float* data) const final;
-};
+    void as_array(int length, float step, float* data) const final;
+}; // class line_spread_function_gaussian
 
 //!
 //! \brief The line_spread_function_lorentzian class
@@ -55,8 +64,8 @@ private:
 public:
     line_spread_function_lorentzian(float fwhm);
     ~line_spread_function_lorentzian();
-    void as_array(std::size_t length, float step, float* data) const final;
-};
+    void as_array(int length, float step, float* data) const final;
+}; // class line_spread_function_lorentzian
 
 //!
 //! \brief The line_spread_function_moffat class
@@ -69,8 +78,8 @@ private:
 public:
     line_spread_function_moffat(float fwhm, float beta = 4.765f);
     ~line_spread_function_moffat();
-    void as_array(std::size_t length, float step, float* data) const final;
-};
+    void as_array(int length, float step, float* data) const final;
+}; // class line_spread_function_moffat
 
 //!
 //! \brief The point_spread_function class
@@ -80,8 +89,8 @@ class point_spread_function
 public:
     point_spread_function(void);
     virtual ~point_spread_function();
-    virtual void as_image(std::size_t length_x, std::size_t length_y, float step_x, float step_y, float* data) const = 0;
-};
+    virtual void as_image(int length_x, int length_y, float step_x, float step_y, float* data) const = 0;
+}; // class point_spread_function
 
 //!
 //! \brief The point_spread_function_image class
@@ -90,15 +99,15 @@ class point_spread_function_image : public point_spread_function
 {
 private:
     std::vector<float> m_data;
-    std::size_t m_length_x;
-    std::size_t m_length_y;
+    int m_length_x;
+    int m_length_y;
     float m_step_x;
     float m_step_y;
 public:
-    point_spread_function_image(float* data, std::size_t length_x, std::size_t length_y, float step_x, float step_y);
+    point_spread_function_image(float* data, int length_x, int length_y, float step_x, float step_y);
     ~point_spread_function_image();
-    void as_image(std::size_t length_x, std::size_t length_y, float step_x, float step_y, float* data) const final;
-};
+    void as_image(int length_x, int length_y, float step_x, float step_y, float* data) const final;
+}; // class point_spread_function_image
 
 //!
 //! \brief The point_spread_function_gaussian class
@@ -113,8 +122,8 @@ public:
     point_spread_function_gaussian(float fwhm);
     point_spread_function_gaussian(float fwhm_x, float fwhm_y, float pa);
     ~point_spread_function_gaussian();
-    void as_image(std::size_t length_x, std::size_t length_y, float step_x, float step_y, float* data) const final;
-};
+    void as_image(int length_x, int length_y, float step_x, float step_y, float* data) const final;
+}; // point_spread_function_gaussian
 
 //!
 //! \brief The point_spread_function_lorentzian class
@@ -129,8 +138,8 @@ public:
     point_spread_function_lorentzian(float fwhm);
     point_spread_function_lorentzian(float fwhm_x, float fwhm_y, float pa);
     ~point_spread_function_lorentzian();
-    void as_image(std::size_t length_x, std::size_t length_y, float step_x, float step_y, float* data) const final;
-};
+    void as_image(int length_x, int length_y, float step_x, float step_y, float* data) const final;
+}; // point_spread_function_lorentzian
 
 //!
 //! \brief The point_spread_function_moffat class
@@ -146,8 +155,9 @@ public:
     point_spread_function_moffat(float fwhm, float beta = 4.765f);
     point_spread_function_moffat(float fwhm_x, float fwhm_y, float pa, float beta = 4.765f);
     ~point_spread_function_moffat();
-    void as_image(std::size_t length_x, std::size_t length_y, float step_x, float step_y, float* data) const final;
-};
+    void as_image(int length_x, int length_y, float step_x, float step_y, float* data) const final;
+}; // point_spread_function_moffat
+
 
 } // namespace gbkfit
 

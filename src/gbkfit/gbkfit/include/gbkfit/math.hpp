@@ -132,6 +132,13 @@ T lorentzian_gamma_from_fwhm(T fwhm)
     return fwhm / 2.0f;
 }
 
+template<typename T>
+void normalize_integral(T* data, int length)
+{
+    T sum = std::accumulate(data,data+length,static_cast<T>(0));
+    std::for_each(data,data+length,[&sum](float &val)->void{val/=sum;});
+}
+
 } // namespace math
 } // namespace gbkfit
 

@@ -7,6 +7,9 @@
 namespace gbkfit {
 
 
+//!
+//! \brief The core class
+//!
 class core
 {
 
@@ -24,34 +27,38 @@ public:
     void add_model_factory(model_factory* factory);
 
     //!
-    //! \brief create_model
-    //! \param info
-    //! \return
-    //!
-    model* create_model(std::stringstream& info) const;
-
-    //!
     //! \brief add_fitter_factory
     //! \param factory
     //!
     void add_fitter_factory(fitter_factory* factory);
 
     //!
+    //! \brief create_model
+    //! \param info
+    //! \return
+    //!
+    model* create_model(const std::string& info) const;
+
+    //!
     //! \brief create_fitter
     //! \param info
     //! \return
     //!
-    fitter* create_fitter(std::stringstream& info) const;
+    fitter* create_fitter(const std::string& info) const;
 
-    nddataset* create_dataset(std::stringstream& info) const;
+    //!
+    //! \brief create_dataset
+    //! \param info
+    //! \return
+    //!
+    nddataset* create_dataset(const std::string& info) const;
 
     //!
     //! \brief create_datasets
     //! \param info
     //! \return
     //!
-    std::map<std::string,nddataset*> create_datasets(std::stringstream& info) const;
-
+    std::map<std::string,nddataset*> create_datasets(const std::string& info) const;
 
 
 }; // class core

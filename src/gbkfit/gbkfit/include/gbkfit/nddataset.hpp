@@ -11,9 +11,6 @@ namespace gbkfit
 //!
 //! \brief The nddataset class
 //!
-//! This is a placeholder class. It will change it in the near future.
-//! Yes, the syntax is ugly, I know.
-//!
 class nddataset
 {
 
@@ -27,7 +24,15 @@ public:
 
     virtual ~nddataset();
 
-    std::map<std::string,ndarray*>& get(void);
+    bool has_data(const std::string& name) const;
+
+    ndarray* get_data(const std::string& name);
+
+    const ndarray* get_data(const std::string& name) const;
+
+    void add_data(const std::string& name, ndarray* data);
+
+    void __destroy(void);
 
 }; // class nddataset
 

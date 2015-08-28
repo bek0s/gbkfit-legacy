@@ -1,12 +1,14 @@
 
 #include "gbkfit/cuda/ndarray_cuda.hpp"
 
+#include <cuda_runtime_api.h>
+
 namespace gbkfit {
 namespace cuda {
 
-
 ndarray_cuda::ndarray_cuda(const ndshape& shape)
     : ndarray(shape)
+    , m_data(nullptr)
 {
 }
 
@@ -16,24 +18,26 @@ ndarray_cuda::~ndarray_cuda()
 
 ndarray_cuda::pointer ndarray_cuda::get_cuda_ptr(void)
 {
-    memory_buffer_cuda* memory_buffer = reinterpret_cast<memory_buffer_cuda*>(m_memory_buffer);
-    return reinterpret_cast<pointer>(memory_buffer->get_cuda_ptr());
+    return m_data;
 }
 
 ndarray_cuda::const_pointer ndarray_cuda::get_cuda_ptr(void) const
 {
-    const memory_buffer_cuda* memory_buffer =reinterpret_cast<const memory_buffer_cuda*>(m_memory_buffer);
-    return reinterpret_cast<const_pointer>(memory_buffer->get_cuda_ptr());
+    return m_data;
 }
 
 void ndarray_cuda::read_data(pointer dst) const
 {
-    m_memory_buffer->read_data(dst);
+    const_pointer src = m_data;
+    std::size_t size = get_shape().get_dim_length_product()*sizeof(value_type);
+    cudaMemcpy(dst,src,size,cudaMemcpyDefault);
 }
 
-void ndarray_cuda::write_data(const_pointer data)
+void ndarray_cuda::write_data(const_pointer src)
 {
-    m_memory_buffer->write_data(data);
+    pointer dst = m_data;
+    std::size_t size = get_shape().get_dim_length_product()*sizeof(value_type);
+    cudaMemcpy(dst,src,size,cudaMemcpyDefault);
 }
 
 void ndarray_cuda::copy_data(const ndarray* src)
@@ -44,66 +48,67 @@ void ndarray_cuda::copy_data(const ndarray* src)
     }
     else
     {
-        // throw
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
     }
 }
 
 void ndarray_cuda::copy_data(const ndarray_cuda* src)
 {
-    src->read_data(get_cuda_ptr());
+    write_data(src->get_cuda_ptr());
 }
 
 ndarray_cuda_device::ndarray_cuda_device(const ndshape& shape)
     : ndarray_cuda(shape)
 {
-    m_memory_buffer = new memory_buffer_cuda_device(shape.get_dim_length_product()*sizeof(value_type));
+    cudaMalloc((void**)&m_data,shape.get_dim_length_product());
 }
 
 ndarray_cuda_device::ndarray_cuda_device(const ndshape& shape, const_pointer data)
     : ndarray_cuda_device(shape)
 {
-    m_memory_buffer->write_data(data);
+    ndarray_cuda::write_data(data);
 }
 
 ndarray_cuda_device::~ndarray_cuda_device()
 {
-    delete m_memory_buffer;
+    cudaFree(m_data);
 }
 
 ndarray_cuda_pinned::ndarray_cuda_pinned(const ndshape& shape)
     : ndarray_cuda(shape)
 {
-    m_memory_buffer = new memory_buffer_cuda_pinned(shape.get_dim_length_product()*sizeof(value_type));
+    unsigned int flags = cudaHostAllocDefault;
+    cudaHostAlloc((void**)&m_data,shape.get_dim_length_product(),flags);
 }
 
 ndarray_cuda_pinned::ndarray_cuda_pinned(const ndshape& shape, const_pointer data)
     : ndarray_cuda_pinned(shape)
 {
-    m_memory_buffer->write_data(data);
+    ndarray_cuda::write_data(data);
 }
 
 ndarray_cuda_pinned::~ndarray_cuda_pinned()
 {
-    delete m_memory_buffer;
+    cudaFreeHost(m_data);
 }
 
 ndarray_cuda_pinned_wc::ndarray_cuda_pinned_wc(const ndshape& shape)
     : ndarray_cuda(shape)
 {
-    m_memory_buffer = new memory_buffer_cuda_pinned_wc(shape.get_dim_length_product()*sizeof(value_type));
+    unsigned int flags = cudaHostAllocWriteCombined;
+    cudaHostAlloc((void**)&m_data,shape.get_dim_length_product(),flags);
 }
 
 ndarray_cuda_pinned_wc::ndarray_cuda_pinned_wc(const ndshape& shape, const_pointer data)
     : ndarray_cuda_pinned_wc(shape)
 {
-    m_memory_buffer->write_data(data);
+    ndarray_cuda::write_data(data);
 }
 
 ndarray_cuda_pinned_wc::~ndarray_cuda_pinned_wc()
 {
-    delete m_memory_buffer;
+    cudaFreeHost(m_data);
 }
-
 
 } // namespace cuda
 } // namespace gbkfit

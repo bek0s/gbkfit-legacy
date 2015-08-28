@@ -50,7 +50,7 @@ void memory_buffer_host::copy_data(const memory_buffer* src, size_type src_offse
     }
     else
     {
-        // throw
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
     }
 }
 

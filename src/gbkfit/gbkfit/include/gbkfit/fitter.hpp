@@ -42,7 +42,7 @@ public:
 
     virtual const std::string& get_type_name(void) const = 0;
 
-    virtual fitter* create_fitter(const std::stringstream& info) const = 0;
+    virtual fitter* create_fitter(const std::string& info) const = 0;
 
 }; //  class fitter_factory
 

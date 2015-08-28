@@ -46,7 +46,7 @@ public:
 
     virtual const std::string& get_type_name(void) const = 0;
 
-    virtual model* create_model(const std::stringstream& info) const = 0;
+    virtual model* create_model(const std::string& info) const = 0;
 
 }; //  class model_factory
 

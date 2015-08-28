@@ -1,6 +1,6 @@
 
 #include <CCfits/CCfits>
-#include "gbkfit/fits_util.hpp"
+#include "gbkfit/fits.hpp"
 
 #include "gbkfit/ndarray_host.hpp"
 
@@ -57,7 +57,7 @@ ndarray* get_data(const std::string& filename)
     fits_get_img_size(fp,naxis,naxes,&status);
 
     ndshape shape(std::vector<ndshape::value_type>(naxes,naxes+naxis));
-    ndarray_host* array = new ndarray_host(shape);
+    ndarray_host* array = new ndarray_host_new(shape);
 
     int datatype = select_fits_data_type<float>();
     long int firstpix[512] = {1};

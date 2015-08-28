@@ -12,7 +12,6 @@ fitter::~fitter()
 {
 }
 
-
 fitter_factory::fitter_factory(void)
 {
 }

@@ -4,43 +4,36 @@
 
 namespace gbkfit {
 
+
 ndarray_host::ndarray_host(const ndshape& shape)
     : ndarray(shape)
 {
-    m_memory_buffer = new memory_buffer_malloc(shape.get_dim_length_product()*sizeof(value_type));
-}
-
-ndarray_host::ndarray_host(const ndshape& shape, const_pointer data)
-    : ndarray_host(shape)
-{
-    m_memory_buffer->write_data(data);
 }
 
 ndarray_host::~ndarray_host()
 {
-    delete m_memory_buffer;
 }
 
 ndarray_host::pointer ndarray_host::get_host_ptr(void)
 {
-    memory_buffer_host* memory_buffer = reinterpret_cast<memory_buffer_host*>(m_memory_buffer);
-    return reinterpret_cast<pointer>(memory_buffer->get_host_ptr());
+    return reinterpret_cast<pointer>(m_data);
 }
 
 ndarray_host::const_pointer ndarray_host::get_host_ptr(void) const
 {
-    const memory_buffer_host* memory_buffer =reinterpret_cast<const memory_buffer_host*>(m_memory_buffer);
-    return reinterpret_cast<const_pointer>(memory_buffer->get_host_ptr());
+    return reinterpret_cast<const_pointer>(m_data);
 }
 
 void ndarray_host::read_data(pointer dst) const
 {
-    m_memory_buffer->read_data(dst);
+    const_pointer src = m_data;
+    std::copy(src,src+get_shape().get_dim_length_product(),dst);
 }
 
-void ndarray_host::write_data(const_pointer data)
+void ndarray_host::write_data(const_pointer src)
 {
-    m_memory_buffer->write_data(data);
+    pointer dst = m_data;
+    std::copy(src,src+get_shape().get_dim_length_product(),dst);
 }
 
 void ndarray_host::copy_data(const ndarray* src)
@@ -51,13 +44,47 @@ void ndarray_host::copy_data(const ndarray* src)
     }
     else
     {
-        throw std::runtime_error("trying to copy data from incompatible devices");
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
     }
 }
 
 void ndarray_host::copy_data(const ndarray_host* src)
 {
     src->read_data(get_host_ptr());
+}
+
+ndarray_host_malloc::ndarray_host_malloc(const ndshape& shape)
+    : ndarray_host(shape)
+{
+    m_data = reinterpret_cast<pointer>(std::malloc(shape.get_dim_length_product()*sizeof(float)));
+}
+
+ndarray_host_malloc::ndarray_host_malloc(const ndshape& shape, const_pointer data)
+    : ndarray_host_malloc(shape)
+{
+    ndarray_host::write_data(data);
+}
+
+ndarray_host_malloc::~ndarray_host_malloc()
+{
+    free(m_data);
+}
+
+ndarray_host_new::ndarray_host_new(const ndshape& shape)
+    : ndarray_host(shape)
+{
+    m_data = new value_type[shape.get_dim_length_product()];
+}
+
+ndarray_host_new::ndarray_host_new(const ndshape& shape, const_pointer data)
+    : ndarray_host_new(shape)
+{
+    ndarray_host::write_data(data);
+}
+
+ndarray_host_new::~ndarray_host_new()
+{
+    delete [] m_data;
 }
 
 

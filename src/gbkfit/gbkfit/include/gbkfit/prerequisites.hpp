@@ -10,7 +10,12 @@
 #include <iostream>
 #include <limits>
 #include <map>
+#include <memory>
 #include <system_error>
+#include <valarray>
+#include <vector>
+
+#include <boost/current_function.hpp>
 
 namespace gbkfit
 {

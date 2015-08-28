@@ -11,7 +11,6 @@ namespace gbkfit {
 //!
 //! \brief The ndarray class
 //!
-
 class ndarray
 {
 
@@ -35,7 +34,7 @@ public:
 
     virtual void read_data(pointer dst) const = 0;
 
-    virtual void write_data(const_pointer data) = 0;
+    virtual void write_data(const_pointer src) = 0;
 
     virtual void copy_data(const ndarray* src) = 0;
 

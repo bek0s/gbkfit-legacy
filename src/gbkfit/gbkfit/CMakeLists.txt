@@ -15,7 +15,7 @@ find_package(Boost REQUIRED)
 
 set(HEADER_FILES
     include/gbkfit/core.hpp
-    include/gbkfit/fits_util.hpp
+    include/gbkfit/fits.hpp
     include/gbkfit/fitter.hpp
     include/gbkfit/gbkfit.hpp
     include/gbkfit/image_util.hpp
@@ -30,14 +30,16 @@ set(HEADER_FILES
     include/gbkfit/nddataset.hpp
     include/gbkfit/ndshape.hpp
     include/gbkfit/num_util.hpp
-    include/gbkfit/spread_function.hpp
     include/gbkfit/prerequisites.hpp
+    include/gbkfit/spread_function.hpp
+    include/gbkfit/spread_functions.hpp
+
 )
 
 set(SOURCE_FILES
     src/core.cpp
     src/fitter.cpp
-    src/fits_util.cpp
+    src/fits.cpp
     src/gbkfit.cpp
     src/image_util.cpp
     src/memory_buffer.cpp
@@ -50,6 +52,8 @@ set(SOURCE_FILES
     src/nddataset.cpp
     src/ndshape.cpp
     src/spread_function.cpp
+    src/spread_functions.cpp
+    src/point_spread_function.cpp
 )
 
 # ==============================================================================
@@ -76,7 +80,7 @@ target_compile_options(target_gbkfit_object PRIVATE "-Wpedantic")
 target_compile_options(target_gbkfit_object PRIVATE "-Wsign-conversion")
 
 set_target_properties(target_gbkfit_object PROPERTIES CXX_EXTENSIONS OFF)
-set_target_properties(target_gbkfit_object PROPERTIES CXX_STANDARD 11)
+set_target_properties(target_gbkfit_object PROPERTIES CXX_STANDARD 14)
 set_target_properties(target_gbkfit_object PROPERTIES CXX_STANDARD_REQUIRED ON)
 set_target_properties(target_gbkfit_object PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
