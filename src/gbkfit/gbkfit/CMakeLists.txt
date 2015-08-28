@@ -20,9 +20,6 @@ set(HEADER_FILES
     include/gbkfit/gbkfit.hpp
     include/gbkfit/image_util.hpp
     include/gbkfit/math.hpp
-    include/gbkfit/memory_buffer.hpp
-    include/gbkfit/memory_buffer_host.hpp
-    include/gbkfit/memory_buffer_malloc.hpp
     include/gbkfit/model.hpp
     include/gbkfit/model_parameters_fit_info.hpp
     include/gbkfit/ndarray.hpp
@@ -42,9 +39,6 @@ set(SOURCE_FILES
     src/fits.cpp
     src/gbkfit.cpp
     src/image_util.cpp
-    src/memory_buffer.cpp
-    src/memory_buffer_host.cpp
-    src/memory_buffer_malloc.cpp
     src/model.cpp
     src/model_parameters_fit_info.cpp
     src/ndarray.cpp
