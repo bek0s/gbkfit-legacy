@@ -7,7 +7,6 @@
 
 namespace gbkfit {
 
-
 //!
 //! \brief The ndarray_host class
 //!
@@ -16,9 +15,7 @@ class ndarray_host : public ndarray
 
 protected:
 
-    memory_buffer* m_memory_buffer;
-
-    value_type* m_data;
+    pointer m_data;
 
 public:
 
@@ -42,7 +39,6 @@ protected:
 
 }; // class ndarray_host
 
-
 //!
 //! \brief The ndarray_host_malloc class
 //!
@@ -59,7 +55,6 @@ public:
 
 }; // class ndarray_host_malloc
 
-
 //!
 //! \brief The ndarray_host_new class
 //!
@@ -75,7 +70,6 @@ public:
     ~ndarray_host_new();
 
 }; // class ndarray_host_new
-
 
 } // namespace gbkfit
 

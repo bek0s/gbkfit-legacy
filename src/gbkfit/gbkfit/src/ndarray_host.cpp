@@ -1,9 +1,7 @@
 
 #include "gbkfit/ndarray_host.hpp"
-#include "gbkfit/memory_buffer_malloc.hpp"
 
 namespace gbkfit {
-
 
 ndarray_host::ndarray_host(const ndshape& shape)
     : ndarray(shape)
@@ -16,24 +14,26 @@ ndarray_host::~ndarray_host()
 
 ndarray_host::pointer ndarray_host::get_host_ptr(void)
 {
-    return reinterpret_cast<pointer>(m_data);
+    return m_data;
 }
 
 ndarray_host::const_pointer ndarray_host::get_host_ptr(void) const
 {
-    return reinterpret_cast<const_pointer>(m_data);
+    return m_data;
 }
 
 void ndarray_host::read_data(pointer dst) const
 {
     const_pointer src = m_data;
-    std::copy(src,src+get_shape().get_dim_length_product(),dst);
+    std::size_t size = get_shape().get_dim_length_product();
+    std::copy(src,src+size,dst);
 }
 
 void ndarray_host::write_data(const_pointer src)
 {
     pointer dst = m_data;
-    std::copy(src,src+get_shape().get_dim_length_product(),dst);
+    std::size_t size = get_shape().get_dim_length_product();
+    std::copy(src,src+size,dst);
 }
 
 void ndarray_host::copy_data(const ndarray* src)
@@ -56,7 +56,8 @@ void ndarray_host::copy_data(const ndarray_host* src)
 ndarray_host_malloc::ndarray_host_malloc(const ndshape& shape)
     : ndarray_host(shape)
 {
-    m_data = reinterpret_cast<pointer>(std::malloc(shape.get_dim_length_product()*sizeof(float)));
+    std::size_t size = shape.get_dim_length_product()*sizeof(float);
+    m_data = reinterpret_cast<pointer>(std::malloc(size));
 }
 
 ndarray_host_malloc::ndarray_host_malloc(const ndshape& shape, const_pointer data)
@@ -73,7 +74,8 @@ ndarray_host_malloc::~ndarray_host_malloc()
 ndarray_host_new::ndarray_host_new(const ndshape& shape)
     : ndarray_host(shape)
 {
-    m_data = new value_type[shape.get_dim_length_product()];
+    std::size_t size = shape.get_dim_length_product();
+    m_data = new value_type[size];
 }
 
 ndarray_host_new::ndarray_host_new(const ndshape& shape, const_pointer data)
@@ -86,6 +88,5 @@ ndarray_host_new::~ndarray_host_new()
 {
     delete [] m_data;
 }
-
 
 } // namespace gbkfit
