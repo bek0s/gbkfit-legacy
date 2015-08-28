@@ -18,12 +18,14 @@ private:
 
     gbkfit::core* m_core;
 
-    gbkfit::fitter_factory* m_fitter_factory_mpfit;
-    gbkfit::fitter_factory* m_fitter_factory_multinest;
     gbkfit::model_factory* m_model_factory_galaxy_2d_cuda;
     gbkfit::model_factory* m_model_factory_galaxy_2d_omp;
-    gbkfit::fitter* m_fitter;
+    gbkfit::fitter_factory* m_fitter_factory_mpfit;
+    gbkfit::fitter_factory* m_fitter_factory_multinest;
     gbkfit::model* m_model;
+    gbkfit::fitter* m_fitter;
+
+    std::map<std::string,gbkfit::nddataset*> m_datasets;
 
 public:
 
