@@ -106,28 +106,20 @@ std::string get_error_string(int code)
     return str_code + ", " + str_desc;
 }
 
-#define MP_ERR_INPUT (0)         /* General input parameter error */
-#define MP_ERR_NAN (-16)         /* User function produced non-finite values */
-#define MP_ERR_FUNC (-17)        /* No user function was supplied */
-#define MP_ERR_NPOINTS (-18)     /* No user data points were supplied */
-#define MP_ERR_NFREE (-19)       /* No free parameters */
-#define MP_ERR_MEMORY (-20)      /* Memory allocation error */
-#define MP_ERR_INITBOUNDS (-21)  /* Initial values inconsistent w constraints*/
-#define MP_ERR_BOUNDS (-22)      /* Initial constraints inconsistent */
-#define MP_ERR_PARAM (-23)       /* General input parameter error */
-#define MP_ERR_DOF (-24)         /* Not enough degrees of freedom */
-
 struct mpfit_user_data
 {
     gbkfit::model* model;
-    std::map<std::string,ndarray_host*> data_map_mdl;
     std::map<std::string,ndarray_host*> data_map_dat;
     std::map<std::string,ndarray_host*> data_map_msk;
     std::map<std::string,ndarray_host*> data_map_err;
+    std::map<std::string,ndarray_host*> data_map_mdl;
+    std::map<std::string,ndarray_host*> data_map_res;
 }; // struct mpfit_user_data
 
 int mpfit_callback(int num_measurements, int num_parameters, double* parameters, double* measurements, double** derivatives, void* user_data)
 {
+    (void)derivatives;
+
     mpfit_user_data* udata = reinterpret_cast<mpfit_user_data*>(user_data);
 
 
@@ -137,7 +129,31 @@ int mpfit_callback(int num_measurements, int num_parameters, double* parameters,
     auto params_map = gbkfit::vectors_to_map(param_name, params);
 
 
-    std::vector<ndarray*> model_data = udata->model->evaluate(params_map);
+    std::map<std::string,ndarray*> model_data = udata->model->evaluate(params_map);
+
+
+    int offset = 0;
+
+    for(auto& data_mdl_pair : udata->data_map_mdl)
+    {
+        std::string name = std::get<0>(data_mdl_pair);
+        ndarray* data = std::get<1>(data_mdl_pair);
+
+        data->copy_data(model_data[name]);
+
+        float* data_dat = udata->data_map_dat[name]->get_host_ptr();
+        float* data_msk = udata->data_map_msk[name]->get_host_ptr();
+        float* data_err = udata->data_map_err[name]->get_host_ptr();
+        float* data_mdl = udata->data_map_mdl[name]->get_host_ptr();
+
+
+        for(int i = 0; i < num_measurements; ++i)
+        {
+            measurements[i] = data_msk[i] > 0 ? (data_dat[i]-data_mdl[i])/data_err[i] : 0;
+        }
+    }
+
+
 
 
     /*
@@ -209,10 +225,11 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
     // Make a copy of the required data on the host.
     //
 
-    std::map<std::string,ndarray_host*> data_map_mdl;
     std::map<std::string,ndarray_host*> data_map_dat;
     std::map<std::string,ndarray_host*> data_map_msk;
     std::map<std::string,ndarray_host*> data_map_err;
+    std::map<std::string,ndarray_host*> data_map_mdl;
+    std::map<std::string,ndarray_host*> data_map_res;
     int measurement_count = 0;
 
     // Iterate over the supplied datasets.
@@ -225,13 +242,14 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
         ndarray* old_data_msk = std::get<1>(dataset)->get_data("mask");
         ndarray* old_data_err = std::get<1>(dataset)->get_data("error");
 
-        // Allocate model data memory on the host.
-        data_map_mdl[dataset_name] = new ndarray_host_new(old_data_dat->get_shape());
-
         // Copy data to the host.
         data_map_dat[dataset_name] = new ndarray_host_new(*old_data_dat);
         data_map_msk[dataset_name] = new ndarray_host_new(*old_data_msk);
         data_map_err[dataset_name] = new ndarray_host_new(*old_data_err);
+
+        // Allocate model data memory on the host.
+        data_map_mdl[dataset_name] = new ndarray_host_new(old_data_dat->get_shape());
+        data_map_mdl[dataset_name] = new ndarray_host_new(old_data_dat->get_shape());
 
         measurement_count += old_data_dat->get_shape().get_dim_length_product();
     }
@@ -348,7 +366,7 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
     for(auto& data : data_map_err) delete std::get<1>(data);
 }
 
-const std::string fitter_factory_mpfit::FACTORY_TYPE_NAME = "gbkfit.fitters.mpfit";
+const std::string fitter_factory_mpfit::FACTORY_TYPE_NAME = "gbkfit.fitters_mpfit.mpfit";
 
 fitter_factory_mpfit::fitter_factory_mpfit(void)
 {
