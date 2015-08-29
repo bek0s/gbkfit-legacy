@@ -14,6 +14,109 @@ namespace gbkfit {
 namespace fitters {
 namespace mpfit {
 
+std::string get_error_string(int code)
+{
+    std::string str_code;
+    std::string str_desc;
+
+    switch (code)
+    {
+    // Success status codes.
+    case MP_OK_CHI:
+        str_code = "MP_OK_CHI";
+        str_desc = "Convergence in chi-square value.";
+        break;
+    case MP_OK_PAR:
+        str_code = "MP_OK_CHI";
+        str_desc = "Convergence in parameter value.";
+        break;
+    case MP_OK_BOTH:
+        str_code = "MP_OK_BOTH";
+        str_desc = "Convergence in both chi-square and parameter value.";
+        break;
+    case MP_OK_DIR:
+        str_code = "MP_OK_DIR";
+        str_desc = "Convergence in orthogonality.";
+        break;
+    case MP_MAXITER:
+        str_code = "MP_MAXITER";
+        str_desc = "Maximum number of iterations reached.";
+        break;
+    case MP_FTOL:
+        str_code = "MP_FTOL";
+        str_desc = "ftol is too small; no further improvement.";
+        break;
+    case MP_XTOL:
+        str_code = "MP_XTOL";
+        str_desc = "xtol is too small; no further improvement.";
+        break;
+    case MP_GTOL:
+        str_code = "MP_GTOL";
+        str_desc = "gtol is too small; no further improvement.";
+        break;
+    // Error status codes.
+    case MP_ERR_INPUT:
+        // This is not used by mpfit, I don't know why it exits.
+        str_code = "MP_ERR_INPUT";
+        str_desc = "General input parameter error.";
+        break;
+    case MP_ERR_NAN:
+        str_code = "MP_ERR_NAN";
+        str_desc = "User function produced non-finite values.";
+        break;
+    case MP_ERR_FUNC:
+        str_code = "MP_ERR_FUNC";
+        str_desc = "No user function was supplied.";
+        break;
+    case MP_ERR_NPOINTS:
+        str_code = "MP_ERR_NPOINTS";
+        str_desc = "No user data points were supplied.";
+        break;
+    case MP_ERR_NFREE:
+        str_code = "MP_ERR_NFREE";
+        str_desc = "No free parameters.";
+        break;
+    case MP_ERR_MEMORY:
+        str_code = "MP_ERR_MEMORY";
+        str_desc = "Memory allocation error.";
+        break;
+    case MP_ERR_INITBOUNDS:
+        str_code = "MP_ERR_INITBOUNDS";
+        str_desc = "Initial values inconsistent with constraints.";
+        break;
+    case MP_ERR_BOUNDS:
+        str_code = "MP_ERR_BOUNDS";
+        str_desc = "Initial constraints inconsistent.";
+        break;
+    case MP_ERR_PARAM:
+        str_code = "MP_ERR_PARAM";
+        str_desc = "General input parameter error.";
+        break;
+    case MP_ERR_DOF:
+        str_code = "MP_ERR_DOF";
+        str_desc = "Not enough degrees of freedom.";
+        break;
+
+    default:
+        str_code = "UNKNOWN_ERROR";
+        str_desc = "Unknown error.";
+        break;
+    }
+
+    return str_code + ", " + str_desc;
+}
+
+#define MP_ERR_INPUT (0)         /* General input parameter error */
+#define MP_ERR_NAN (-16)         /* User function produced non-finite values */
+#define MP_ERR_FUNC (-17)        /* No user function was supplied */
+#define MP_ERR_NPOINTS (-18)     /* No user data points were supplied */
+#define MP_ERR_NFREE (-19)       /* No free parameters */
+#define MP_ERR_MEMORY (-20)      /* Memory allocation error */
+#define MP_ERR_INITBOUNDS (-21)  /* Initial values inconsistent w constraints*/
+#define MP_ERR_BOUNDS (-22)      /* Initial constraints inconsistent */
+#define MP_ERR_PARAM (-23)       /* General input parameter error */
+#define MP_ERR_DOF (-24)         /* Not enough degrees of freedom */
+
 struct mpfit_user_data
 {
     gbkfit::model* model;
@@ -110,6 +213,7 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
     std::map<std::string,ndarray_host*> data_map_dat;
     std::map<std::string,ndarray_host*> data_map_msk;
     std::map<std::string,ndarray_host*> data_map_err;
+    int measurement_count = 0;
 
     // Iterate over the supplied datasets.
     for(auto& dataset : datasets)
@@ -128,10 +232,12 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
         data_map_dat[dataset_name] = new ndarray_host_new(*old_data_dat);
         data_map_msk[dataset_name] = new ndarray_host_new(*old_data_msk);
         data_map_err[dataset_name] = new ndarray_host_new(*old_data_err);
+
+        measurement_count += old_data_dat->get_shape().get_dim_length_product();
     }
 
     //
-    // Get model parameters. Use this order when... you need an order!
+    // Get model parameters. Always use this order for the parameters!
     //
 
     std::vector<std::string> model_param_names = model->get_parameter_names();
@@ -183,18 +289,33 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
         model_param_init.push_back(params_info.get_parameter(param_name).get<float>("init"));
     }
 
-
     //
     // Create and populate user data.
     //
 
-    mpfit_user_data udata;
-    udata.model = model;
-    udata.data_map_mdl = data_map_mdl;
-    udata.data_map_dat = data_map_dat;
-    udata.data_map_msk = data_map_msk;
-    udata.data_map_err = data_map_err;
+    mpfit_user_data mpfit_udata;
+    mpfit_udata.model = model;
+    mpfit_udata.data_map_mdl = data_map_mdl;
+    mpfit_udata.data_map_dat = data_map_dat;
+    mpfit_udata.data_map_msk = data_map_msk;
+    mpfit_udata.data_map_err = data_map_err;
 
+    //
+    // Time to fit! Woohoo!
+    //
+
+    int mpfit_result = ::mpfit(mpfit_callback,
+                               measurement_count,
+                               0,
+                               0,
+                               mpfit_params_info.data(),
+                               &mpfit_config_info,
+                               &mpfit_udata,
+                               &mpfit_result_info);
+
+    std::cout << "Optimization completed [code: " << get_error_string(mpfit_result) << "]." << std::endl;
+    std::cout << "Initial chi-square: " << mpfit_result_info.orignorm << std::endl;
+    std::cout << "Final chi-square: " << mpfit_result_info.bestnorm << std::endl;
 
     /*
 
@@ -208,8 +329,6 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
                              &mpfit_config_info,
                              &udata,
                              &mpfit_result_info);
-    (void)mpfit_result;
-
     // copy the results from the fitter to the model parameter info object
     std::size_t ipar = 0;
     for(auto& param : model_params)
@@ -219,16 +338,17 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
         ipar++;
     }
 
-    std::cout << mpfit_result_info.bestnorm << std::endl;
-
-    // cleanup
-    delete [] mpfit_result_info.xerror;
     */
 
 
     //
     // Perform clean up
     //
+
+    delete [] mpfit_result_info.xerror;
+
+    for(auto& mpfit_param_info : mpfit_params_info)
+        delete [] mpfit_param_info.parname;
 
     for(auto& data : data_map_mdl) delete std::get<1>(data);
     for(auto& data : data_map_dat) delete std::get<1>(data);
