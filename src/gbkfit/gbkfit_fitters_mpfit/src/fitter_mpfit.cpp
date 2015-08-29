@@ -225,7 +225,7 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
         ndarray* old_data_msk = std::get<1>(dataset)->get_data("mask");
         ndarray* old_data_err = std::get<1>(dataset)->get_data("error");
 
-        // Allocate model memory data on the host.
+        // Allocate model data memory on the host.
         data_map_mdl[dataset_name] = new ndarray_host_new(old_data_dat->get_shape());
 
         // Copy data to the host.
@@ -241,6 +241,14 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
     //
 
     std::vector<std::string> model_param_names = model->get_parameter_names();
+
+    //
+    // Allocate an array for model parameters and give initial values.
+    //
+
+    std::vector<double> model_param_values;
+    for(auto& param_name : model_param_names)
+        model_param_values.push_back(params_info.get_parameter(param_name).get<float>("init"));
 
     //
     // Setup mpfit's per-parameter configuration.
@@ -269,7 +277,7 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
 
     mp_config mpfit_config_info;
     std::memset(&mpfit_config_info,0,sizeof(mpfit_config_info));
-    mpfit_config_info.maxiter = 1000;
+    mpfit_config_info.maxiter = 2000; // TODO
 
     //
     // Setup mpfit's results struct.
@@ -278,16 +286,7 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
     mp_result mpfit_result_info;
     std::memset(&mpfit_result_info,0,sizeof(mpfit_result_info));
     mpfit_result_info.xerror = new double[model_param_names.size()];
-
-    //
-    // Prepare model parameter initial values.
-    //
-
-    std::vector<double> model_param_init;
-    for(auto& param_name : model_param_names)
-    {
-        model_param_init.push_back(params_info.get_parameter(param_name).get<float>("init"));
-    }
+    mpfit_result_info.covar = new double[model_param_names.size()*model_param_names.size()];
 
     //
     // Create and populate user data.
@@ -306,8 +305,8 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
 
     int mpfit_result = ::mpfit(mpfit_callback,
                                measurement_count,
-                               0,
-                               0,
+                               model_param_values.size(),
+                               model_param_values.data(),
                                mpfit_params_info.data(),
                                &mpfit_config_info,
                                &mpfit_udata,
@@ -317,35 +316,28 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
     std::cout << "Initial chi-square: " << mpfit_result_info.orignorm << std::endl;
     std::cout << "Final chi-square: " << mpfit_result_info.bestnorm << std::endl;
 
-    /*
+    //
+    // Extract fitted model parameters.
+    //
 
-
-    // fit!
-    int mpfit_result = mpfit(mpfit_callback,
-                             udata.model->get_model_data_length(),
-                             model_params.size(),
-                             model_param_values.data(),
-                             mpfit_params_info.data(),
-                             &mpfit_config_info,
-                             &udata,
-                             &mpfit_result_info);
-    // copy the results from the fitter to the model parameter info object
-    std::size_t ipar = 0;
-    for(auto& param : model_params)
+    for (std::size_t i = 0; i < model_param_names.size(); ++i)
     {
-        param.second.best = model_param_values[ipar];
-        param.second.stddev = mpfit_result_info.xerror[ipar];
-        ipar++;
+        std::string param_name = model_param_names[i];
+        float param_best = model_param_values[i];
+        float param_error = mpfit_result_info.xerror[i];
+
+        std::cout << "Fitted param:"
+                  << " name=" << std::setw(4) << param_name
+                  << " best=" << std::setw(8) << param_best
+                  << " error=" << std::setw(8) << param_error << std::endl;
     }
-
-    */
-
 
     //
     // Perform clean up
     //
 
     delete [] mpfit_result_info.xerror;
+    delete [] mpfit_result_info.covar;
 
     for(auto& mpfit_param_info : mpfit_params_info)
         delete [] mpfit_param_info.parname;
