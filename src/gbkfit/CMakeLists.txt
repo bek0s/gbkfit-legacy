@@ -35,4 +35,4 @@ if(${GBKFIT_BUILD_GBKFIT_MODELS_GALAXY_2D_OMP})
     add_subdirectory(gbkfit_models_galaxy_2d_omp)
 endif()
 
-add_subdirectory(gbkfit_model_thindisk)
+#add_subdirectory(gbkfit_model_thindisk)
