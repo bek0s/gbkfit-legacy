@@ -30,6 +30,7 @@ application::application(void)
     , m_fitter_factory_multinest(nullptr)
     , m_model(nullptr)
     , m_fitter(nullptr)
+    , m_fit_info(nullptr)
 {
 }
 
@@ -81,6 +82,10 @@ bool application::initialize(void)
     std::stringstream fitter_info;
     boost::property_tree::write_xml(fitter_info,ptree_config.get_child("gbkfit.fitter"));
 
+    // ...
+    std::stringstream parameters_info;
+    boost::property_tree::write_xml(parameters_info,ptree_config.get_child("gbkfit.parameters"));
+
     // get detasets info
     std::stringstream datasets_info;
     boost::property_tree::write_xml(datasets_info,ptree_config.get_child("gbkfit.datasets"));
@@ -96,55 +101,9 @@ bool application::initialize(void)
     // create fitter
 //  m_fitter = m_core->create_fitter(fitter_info.str());
 
+    m_fit_info = m_core->create_parameters_fit_info(parameters_info.str());
+
     std::cout << "Initialization completed." << std::endl;
-
-    /*
-    gbkfit::ndarray_host* lsf1_data = new gbkfit::ndarray_host({5});
-
-    gbkfit::line_spread_function* lsf1 = new gbkfit::line_spread_function_gaussian(1);
-    lsf1->as_array(lsf1_data->get_shape().get_dim_length(0),1.0,lsf1_data->get_host_ptr());
-
-    gbkfit::fits::write_to("!lsf.fits",*lsf1_data);
-    */
-
-    float x = 129;
-    char y = static_cast<char>(x);
-    int z = static_cast<int>(y);
-    std::cout << "char: " << y << std::endl;
-    std::cout << "int: " << z << std::endl;
-    /*
-    gbkfit::ndarray* foo = new gbkfit::ndarray({16},gbkfit::type::float32);
-    float* raw = new float[16];
-    foo->read_data<float>(raw);
-    */
-    /*
-    double* result = nullptr;
-    as<double>(result);
-    */
-
-    std::vector<std::string> keys;
-    keys.push_back("one");
-    keys.push_back("two");
-    keys.push_back("three");
-
-    std::vector<float> values;
-    values.push_back(1);
-    values.push_back(2);
-    values.push_back(3);
-
-    std::map<std::string,float> map = gbkfit::vectors_to_map(keys,values);
-
-
-    /*
-    for(auto& element : map)
-    {
-        std::cout << std::get<0>(element) << " = " << std::get<1>(element) << std::endl;
-    }
-    */
-    std::cout << gbkfit::to_string(map) << std::endl;
-
-
-
 
     return true;
 }
@@ -160,6 +119,7 @@ void application::shutdown(void)
     delete m_fitter_factory_multinest;
     delete m_model;
     delete m_fitter;
+    delete m_fit_info;
 
     for(auto& dataset : m_datasets)
     {
@@ -175,6 +135,15 @@ void application::run(void)
     std::cout << "Main loop started." << std::endl;
 
     gbkfit::parameters_fit_info foo;
+
+
+    foo.add_parameter("xo").add<float>("option1",4.0);
+
+    auto foo1 = foo.get_parameter("xo").get<int>("option1");
+
+    std::cout << foo1 << std::endl;
+
+
 
 
     //gbkfit::model_parameters_fit_info::model_parameter_fit_info foo1;

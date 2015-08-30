@@ -24,6 +24,7 @@ private:
     gbkfit::fitter_factory* m_fitter_factory_multinest;
     gbkfit::model* m_model;
     gbkfit::fitter* m_fitter;
+    gbkfit::parameters_fit_info* m_fit_info;
 
     std::map<std::string,gbkfit::nddataset*> m_datasets;
 
