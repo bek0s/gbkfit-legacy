@@ -47,6 +47,13 @@ public:
     fitter* create_fitter(const std::string& info) const;
 
     //!
+    //! \brief create_parameters_fit_info
+    //! \param info
+    //! \return
+    //!
+    parameters_fit_info* create_parameters_fit_info(const std::string& info) const;
+
+    //!
     //! \brief create_dataset
     //! \param info
     //! \return

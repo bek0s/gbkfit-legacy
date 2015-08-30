@@ -4,6 +4,7 @@
 #include "gbkfit/fitter.hpp"
 #include "gbkfit/model.hpp"
 #include "gbkfit/nddataset.hpp"
+#include "gbkfit/parameters_fit_info.hpp"
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
@@ -62,6 +63,42 @@ fitter* core::create_fitter(const std::string& info) const
 
     // Create factory product with the supplied info and return it.
     return iter->second->create_fitter(info);
+}
+
+parameters_fit_info* core::create_parameters_fit_info(const std::string& info) const
+{
+    // Parse input string as xml.
+    std::stringstream info_stream(info);
+    boost::property_tree::ptree info_ptree;
+    boost::property_tree::read_xml(info_stream,info_ptree);
+
+    parameters_fit_info* params_fit_info = new parameters_fit_info();
+
+    // Iterate over...
+    for(auto& info_ptree_child : info_ptree)
+    {
+        // ...parameters.
+        if(info_ptree_child.first == "parameter")
+        {
+            std::string param_name = info_ptree_child.second.get<std::string>("<xmlattr>.name");
+
+            params_fit_info->add_parameter(param_name);
+
+            for(auto& item : info_ptree_child.second.get_child("<xmlattr>"))
+            {
+                std::string name = item.first;
+                std::cout << name << " ";
+                if(name != "name")
+                {
+                    std::string foo = info_ptree_child.second.get<std::string>("<xmlattr>." + name);
+                    std::cout << "value=" << foo << std::endl;
+                }
+            }
+            std::cout << "." << std::endl;
+        }
+    }
+
+    return nullptr;
 }
 
 nddataset* core::create_dataset(const std::string& info) const
