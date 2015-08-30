@@ -87,14 +87,13 @@ parameters_fit_info* core::create_parameters_fit_info(const std::string& info) c
             for(auto& item : info_ptree_child.second.get_child("<xmlattr>"))
             {
                 std::string name = item.first;
-                std::cout << name << " ";
                 if(name != "name")
                 {
-                    std::string foo = info_ptree_child.second.get<std::string>("<xmlattr>." + name);
-                    std::cout << "value=" << foo << std::endl;
+                    std::string value = info_ptree_child.second.get<std::string>("<xmlattr>." + name);
+
+                    params_fit_info->get_parameter(param_name).add<std::string>(name,value);
                 }
             }
-            std::cout << "." << std::endl;
         }
     }
 
