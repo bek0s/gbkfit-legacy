@@ -1,2 +1,0 @@
-/usr/bin/ar cq ../../../lib/libgbkfit_model_thindisk_static_d.a  CMakeFiles/target_gbkfit_model_thindisk_object.dir/src/model_thindisk.cpp.o CMakeFiles/target_gbkfit_model_thindisk_object.dir/src/model_thindisk_arctan.cpp.o CMakeFiles/target_gbkfit_model_thindisk_object.dir/src/model_thindisk_epinat.cpp.o CMakeFiles/target_gbkfit_model_thindisk_object.dir/src/model_thindisk_kernels_omp.cpp.o
-/usr/bin/ranlib ../../../lib/libgbkfit_model_thindisk_static_d.a
