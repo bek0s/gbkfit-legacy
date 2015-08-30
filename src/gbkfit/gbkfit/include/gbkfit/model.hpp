@@ -25,9 +25,9 @@ public:
 
     virtual const std::vector<float>& get_parameter_values(void) const = 0;
 
-    virtual const std::vector<ndarray*>& get_data(void) const = 0;
+    virtual const std::map<std::string,ndarray*>& get_data(void) const = 0;
 
-    virtual const std::vector<ndarray*>& evaluate(const std::map<std::string,float>& parameters) = 0;
+    virtual const std::map<std::string,ndarray*>& evaluate(const std::map<std::string,float>& parameters) = 0;
 
 }; // class model
 

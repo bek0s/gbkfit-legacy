@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<gbkfit>
+
+    <!-- Data information. -->
+
+    <datasets>
+        <dataset name="velmap">
+            <data name="data">../../data/velmap.fits[0]</data>
+            <data name="mask">../../data/velmap.fits[0]</data>
+            <data name="error">../../data/velmap.fits[0]</data>
+        </dataset>
+        <dataset name="sigmap">
+            <data name="data">../../data/sigmap.fits[0]</data>
+            <data name="mask">../../data/sigmap.fits[0]</data>
+            <data name="error">../../data/sigmap.fits[0]</data>
+        </dataset>
+    </datasets>
+
+    <!-- Model information. -->
+
+    <model>
+        <type>gbkfit.models.model_galaxy_2d_omp</type>
+        <profile_flx>exponential</profile_flx>
+        <profile_vel>arctan</profile_vel>
+        <parameter name="xo" value="8"/>
+        <parameter name="yo" value="8"/>
+        <parameter name="pa" value="90"/>
+        <parameter name="incl" value="45"/>
+        <parameter name="i0" value="1"/>
+        <parameter name="r0" value="2"/>
+        <parameter name="rt" value="1"/>
+        <parameter name="vt" value="200"/>
+        <parameter name="vsig" value="40"/>
+        <parameter name="vsys" value="0"/>
+    </model>
+
+    <!-- Fitter information. -->
+
+    <fitter>
+        <type>gbkfit.fitters.multinest</type>
+        <option name="maxiters" value="2000"/>
+        <option name="npoints" value="100"/>
+        <option name="efficiency" value="1.0"/>
+        <option name="tolerance" value="0.5"/>
+    </fitter>
+
+    <fitter>
+        <type>gbkfit.fitters.mpfit</type>
+        <maxiters>2000</maxiters>
+    </fitter>
+
+
+    <!-- Instrument information. -->
+    <instrument>
+        <psf>
+            <model>
+                <type>gaussian</type>
+                <parameter name="fwhm" value="2.0"/>
+            </model>
+        </psf>
+
+        <lsf>
+            <model>
+                <type>gaussian</type>
+                <parameter name="fwhm" value="1.0"/>
+            </model>
+        </lsf>
+    </instrument>
+
+
+
+    <psf>
+        <type>gaussian</type>
+        <option name="fwhm" value="2.0"/>
+        <option name="beta" value="4.0"/>
+    </psf>
+
+    <psf>
+    </psf>
+
+
+    <psf>
+        <type>image</type>
+        <option name="data" value="../../data/psfmap.fits[0]"/>
+        <option name="erro" value="../../data/psfmap.fits[1]"/>
+    </psf>
+
+
+    <psf type="image">
+
+    </psf>
+
+    <!--
+    <instrument>
+        <psf>
+            <dataset id="psfmap">
+                <data name="data"  file="../../data/psfmap.fits[0]"/>
+                <data name="mask"  file="../../data/psfmap.fits[1]"/>
+                <data name="error" file="../../data/psfmap.fits[2]"/>
+            </dataset>
+        </psf>
+        <lsf>
+            <dataset id="lsfmap">
+                <data name="data"  file="../../data/lsfmap.fits[0]"/>
+                <data name="mask"  file="../../data/lsfmap.fits[1]"/>
+                <data name="error" file="../../data/lsfmap.fits[2]"/>
+            </dataset>
+        </lsf>
+    </instrument>
+    -->
+
+
+
+
+    <!-- Parameter information. -->
+    <parameters>
+        <parameter name="i0"   init="1"   fixed="true"/>
+        <parameter name="r0"   init="2"   fixed="true"/>
+        <parameter name="vsys" init="50"  min="0"  max="100"/>
+        <parameter name="xo"   init="25"  min="0"  max="49"/>
+        <parameter name="yo"   init="25"  min="0"  max="49"/>
+        <parameter name="pa"   init="0"   min="0"  max="360"/>
+        <parameter name="incl" init="45"  min="1"  max="89"/>
+        <parameter name="rt"   init="5"   min="1"  max="25"/>
+        <parameter name="vt"   init="200" min="10" max="500"/>
+        <parameter name="vsig" init="60"  min="1"  max="200"/>
+    </parameters>
+
+</gbkfit>

@@ -10,7 +10,6 @@
 
 namespace gbkfit {
 
-
 void core::add_model_factory(model_factory* factory)
 {
     m_model_factories[factory->get_type_name()] = factory;
@@ -83,7 +82,7 @@ nddataset* core::create_dataset(const std::string& info) const
         {
             // Get data name and filename.
             std::string data_name = info_ptree_child.second.get<std::string>("<xmlattr>.name");
-            std::string data_file = info_ptree_child.second.get<std::string>("<xmlattr>.value");
+            std::string data_file = info_ptree_child.second.get_value<std::string>();
 
             // ...
             std::cout << "Reading data '" << data_name << "'..." << std::endl;
@@ -116,7 +115,7 @@ std::map<std::string,nddataset*> core::create_datasets(const std::string& info) 
         if(info_ptree_child.first == "dataset")
         {
             // Get dataset name.
-            std::string dataset_name = info_ptree_child.second.get<std::string>("name");
+            std::string dataset_name = info_ptree_child.second.get<std::string>("<xmlattr>.name");
 
             // ...
             std::cout << "Reading dataset '" << dataset_name << "'..." << std::endl;
@@ -135,6 +134,5 @@ std::map<std::string,nddataset*> core::create_datasets(const std::string& info) 
 
     return datasets;
 }
-
 
 } // namespace gbkfit

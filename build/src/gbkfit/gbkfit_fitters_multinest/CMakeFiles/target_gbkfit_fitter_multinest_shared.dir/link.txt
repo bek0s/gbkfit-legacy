@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC -g  -shared -Wl,-soname,libgbkfit_fitter_multinest_shared_d.so -o ../../../lib/libgbkfit_fitter_multinest_shared_d.so CMakeFiles/target_gbkfit_fitter_multinest_object.dir/src/fitter_multinest.cpp.o /home/bekos/usr/local/multinest/lib/libmultinest.so /home/bekos/usr/local/multinest/lib/libmultinest_mpi.so -Wl,-rpath,/home/bekos/usr/local/multinest/lib: 

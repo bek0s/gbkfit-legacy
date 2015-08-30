@@ -51,6 +51,8 @@ public:
 
     ndarray_host_malloc(const ndshape& shape, const_pointer data);
 
+    ndarray_host_malloc(const ndarray& array);
+
     ~ndarray_host_malloc();
 
 }; // class ndarray_host_malloc
@@ -66,6 +68,8 @@ public:
     ndarray_host_new(const ndshape& shape);
 
     ndarray_host_new(const ndshape& shape, const_pointer data);
+
+    ndarray_host_new(const ndarray& array);
 
     ~ndarray_host_new();
 

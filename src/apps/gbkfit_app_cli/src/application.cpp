@@ -16,6 +16,8 @@
 #include <boost/property_tree/xml_parser.hpp>
 
 #include "gbkfit/spread_function.hpp"
+#include "gbkfit/utility.hpp"
+#include "gbkfit/parameters_fit_info.hpp"
 
 namespace gbkfit_app_cli {
 
@@ -119,6 +121,31 @@ bool application::initialize(void)
     double* result = nullptr;
     as<double>(result);
     */
+
+    std::vector<std::string> keys;
+    keys.push_back("one");
+    keys.push_back("two");
+    keys.push_back("three");
+
+    std::vector<float> values;
+    values.push_back(1);
+    values.push_back(2);
+    values.push_back(3);
+
+    std::map<std::string,float> map = gbkfit::vectors_to_map(keys,values);
+
+
+    /*
+    for(auto& element : map)
+    {
+        std::cout << std::get<0>(element) << " = " << std::get<1>(element) << std::endl;
+    }
+    */
+    std::cout << gbkfit::to_string(map) << std::endl;
+
+
+
+
     return true;
 }
 
@@ -147,6 +174,15 @@ void application::run(void)
 {
     std::cout << "Main loop started." << std::endl;
 
+    gbkfit::parameters_fit_info foo;
+
+
+    //gbkfit::model_parameters_fit_info::model_parameter_fit_info foo1;
+    //foo.add_parameter("xo").add("init",10).add("min",10);
+
+
+
+
     if(m_model)
     {
         std::map<std::string,float> params = {
@@ -165,10 +201,10 @@ void application::run(void)
         m_model->get_parameter_names();
 
     //  std::vector<gbkfit::ndarray*> data = m_model->evaluate(params);
-        std::vector<gbkfit::ndarray*> data = m_model->get_data();
-        gbkfit::fits::write_to("!foo_flxmap.fits",*data[0]);
-        gbkfit::fits::write_to("!foo_velmap.fits",*data[1]);
-        gbkfit::fits::write_to("!foo_sigmap.fits",*data[2]);
+        std::map<std::string,gbkfit::ndarray*> data = m_model->get_data();
+        gbkfit::fits::write_to("!foo_flxmap.fits",*data["flxmap"]);
+        gbkfit::fits::write_to("!foo_velmap.fits",*data["velmap"]);
+        gbkfit::fits::write_to("!foo_sigmap.fits",*data["sigmap"]);
     }
 
     std::cout << "Main loop finished." << std::endl;

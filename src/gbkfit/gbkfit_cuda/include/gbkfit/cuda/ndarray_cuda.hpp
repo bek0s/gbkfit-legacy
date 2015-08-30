@@ -10,12 +10,12 @@ namespace cuda {
 //!
 //! \brief The ndarray_cuda class
 //!
-class ndarray_cuda : public gbkfit::ndarray
+class ndarray_cuda : public ndarray
 {
 
 protected:
 
-    value_type* m_data;
+    pointer m_data;
 
 public:
 

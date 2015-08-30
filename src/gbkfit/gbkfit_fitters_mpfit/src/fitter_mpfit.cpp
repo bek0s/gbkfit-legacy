@@ -2,7 +2,7 @@
 #include "gbkfit/fitters/mpfit/fitter_mpfit.hpp"
 #include "gbkfit/fitters/mpfit/mpfit/mpfit.h"
 #include "gbkfit/model.hpp"
-#include "gbkfit/model_parameters_fit_info.hpp"
+#include "gbkfit/parameters_fit_info.hpp"
 #include "gbkfit/nddataset.hpp"
 #include "gbkfit/ndarray_host.hpp"
 #include "gbkfit/utility.hpp"
@@ -219,7 +219,7 @@ const std::string& fitter_mpfit::get_type_name(void) const
     return fitter_factory_mpfit::FACTORY_TYPE_NAME;
 }
 
-void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& datasets, model_parameters_fit_info& params_info) const
+void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& datasets, parameters_fit_info& params_info) const
 {
     //
     // Make a copy of the required data on the host.

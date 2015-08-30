@@ -66,6 +66,12 @@ ndarray_host_malloc::ndarray_host_malloc(const ndshape& shape, const_pointer dat
     ndarray_host::write_data(data);
 }
 
+ndarray_host_malloc::ndarray_host_malloc(const ndarray& array)
+    : ndarray_host_malloc(array.get_shape())
+{
+    ndarray_host::copy_data(&array);
+}
+
 ndarray_host_malloc::~ndarray_host_malloc()
 {
     free(m_data);
@@ -82,6 +88,12 @@ ndarray_host_new::ndarray_host_new(const ndshape& shape, const_pointer data)
     : ndarray_host_new(shape)
 {
     ndarray_host::write_data(data);
+}
+
+ndarray_host_new::ndarray_host_new(const ndarray& array)
+    : ndarray_host_new(array.get_shape())
+{
+    ndarray_host::copy_data(&array);
 }
 
 ndarray_host_new::~ndarray_host_new()

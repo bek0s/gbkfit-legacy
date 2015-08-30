@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+   <FileVersion major="1" minor="6" />
+   <Project>
+      <Option title="gbkfit_model_thindisk-project" />
+      <Option makefile_is_custom="1" />
+      <Option compiler="gcc" />
+      <Option virtualFolders="CMake Files\;CMake Files\src\;CMake Files\src\gbc\;CMake Files\src\gbc\gbc\;CMake Files\src\gbkfit\;CMake Files\src\gbkfit\gbkfit\;CMake Files\src\gbkfit\gbkfit_cuda\;CMake Files\src\gbkfit\gbkfit_fftw3\;CMake Files\src\gbkfit\gbkfit_fitters_mpfit\;CMake Files\src\gbkfit\gbkfit_fitters_multinest\;CMake Files\src\gbkfit\gbkfit_models_galaxy_2d\;CMake Files\src\gbkfit\gbkfit_models_galaxy_2d_omp\;CMake Files\src\gbkfit\gbkfit_model_thindisk\;CMake Files\src\apps\;CMake Files\src\apps\gbkfit_app_cli\;CMake Files\cmake\;CMake Files\cmake\templates\;CMake Files\cmake\modules\;" />
+      <Build>
+      <Target title="all">
+         <Option working_dir="/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 all" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="target_gbkfit_model_thindisk_object">
+         <Option output="/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/CMakeFiles/target_gbkfit_model_thindisk_object.dir/target_gbkfit_model_thindisk_object.objlib" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk" />
+         <Option object_output="./" />
+         <Option type="2" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DGBKFIT_MODEL_THINDISK_SELF_BUILD" />
+            <Add directory="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit/include" />
+            <Add directory="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_model_thindisk/./include" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 target_gbkfit_model_thindisk_object" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="target_gbkfit_model_thindisk_object/fast">
+         <Option output="/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/CMakeFiles/target_gbkfit_model_thindisk_object.dir/target_gbkfit_model_thindisk_object.objlib" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk" />
+         <Option object_output="./" />
+         <Option type="2" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DGBKFIT_MODEL_THINDISK_SELF_BUILD" />
+            <Add directory="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit/include" />
+            <Add directory="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_model_thindisk/./include" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 target_gbkfit_model_thindisk_object/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="target_gbkfit_model_thindisk_shared">
+         <Option output="/home/bekos/code/gbkfit/gbkfit/build/lib/libgbkfit_model_thindisk_shared_d.so" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk" />
+         <Option object_output="./" />
+         <Option type="3" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 target_gbkfit_model_thindisk_shared" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="target_gbkfit_model_thindisk_shared/fast">
+         <Option output="/home/bekos/code/gbkfit/gbkfit/build/lib/libgbkfit_model_thindisk_shared_d.so" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk" />
+         <Option object_output="./" />
+         <Option type="3" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 target_gbkfit_model_thindisk_shared/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="target_gbkfit_model_thindisk_static">
+         <Option output="/home/bekos/code/gbkfit/gbkfit/build/lib/libgbkfit_model_thindisk_static_d.a" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk" />
+         <Option object_output="./" />
+         <Option type="2" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 target_gbkfit_model_thindisk_static" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="target_gbkfit_model_thindisk_static/fast">
+         <Option output="/home/bekos/code/gbkfit/gbkfit/build/lib/libgbkfit_model_thindisk_static_d.a" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk" />
+         <Option object_output="./" />
+         <Option type="2" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 target_gbkfit_model_thindisk_static/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/bekos/code/gbkfit/gbkfit/build/src/gbkfit/gbkfit_model_thindisk/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      </Build>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_model_thindisk/src/model_thindisk.cpp">
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_model_thindisk/src/model_thindisk_arctan.cpp">
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_model_thindisk/src/model_thindisk_epinat.cpp">
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_model_thindisk/src/model_thindisk_kernels_omp.cpp">
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_model_thindisk/include/gbkfit/model_thindisk/model_thindisk.hpp">
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_model_thindisk/include/gbkfit/model_thindisk/model_thindisk_arctan.hpp">
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_model_thindisk/include/gbkfit/model_thindisk/model_thindisk_epinat.hpp">
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_model_thindisk/include/gbkfit/model_thindisk/model_thindisk_kernels_omp.hpp">
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbc/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbc\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbc/gbc/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbc\gbc\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbc/gbc/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbc\gbc\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbkfit\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbkfit\gbkfit\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbkfit\gbkfit\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_cuda/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbkfit\gbkfit_cuda\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_cuda/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbkfit\gbkfit_cuda\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_fftw3/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbkfit\gbkfit_fftw3\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_fftw3/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbkfit\gbkfit_fftw3\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_fitters_mpfit/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbkfit\gbkfit_fitters_mpfit\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_fitters_mpfit/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbkfit\gbkfit_fitters_mpfit\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_fitters_multinest/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbkfit\gbkfit_fitters_multinest\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_fitters_multinest/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbkfit\gbkfit_fitters_multinest\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_models_galaxy_2d/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbkfit\gbkfit_models_galaxy_2d\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_models_galaxy_2d/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbkfit\gbkfit_models_galaxy_2d\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_models_galaxy_2d_omp/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbkfit\gbkfit_models_galaxy_2d_omp\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_models_galaxy_2d_omp/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbkfit\gbkfit_models_galaxy_2d_omp\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_model_thindisk/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbkfit\gbkfit_model_thindisk\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_model_thindisk/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\gbkfit\gbkfit_model_thindisk\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/apps/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\apps\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/apps/gbkfit_app_cli/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\apps\gbkfit_app_cli\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/src/apps/gbkfit_app_cli/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\apps\gbkfit_app_cli\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/cmake/templates/cmake_uninstall.cmake.in">
+          <Option virtualFolder="CMake Files\cmake\templates\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/cmake/modules/Findfftw3.cmake">
+          <Option virtualFolder="CMake Files\cmake\modules\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/cmake/modules/Findmultinest.cmake">
+          <Option virtualFolder="CMake Files\cmake\modules\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/cmake/modules/Findfftw3.cmake">
+          <Option virtualFolder="CMake Files\cmake\modules\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/cmake/modules/Findfftw3.cmake">
+          <Option virtualFolder="CMake Files\cmake\modules\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/cmake/modules/Findccfits.cmake">
+          <Option virtualFolder="CMake Files\cmake\modules\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/cmake/modules/Findcfitsio.cmake">
+          <Option virtualFolder="CMake Files\cmake\modules\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/cmake/modules/Findccfits.cmake">
+          <Option virtualFolder="CMake Files\cmake\modules\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/cmake/modules/Findcfitsio.cmake">
+          <Option virtualFolder="CMake Files\cmake\modules\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/cmake/modules/Findfftw3.cmake">
+          <Option virtualFolder="CMake Files\cmake\modules\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/cmake/modules/Findmultinest.cmake">
+          <Option virtualFolder="CMake Files\cmake\modules\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/cmake/modules/Findfftw3.cmake">
+          <Option virtualFolder="CMake Files\cmake\modules\" />
+      </Unit>
+      <Unit filename="/home/bekos/code/gbkfit/gbkfit/cmake/modules/Findfftw3.cmake">
+          <Option virtualFolder="CMake Files\cmake\modules\" />
+      </Unit>
+   </Project>
+</CodeBlocks_project_file>

@@ -20,7 +20,7 @@ const std::string& fitter_multinest::get_type_name(void) const
     return fitter_factory_multinest::FACTORY_TYPE_NAME;
 }
 
-void fitter_multinest::fit(model* model, const std::map<std::string,nddataset*>& data, model_parameters_fit_info& params_info) const
+void fitter_multinest::fit(model* model, const std::map<std::string,nddataset*>& data, parameters_fit_info& params_info) const
 {
 }
 

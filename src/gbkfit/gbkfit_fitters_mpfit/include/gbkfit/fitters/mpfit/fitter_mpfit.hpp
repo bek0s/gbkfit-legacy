@@ -23,7 +23,7 @@ public:
 
     virtual const std::string& get_type_name(void) const final;
 
-    void fit(model* model, const std::map<std::string,nddataset*>& data, model_parameters_fit_info& params_info) const final;
+    void fit(model* model, const std::map<std::string,nddataset*>& data, parameters_fit_info& params_info) const final;
 
 }; // class fitter_mpfit
 

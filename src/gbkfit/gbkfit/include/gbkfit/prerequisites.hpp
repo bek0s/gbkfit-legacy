@@ -25,17 +25,15 @@ class core;
 class fitter;
 class fitter_factory;
 
-class memory_buffer;
-class memory_buffer_host;
-
 class model;
 class model_factory;
 
-class model_parameter_fit_info;
-class model_parameters_fit_info;
-
 class ndarray;
+class ndarray_host;
+
 class nddataset;
+
+class parameters_fit_info;
 
 } // namespace gbkfit
 

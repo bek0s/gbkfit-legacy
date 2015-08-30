@@ -21,15 +21,15 @@ set(HEADER_FILES
     include/gbkfit/image_util.hpp
     include/gbkfit/math.hpp
     include/gbkfit/model.hpp
-    include/gbkfit/model_parameters_fit_info.hpp
     include/gbkfit/ndarray.hpp
     include/gbkfit/ndarray_host.hpp
     include/gbkfit/nddataset.hpp
     include/gbkfit/ndshape.hpp
     include/gbkfit/num_util.hpp
+    include/gbkfit/parameters_fit_info.hpp
     include/gbkfit/prerequisites.hpp
     include/gbkfit/spread_function.hpp
-    include/gbkfit/spread_functions.hpp
+    include/gbkfit/utility.hpp
 
 )
 
@@ -40,14 +40,12 @@ set(SOURCE_FILES
     src/gbkfit.cpp
     src/image_util.cpp
     src/model.cpp
-    src/model_parameters_fit_info.cpp
     src/ndarray.cpp
     src/ndarray_host.cpp
     src/nddataset.cpp
     src/ndshape.cpp
     src/spread_function.cpp
-    src/spread_functions.cpp
-    src/point_spread_function.cpp
+    src/parameters_fit_info.cpp
 )
 
 # ==============================================================================
