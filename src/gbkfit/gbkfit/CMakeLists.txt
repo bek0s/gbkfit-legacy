@@ -9,6 +9,7 @@ project(gbkfit-project)
 
 # ==============================================================================
 
+find_package(cfitsio)
 find_package(Boost REQUIRED)
 
 # ==============================================================================
@@ -63,6 +64,10 @@ add_library(target_gbkfit_shared SHARED $<TARGET_OBJECTS:target_gbkfit_object>)
 
 target_include_directories(target_gbkfit_object PUBLIC "include")
 target_include_directories(target_gbkfit_object PRIVATE ${Boost_INCLUDE_DIRS})
+target_include_directories(target_gbkfit_object PRIVATE ${CFITSIO_INCLUDE_DIRS})
+
+target_link_libraries(target_gbkfit_static PRIVATE ${CFITSIO_LIBRARIES})
+target_link_libraries(target_gbkfit_shared PRIVATE ${CFITSIO_LIBRARIES})
 
 target_compile_definitions(target_gbkfit_object PRIVATE "GBKFIT_SELF_BUILD")
 

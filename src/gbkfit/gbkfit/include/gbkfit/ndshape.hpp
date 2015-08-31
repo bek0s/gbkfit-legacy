@@ -36,6 +36,8 @@ public:
 
     value_type get_dim_length_product(void) const;
 
+    const std::vector<value_type>& get_as_vector(void) const;
+
     const value_type& operator[](size_type idx) const;
 
     value_type& operator[](size_type idx);

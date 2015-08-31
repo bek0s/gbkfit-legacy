@@ -8,7 +8,6 @@
 namespace gbkfit {
 namespace fits {
 
-
 //!
 //! \brief The header class
 //!
@@ -126,7 +125,6 @@ void set_keyword_comment(const std::string& filename, const std::string& keyname
 //! \param keyname
 //!
 void del_keyword(const std::string& filename, const std::string& keyname);
-
 
 } // namespace fits
 } // namespace gbkfit

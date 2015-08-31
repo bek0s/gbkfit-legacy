@@ -1,127 +1,183 @@
 
-#include <CCfits/CCfits>
 #include "gbkfit/fits.hpp"
-
 #include "gbkfit/ndarray_host.hpp"
 
-#include <algorithm>
-#include <functional>
+#include <fitsio2.h>
 
 namespace gbkfit {
-namespace fits_util {
-
-std::string get_errstatus_string(int status)
-{
-    char errtext[80];
-    fits_get_errstatus(status,errtext);
-    return std::string(errtext);
-}
-
-
-}
-
 namespace fits {
 
+//!
+//! \brief select_fits_data_type
+//! \return
+//!
+template<typename T>
+int select_fits_data_type(void)
+{
+    int type = 0;
+    if      (std::is_same<T, bool>::value)
+        type = TLOGICAL;
+    else if (std::is_same<T, unsigned char>::value)
+        type = TBYTE;
+    else if (std::is_same<T, char>::value)
+        type = TSBYTE;
+    else if (std::is_same<T, unsigned short>::value)
+        type = TUSHORT;
+    else if (std::is_same<T, short>::value)
+        type = TSHORT;
+    else if (std::is_same<T, unsigned int>::value)
+        type = TUINT;
+    else if (std::is_same<T, unsigned>::value)
+        type = TUINT;
+    else if (std::is_same<T, unsigned long>::value)
+        type = TULONG;
+    else if (std::is_same<T, long>::value)
+        type = TLONG;
+    else if (std::is_same<T, long long>::value)
+        type = TLONGLONG;
+    else if (std::is_same<T, float>::value)
+        type = TFLOAT;
+    else if (std::is_same<T, double>::value)
+        type = TDOUBLE;
+    else if (std::is_same<T, std::complex<float>>::value)
+        type = TCOMPLEX;
+    else if (std::is_same<T, std::complex<double>>::value)
+        type = TDBLCOMPLEX;
+    else
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
+    return type;
+}
 
-template <typename T> int select_fits_data_type();
-template <> int select_fits_data_type<bool>(void) { return TLOGICAL; }
-template <> int select_fits_data_type<unsigned char>(void) { return TBYTE; }
-template <> int select_fits_data_type<char>(void) { return TSBYTE; }
-template <> int select_fits_data_type<unsigned short>(void) { return TUSHORT; }
-template <> int select_fits_data_type<short>(void) { return TSHORT; }
-template <> int select_fits_data_type<unsigned int>(void) { return TUINT; }
-template <> int select_fits_data_type<int>(void) { return TINT; }
-template <> int select_fits_data_type<unsigned long>(void) { return TULONG; }
-template <> int select_fits_data_type<long>(void) { return TLONG; }
-template <> int select_fits_data_type<long long>(void) { return TLONGLONG; }
-template <> int select_fits_data_type<float>(void) { return TFLOAT; }
-template <> int select_fits_data_type<double>(void) { return TDOUBLE; }
-template <> int select_fits_data_type<std::complex<float>>(void) { return TCOMPLEX; }
-template <> int select_fits_data_type<std::complex<double>>(void) { return TDBLCOMPLEX; }
+//!
+//! \brief select_fits_image_type
+//! \return
+//!
+template<typename T>
+int select_fits_image_type(void)
+{
+    int type = 0;
+    if      (std::is_same<T, unsigned char>::value)
+        type = BYTE_IMG;
+    else if (std::is_same<T, char>::value)
+        type = SBYTE_IMG;
+    else if (std::is_same<T, unsigned short>::value)    // ???
+        type = USHORT_IMG;
+    else if (std::is_same<T, short>::value)
+        type = SHORT_IMG;
+    else if (std::is_same<T, unsigned long>::value)     // ???
+        type = ULONG_IMG;
+    else if (std::is_same<T, long>::value)
+        type = LONG_IMG;
+    else if (std::is_same<T, long long>::value)
+        type = LONGLONG_IMG;
+    else if (std::is_same<T, float>::value)
+        type = FLOAT_IMG;
+    else if (std::is_same<T, double>::value)
+        type = DOUBLE_IMG;
+    else
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
+    return type;
+}
 
 ndarray* get_data(const std::string& filename)
 {
-    int status = 0;
     fitsfile* fp = nullptr;
+    int status = 0;
+    int naxis = 0;
+    long naxes[512];
+    int datatype = 0;
+    long firstpix[512];
+    long long nelem = 0;
+    int anynul = 0;
+    void* nulval = nullptr;
 
-    status = 0;
+    // Open fits file.
     fits_open_file(&fp,filename.c_str(),READONLY,&status);
 
-    int naxis;
-    status = 0;
+    // Get image dimension count.
     fits_get_img_dim(fp,&naxis,&status);
 
-
-    long int naxes[512];
-    status = 0;
+    // Get image dimension length.
     fits_get_img_size(fp,naxis,naxes,&status);
 
+    // Create shape
     ndshape shape(std::vector<ndshape::value_type>(naxes,naxes+naxis));
-    ndarray_host* array = new ndarray_host_new(shape);
 
-    int datatype = select_fits_data_type<float>();
-    long int firstpix[512] = {1};
-    long long int nelem = shape.get_dim_length_product();
-    int anynul = 0;
-    status = 0;
-    fits_read_pix(fp,datatype,firstpix,nelem,nullptr,array->get_host_ptr(),&anynul,&status);
+    // Allocate data. We use std::unique_pointer as an exception guard.
+    std::unique_ptr<ndarray_host> data = std::make_unique<ndarray_host_new>(shape);
 
-    status = 0;
+    // Get fits data type. For now convert everything to float.
+    datatype = select_fits_data_type<float>();
+
+    // Set the first pixel for each dimension (indices start from 1).
+    std::fill_n(firstpix,naxis,1);
+
+    // Get number of pixels.
+    nelem = shape.get_dim_length_product();
+
+    // Read pixels.
+    fits_read_pix(fp,datatype,firstpix,nelem,nulval,data->get_host_ptr(),&anynul,&status);
+
+    // Close fits file.
     fits_close_file(fp,&status);
 
-    return array;
+    if (status) {
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
+    }
+
+    return data.release();
 }
 
 void write_to(const std::string& filename, const ndarray& data)
 {
+    const ndshape& shape = data.get_shape();
 
-    long naxis = data.get_shape().get_dim_count();
-    std::vector<long> naxes;
-    for(std::size_t i = 0; i < static_cast<std::size_t>(naxis); ++i)
-        naxes.push_back(data.get_shape().get_dim_length(i));
-
-    std::shared_ptr<CCfits::FITS> fits = std::make_shared<CCfits::FITS>(filename,FLOAT_IMG,naxis,naxes.data());
-
-
-    auto length = data.get_shape().get_dim_length_product();
-    float* data_raw = new float[length];
-
-    data.read_data(data_raw);
-
-    std::valarray<float> data_val(data_raw,length);
-
-
-    long fpixel(1);
-    fits->pHDU().write(fpixel,length,data_val);
-
-
-    /*
-    int status = 0;
     fitsfile* fp = nullptr;
+    int status = 0;
+    int naxis = 0;
+    long naxes[512];
+    int bitpix = 0;
+    int datatype = 0;
+    long firstpix[512];
+    long long nelem = 0;
 
-    status = 0;
+    // Get image dimension count.
+    naxis = data.get_shape().get_dim_count();
+
+    // Get image dimension length.
+    std::copy(shape.get_as_vector().begin(),shape.get_as_vector().end(),naxes);
+
+    // Select image type.
+    bitpix = select_fits_image_type<float>();
+
+    // Select pixel data type. For now convert everything to float.
+    datatype = select_fits_data_type<float>();
+
+    // Set the first pixel for each dimension (indices start from 1).
+    std::fill_n(firstpix,naxis,1);
+
+    // Get number of pixels.
+    nelem = shape.get_dim_length_product();
+
+    // Create a copy of the data on the host. We use std::unique_pointer as an exception guard.
+    std::unique_ptr<ndarray_host> data_host = std::make_unique<ndarray_host_new>(data);
+
+    // Create new file.
     fits_create_file(&fp,filename.c_str(),&status);
 
-    int datatype = select_fits_data_type<float>();
-    long int firstpix[512] = {1};
-    long long int nelem = data.get_shape().get_dim_length_product();
+    // Create an image in the new file.
+    fits_create_img(fp,bitpix,naxis,naxes,&status);
 
+    // Write pixels to the image.
+    fits_write_pix(fp,datatype,firstpix,nelem,data_host->get_host_ptr(),&status);
 
-    float* data_raw = new float[nelem];
-    data.read_data(data_raw);
-
-    fits_write_pix(fp,datatype,firstpix,nelem,data_raw,&status);
-
-    delete [] data_raw;
-
-    status = 0;
+    // Close fits file.
     fits_close_file(fp,&status);
 
-    */
-
-
+    if (status) {
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
+    }
 }
-
 
 template<typename T>
 void get_keyword(const std::string& filename, const std::string& keyname, T& value, std::string& comment)
@@ -224,7 +280,6 @@ template void get_keyword<float>(const std::string& filename, const std::string&
 template void get_keyword_value<float>(const std::string& filename, const std::string& keyname, float& value);
 template void set_keyword<float>(const std::string& filename, const std::string& keyname, const float& value, const std::string& comment);
 template void set_keyword_value<float>(const std::string& filename, const std::string& keyname, const float& value);
-
 
 } // namespace fits
 } // namespace gbkfit

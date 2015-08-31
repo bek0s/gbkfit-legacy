@@ -33,6 +33,11 @@ ndshape::value_type ndshape::get_dim_length_product(void) const
     return std::accumulate(m_shape.begin(),m_shape.end(),static_cast<size_type>(1),std::multiplies<size_type>());
 }
 
+const std::vector<ndshape::value_type>& ndshape::get_as_vector(void) const
+{
+    return m_shape;
+}
+
 const ndshape::value_type& ndshape::operator[](size_type idx) const
 {
     return m_shape[idx];

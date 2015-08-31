@@ -80,10 +80,13 @@ parameters_fit_info* core::create_parameters_fit_info(const std::string& info) c
         // ...parameters.
         if(info_ptree_child.first == "parameter")
         {
+            // Get the name of the parameter.
             std::string param_name = info_ptree_child.second.get<std::string>("<xmlattr>.name");
 
+            // Create a new parameter.
             params_fit_info->add_parameter(param_name);
 
+            // Itarate over the rest of the xml attributes
             for(auto& item : info_ptree_child.second.get_child("<xmlattr>"))
             {
                 std::string name = item.first;
@@ -97,7 +100,7 @@ parameters_fit_info* core::create_parameters_fit_info(const std::string& info) c
         }
     }
 
-    return nullptr;
+    return params_fit_info;
 }
 
 nddataset* core::create_dataset(const std::string& info) const
