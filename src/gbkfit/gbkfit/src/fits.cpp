@@ -81,8 +81,8 @@ int select_fits_image_type(void)
 
 ndarray* get_data(const std::string& filename)
 {
-    fitsfile* fp = nullptr;
     int status = 0;
+    fitsfile* fp = nullptr;
     int naxis = 0;
     long naxes[512];
     int datatype = 0;
@@ -132,8 +132,8 @@ void write_to(const std::string& filename, const ndarray& data)
 {
     const ndshape& shape = data.get_shape();
 
-    fitsfile* fp = nullptr;
     int status = 0;
+    fitsfile* fp = nullptr;
     int naxis = 0;
     long naxes[512];
     int bitpix = 0;
@@ -180,106 +180,112 @@ void write_to(const std::string& filename, const ndarray& data)
 }
 
 template<typename T>
-void get_keyword(const std::string& filename, const std::string& keyname, T& value, std::string& comment)
+void get_key(const std::string& filename, const std::string& keyname, T& value, std::string& comment)
 {
-    get_keyword_value<T>(filename,keyname,value);
-    get_keyword_comment(filename,keyname,comment);
+    get_key_value<T>(filename,keyname,value);
+    get_key_comment(filename,keyname,comment);
 }
 
 template<typename T>
-void get_keyword_value(const std::string& filename, const std::string& keyname, T& value)
+void get_key_value(const std::string& filename, const std::string& keyname, T& value)
 {
     int status = 0;
     fitsfile* fp = nullptr;
 
-    status = 0;
     fits_open_file(&fp,filename.c_str(),READONLY,&status);
 
     int datatype = select_fits_data_type<T>();
     char* comm = nullptr;
-    status = 0;
     fits_read_key(fp,datatype,keyname.c_str(),&value,comm,&status);
 
-    status = 0;
     fits_close_file(fp,&status);
+
+    if (status) {
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
+    }
 }
 
-void get_keyword_comment(const std::string& filename, const std::string& keyname, std::string& comment)
+void get_key_comment(const std::string& filename, const std::string& keyname, std::string& comment)
 {
     int status = 0;
     fitsfile* fp = nullptr;
 
-    status = 0;
     fits_open_file(&fp,filename.c_str(),READONLY,&status);
 
     char keyval[512];
     char comm[512];
-    status = 0;
     fits_read_keyword(fp,keyname.c_str(),keyval,comm,&status);
     comment = std::string(comm);
 
-    status = 0;
     fits_close_file(fp,&status);
+
+    if (status) {
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
+    }
 }
 
 template<typename T>
-void set_keyword(const std::string& filename, const std::string& keyname, const T& value, const std::string& comment)
+void set_key(const std::string& filename, const std::string& keyname, const T& value, const std::string& comment)
 {
-    set_keyword_value<T>(filename,keyname,value);
-    set_keyword_comment(filename,keyname,comment);
+    set_key_value<T>(filename,keyname,value);
+    set_key_comment(filename,keyname,comment);
 }
 
 template<typename T>
-void set_keyword_value(const std::string& filename, const std::string& keyname, const T& value)
+void set_key_value(const std::string& filename, const std::string& keyname, const T& value)
 {
     int status = 0;
     fitsfile* fp = nullptr;
-
-    status = 0;
-    fits_open_file(&fp,filename.c_str(),READWRITE,&status);
 
     int datatype = select_fits_data_type<T>();
-    status = 0;
+
+    fits_open_file(&fp,filename.c_str(),READWRITE,&status);
+    
     fits_update_key(fp,datatype,keyname.c_str(),const_cast<T*>(&value),nullptr,&status);
 
-    status = 0;
     fits_close_file(fp,&status);
+
+    if (status) {
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
+    }
 }
 
-void set_keyword_comment(const std::string& filename, const std::string& keyname, const std::string& comment)
+void set_key_comment(const std::string& filename, const std::string& keyname, const std::string& comment)
 {
     int status = 0;
     fitsfile* fp = nullptr;
 
-    status = 0;
     fits_open_file(&fp,filename.c_str(),READWRITE,&status);
 
-    status = 0;
     fits_modify_comment(fp,keyname.c_str(),comment.c_str(),&status);
 
-    status = 0;
     fits_close_file(fp,&status);
+
+    if (status) {
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
+    }
 }
 
-void del_keyword(const std::string& filename, const std::string& keyname)
+void del_key(const std::string& filename, const std::string& keyname)
 {
     int status = 0;
     fitsfile* fp = nullptr;
 
-    status = 0;
     fits_open_file(&fp,filename.c_str(),READWRITE,&status);
 
-    status = 0;
     fits_delete_key(fp,keyname.c_str(),&status);
 
-    status = 0;
     fits_close_file(fp,&status);
+
+    if (status) {
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
+    }
 }
 
-template void get_keyword<float>(const std::string& filename, const std::string& keyname, float& value, std::string& comment);
-template void get_keyword_value<float>(const std::string& filename, const std::string& keyname, float& value);
-template void set_keyword<float>(const std::string& filename, const std::string& keyname, const float& value, const std::string& comment);
-template void set_keyword_value<float>(const std::string& filename, const std::string& keyname, const float& value);
+template void get_key<float>(const std::string& filename, const std::string& keyname, float& value, std::string& comment);
+template void get_key_value<float>(const std::string& filename, const std::string& keyname, float& value);
+template void set_key<float>(const std::string& filename, const std::string& keyname, const float& value, const std::string& comment);
+template void set_key_value<float>(const std::string& filename, const std::string& keyname, const float& value);
 
 } // namespace fits
 } // namespace gbkfit
