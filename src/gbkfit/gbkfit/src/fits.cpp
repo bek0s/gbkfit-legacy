@@ -60,11 +60,11 @@ int select_fits_image_type(void)
         type = BYTE_IMG;
     else if (std::is_same<T, char>::value)
         type = SBYTE_IMG;
-    else if (std::is_same<T, unsigned short>::value)    // ???
+    else if (std::is_same<T, unsigned short>::value)
         type = USHORT_IMG;
     else if (std::is_same<T, short>::value)
         type = SHORT_IMG;
-    else if (std::is_same<T, unsigned long>::value)     // ???
+    else if (std::is_same<T, unsigned long>::value)
         type = ULONG_IMG;
     else if (std::is_same<T, long>::value)
         type = LONG_IMG;
@@ -77,6 +77,28 @@ int select_fits_image_type(void)
     else
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
     return type;
+}
+
+header get_header(const std::string& filename)
+{
+    int status = 0;
+    fitsfile* fp = nullptr;
+
+    fits_open_file(&fp,filename.c_str(),READONLY,&status);
+
+    int nexist = 0;
+    int nmore = 0;
+    fits_get_hdrspace(fp,&nexist,&nmore,&status);
+
+    // TODO
+
+    fits_close_file(fp,&status);
+
+    if (status) {
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
+    }
+
+    return header();
 }
 
 ndarray* get_data(const std::string& filename)
@@ -106,7 +128,7 @@ ndarray* get_data(const std::string& filename)
     // Allocate data. We use std::unique_pointer as an exception guard.
     std::unique_ptr<ndarray_host> data = std::make_unique<ndarray_host_new>(shape);
 
-    // Get fits data type. For now convert everything to float.
+    // Select fits data type. For now convert everything to float.
     datatype = select_fits_data_type<float>();
 
     // Set the first pixel for each dimension (indices start from 1).
@@ -134,44 +156,28 @@ void write_to(const std::string& filename, const ndarray& data)
 
     int status = 0;
     fitsfile* fp = nullptr;
-    int naxis = 0;
+    int naxis = shape.get_dim_count();
     long naxes[512];
-    int bitpix = 0;
-    int datatype = 0;
+    int bitpix = select_fits_image_type<float>();
+    int datatype = select_fits_data_type<float>();
     long firstpix[512];
-    long long nelem = 0;
-
-    // Get image dimension count.
-    naxis = data.get_shape().get_dim_count();
+    long long nelem = shape.get_dim_length_product();
 
     // Get image dimension length.
     std::copy(shape.get_as_vector().begin(),shape.get_as_vector().end(),naxes);
 
-    // Select image type.
-    bitpix = select_fits_image_type<float>();
-
-    // Select pixel data type. For now convert everything to float.
-    datatype = select_fits_data_type<float>();
-
     // Set the first pixel for each dimension (indices start from 1).
     std::fill_n(firstpix,naxis,1);
-
-    // Get number of pixels.
-    nelem = shape.get_dim_length_product();
 
     // Create a copy of the data on the host. We use std::unique_pointer as an exception guard.
     std::unique_ptr<ndarray_host> data_host = std::make_unique<ndarray_host_new>(data);
 
-    // Create new file.
     fits_create_file(&fp,filename.c_str(),&status);
 
-    // Create an image in the new file.
     fits_create_img(fp,bitpix,naxis,naxes,&status);
 
-    // Write pixels to the image.
     fits_write_pix(fp,datatype,firstpix,nelem,data_host->get_host_ptr(),&status);
 
-    // Close fits file.
     fits_close_file(fp,&status);
 
     if (status) {
@@ -191,12 +197,11 @@ void get_key_value(const std::string& filename, const std::string& keyname, T& v
 {
     int status = 0;
     fitsfile* fp = nullptr;
+    int datatype = select_fits_data_type<T>();
 
     fits_open_file(&fp,filename.c_str(),READONLY,&status);
 
-    int datatype = select_fits_data_type<T>();
-    char* comm = nullptr;
-    fits_read_key(fp,datatype,keyname.c_str(),&value,comm,&status);
+    fits_read_key(fp,datatype,keyname.c_str(),&value,nullptr,&status);
 
     fits_close_file(fp,&status);
 
@@ -209,13 +214,13 @@ void get_key_comment(const std::string& filename, const std::string& keyname, st
 {
     int status = 0;
     fitsfile* fp = nullptr;
+    char keyval[512];
+    char keycomm[512];
 
     fits_open_file(&fp,filename.c_str(),READONLY,&status);
 
-    char keyval[512];
-    char comm[512];
-    fits_read_keyword(fp,keyname.c_str(),keyval,comm,&status);
-    comment = std::string(comm);
+    fits_read_keyword(fp,keyname.c_str(),keyval,keycomm,&status);
+    comment = std::string(keycomm);
 
     fits_close_file(fp,&status);
 
@@ -236,7 +241,6 @@ void set_key_value(const std::string& filename, const std::string& keyname, cons
 {
     int status = 0;
     fitsfile* fp = nullptr;
-
     int datatype = select_fits_data_type<T>();
 
     fits_open_file(&fp,filename.c_str(),READWRITE,&status);

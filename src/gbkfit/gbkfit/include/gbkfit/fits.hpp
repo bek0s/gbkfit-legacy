@@ -57,6 +57,14 @@ public:
 
 }; // class header
 
+
+//!
+//! \brief get_header
+//! \param filename
+//! \return
+//!
+header get_header(const std::string& filename);
+
 //!
 //! \brief get_data
 //! \param filename

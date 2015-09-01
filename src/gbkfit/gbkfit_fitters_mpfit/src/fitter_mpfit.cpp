@@ -10,6 +10,8 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
+#include "gbkfit/fits.hpp"
+
 namespace gbkfit {
 namespace fitters {
 namespace mpfit {
@@ -113,95 +115,67 @@ struct mpfit_user_data
     std::map<std::string,ndarray_host*> data_map_msk;
     std::map<std::string,ndarray_host*> data_map_err;
     std::map<std::string,ndarray_host*> data_map_mdl;
-    std::map<std::string,ndarray_host*> data_map_res;
+    std::vector<std::string> dataset_names;
 }; // struct mpfit_user_data
 
 int mpfit_callback(int num_measurements, int num_parameters, double* parameters, double* measurements, double** derivatives, void* user_data)
 {
+    // We don't calculate derivatives, shut up compiler.
     (void)derivatives;
 
-    mpfit_user_data* udata = reinterpret_cast<mpfit_user_data*>(user_data);
-
-
-    std::vector<float> params(parameters,parameters+num_parameters);
-    std::vector<std::string> param_name;
-
-    auto params_map = gbkfit::vectors_to_map(param_name, params);
-
-
-    std::map<std::string,ndarray*> model_data = udata->model->evaluate(params_map);
-
-
-    int offset = 0;
-
-    for(auto& data_mdl_pair : udata->data_map_mdl)
-    {
-        std::string name = std::get<0>(data_mdl_pair);
-        ndarray* data = std::get<1>(data_mdl_pair);
-
-        data->copy_data(model_data[name]);
-
-        float* data_dat = udata->data_map_dat[name]->get_host_ptr();
-        float* data_msk = udata->data_map_msk[name]->get_host_ptr();
-        float* data_err = udata->data_map_err[name]->get_host_ptr();
-        float* data_mdl = udata->data_map_mdl[name]->get_host_ptr();
-
-
-        for(int i = 0; i < num_measurements; ++i)
-        {
-            measurements[i] = data_msk[i] > 0 ? (data_dat[i]-data_mdl[i])/data_err[i] : 0;
-        }
-    }
-
-
-
-
-    /*
-    (void)derivatives; // unused
-
-    std::size_t ipar;
-
-    // retrieve user data
-    mpfit_user_data* udata = reinterpret_cast<mpfit_user_data*>(user_data);
-
-#if 0
-    // print the current set of parameters
-    ipar = 0;
-    std::cout << std::endl;
-    for(model_parameter_set::const_iterator iter = udata->params.begin(); iter != udata->params.end(); ++iter) {
-        std::cout << (*iter).first << ": " << parameters[ipar++] << std::endl;
-    }
-#endif
-
-    // validate parameters
+    // Make sure we have finite parameters.
     if(std::any_of(parameters,parameters+num_parameters,[](float num){return !std::isfinite(num);})) {
-        throw std::runtime_error("mpfit_callback: non-finite parameter value found");
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
     }
 
-    // build parameter map using the current set of the parameters
-    ipar = 0;
-    std::map<std::string,float> parameter_map;
-    for(model_parameter_set::const_iterator iter = udata->params.begin(); iter != udata->params.end(); ++iter) {
-        parameter_map[iter->first] = static_cast<float>(parameters[ipar++]);
+    // Get a convenience to the user data.
+    mpfit_user_data* udata = reinterpret_cast<mpfit_user_data*>(user_data);
+
+    // Build parameter map with the current set of parameter values.
+    const std::vector<std::string>& param_names = udata->model->get_parameter_names();
+    const std::vector<float> param_values(parameters,parameters+num_parameters);
+    const std::map<std::string,float> param_map = gbkfit::vectors_to_map(param_names, param_values);
+
+    std::cout << gbkfit::to_string(param_map) << std::endl;
+
+    // Evaluate model with the current set of parameter values.
+    std::map<std::string,ndarray*> model_data = udata->model->evaluate(param_map);
+
+//  gbkfit::fits::write_to("!flxmap_mdl.fits",*model_data["flxmap"]);
+//  gbkfit::fits::write_to("!velmap_mdl.fits",*model_data["velmap"]);
+//  gbkfit::fits::write_to("!sigmap_mdl.fits",*model_data["sigmap"]);
+
+    // Calculate residuals between the model and the (available) data.
+    int measurements_offset = 0;
+    for(auto& dataset_name : udata->dataset_names)
+    {
+    //  std::string dataset_name = "sigmap";
+        // Get convenience pointers to the memory.
+        float* data_dat = udata->data_map_dat[dataset_name]->get_host_ptr();
+        float* data_msk = udata->data_map_msk[dataset_name]->get_host_ptr();
+        float* data_err = udata->data_map_err[dataset_name]->get_host_ptr();
+        float* data_mdl = udata->data_map_mdl[dataset_name]->get_host_ptr();
+
+        // Ensure we have the model data on the host side.
+        udata->data_map_mdl[dataset_name]->copy_data(model_data[dataset_name]);
+
+        int data_size = udata->data_map_dat[dataset_name]->get_shape().get_dim_length_product();
+
+        // Calculate residuals and feed them to mpfit
+        for(int i = 0; i < data_size; ++i)
+        {
+            measurements[measurements_offset+i] = data_msk[i] > 0 ? (data_dat[i]-data_mdl[i])/data_err[i] : 0;
+        //  std::cout << data_mdl[i] << std::endl;
+        }
+
+        measurements_offset += data_size;
     }
 
-    // evaluate model and retrieve model data
-    udata->model->evaluate(parameter_map,udata->data_mdl);
-
-    // calculate weighted residuals
-    for(int i = 0; i < num_measurements; ++i) {
-        udata->data_res[i] = udata->data_obs_msk[i] > 0 ? (udata->data_obs[i]-udata->data_mdl[i])/udata->data_obs_err[i] : 0;
+    // Make sure we have finite residuals.
+    if(std::any_of(measurements,measurements+num_measurements,[](float num){return !std::isfinite(num);})) {
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
     }
 
-    // validate residuals
-    if(std::any_of(std::begin(udata->data_res),std::end(udata->data_res),[](float num){return !std::isfinite(num);})) {
-        throw std::runtime_error("mpfit_callback: non-finite residual value found");
-    }
-
-    // feed mpfit with residuals
-    std::copy(std::begin(udata->data_res),std::end(udata->data_res),measurements);
-
-    */
     // return success
     return 0;
 }
@@ -229,13 +203,19 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
     std::map<std::string,ndarray_host*> data_map_msk;
     std::map<std::string,ndarray_host*> data_map_err;
     std::map<std::string,ndarray_host*> data_map_mdl;
-    std::map<std::string,ndarray_host*> data_map_res;
+    std::vector<std::string> dataset_names;
     int measurement_count = 0;
+
+
+//  gbkfit::fits::write_to("!woohoo_dat.fits",*(datasets.at("velmap")->get_data("data")));
+//  gbkfit::fits::write_to("!woohoo_dat2.fits",*(datasets.at("sigmap")->get_data("data")));
 
     // Iterate over the supplied datasets.
     for(auto& dataset : datasets)
     {
         std::string dataset_name = std::get<0>(dataset);
+
+        dataset_names.push_back(dataset_name);
 
         // Get input data pointer shortcuts for convenience.
         ndarray* old_data_dat = std::get<1>(dataset)->get_data("data");
@@ -249,9 +229,12 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
 
         // Allocate model data memory on the host.
         data_map_mdl[dataset_name] = new ndarray_host_new(old_data_dat->get_shape());
-        data_map_mdl[dataset_name] = new ndarray_host_new(old_data_dat->get_shape());
 
         measurement_count += old_data_dat->get_shape().get_dim_length_product();
+
+    //  gbkfit::fits::write_to("!"+dataset_name+"_dat.fits",*data_map_dat[dataset_name]);
+    //  gbkfit::fits::write_to("!"+dataset_name+"_msk.fits",*data_map_msk[dataset_name]);
+    //  gbkfit::fits::write_to("!"+dataset_name+"_err.fits",*data_map_err[dataset_name]);
     }
 
     //
@@ -312,10 +295,11 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
 
     mpfit_user_data mpfit_udata;
     mpfit_udata.model = model;
-    mpfit_udata.data_map_mdl = data_map_mdl;
     mpfit_udata.data_map_dat = data_map_dat;
     mpfit_udata.data_map_msk = data_map_msk;
     mpfit_udata.data_map_err = data_map_err;
+    mpfit_udata.data_map_mdl = data_map_mdl;
+    mpfit_udata.dataset_names = dataset_names;
 
     //
     // Time to fit! Woohoo!
@@ -366,7 +350,7 @@ void fitter_mpfit::fit(model* model, const std::map<std::string,nddataset*>& dat
     for(auto& data : data_map_err) delete std::get<1>(data);
 }
 
-const std::string fitter_factory_mpfit::FACTORY_TYPE_NAME = "gbkfit.fitters_mpfit.mpfit";
+const std::string fitter_factory_mpfit::FACTORY_TYPE_NAME = "gbkfit.fitters.mpfit";
 
 fitter_factory_mpfit::fitter_factory_mpfit(void)
 {
