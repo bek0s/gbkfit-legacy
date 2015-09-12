@@ -1,2 +1,0 @@
-/usr/bin/ar cq ../../../lib/libgbkfit_models_galaxy_2d_cuda_static_d.a  CMakeFiles/target_gbkfit_models_galaxy_2d_cuda_object.dir/src/model_galaxy_2d_cuda.cpp.o
-/usr/bin/ranlib ../../../lib/libgbkfit_models_galaxy_2d_cuda_static_d.a

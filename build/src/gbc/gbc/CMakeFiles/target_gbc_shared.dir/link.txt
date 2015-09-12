@@ -1,1 +1,0 @@
-/usr/bin/c++  -fPIC -g  -shared -Wl,-soname,libgbc_shared_d.so -o ../../../lib/libgbc_shared_d.so CMakeFiles/target_gbc_object.dir/src/dynlib/dynamic_library.cpp.o 
