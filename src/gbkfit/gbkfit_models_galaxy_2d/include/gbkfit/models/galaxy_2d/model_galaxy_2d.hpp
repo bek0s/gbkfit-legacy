@@ -8,65 +8,35 @@ namespace gbkfit {
 namespace models {
 namespace galaxy_2d {
 
-//!
-//! \brief The model_galaxy_2d class
-//!
+enum profile_flx_type {
+    exponential = 1
+};
+
+enum profile_vel_type {
+    lramp = 1,
+    arctan = 2,
+    epinat = 3,
+};
+
 class model_galaxy_2d : public model
 {
 
-//  static const std::map<std::string,std::vector<std::string>> m_
-
-//  static const std::vector<std::vector<std::string>> ms_rcur_arctan;
-
-public:
-
-    /*
-    enum class profile_flux_type : int {
-        exponential = 1
-    };
-
-    enum class profile_rcur_type : int {
-        lramp = 1,
-        arctan = 2,
-        epinat = 3,
-    };
-    */
-
-    enum profile_flux_type {
-        exponential = 1
-    };
-
-    enum profile_rcur_type {
-        lramp = 1,
-        arctan = 2,
-        epinat = 3,
-    };
-
 protected:
 
-    int m_model_size_x;
-    int m_model_size_y;
-    int m_model_size_z;
+
     float m_step_x;
     float m_step_y;
     float m_step_z;
-    int m_upsampling_x;
-    int m_upsampling_y;
-    int m_upsampling_z;
-    int m_model_size_x_aligned;
-    int m_model_size_y_aligned;
-    int m_model_size_z_aligned;
 
-    profile_flux_type m_profile_flux;
-    profile_rcur_type m_profile_rcur;
+    profile_flx_type m_profile_flx;
+    profile_vel_type m_profile_vel;
 
     std::vector<std::string> m_parameter_names;
     std::vector<float> m_parameter_values;
 
 public:
 
-    model_galaxy_2d(int size_x, int size_y, float step_x, float step_y, int upsampling_x, int upsampling_y,
-                    profile_flux_type profile_flux, profile_rcur_type profile_rcur_type);
+    model_galaxy_2d(profile_flx_type profile_flx, profile_vel_type profile_vel);
 
     ~model_galaxy_2d();
 
@@ -78,13 +48,13 @@ public:
 
 private:
 
-    virtual const std::map<std::string,ndarray*>& evaluate(int model_flux_id,
-                                                           int model_rcur_id,
-                                                           const float parameter_vsys,
-                                                           const std::vector<float>& parameters_proj,
-                                                           const std::vector<float>& parameters_flux,
-                                                           const std::vector<float>& parameters_rcur,
-                                                           const std::vector<float>& parameters_vsig) = 0;
+    virtual const std::map<std::string,ndarray*>& evaluate(int profile_flx_id,
+                                                           int profile_vel_id,
+                                                           const float param_vsig,
+                                                           const float param_vsys,
+                                                           const std::vector<float>& params_prj,
+                                                           const std::vector<float>& params_flx,
+                                                           const std::vector<float>& params_vel) = 0;
 
 }; // class model_galaxy_2d
 

@@ -7,7 +7,6 @@
 
 namespace gbkfit_app_cli {
 
-
 //!
 //! \brief The application class
 //!
@@ -20,6 +19,7 @@ private:
 
     gbkfit::model_factory* m_model_factory_galaxy_2d_cuda;
     gbkfit::model_factory* m_model_factory_galaxy_2d_omp;
+
     gbkfit::fitter_factory* m_fitter_factory_mpfit;
     gbkfit::fitter_factory* m_fitter_factory_multinest;
     gbkfit::model* m_model;
@@ -27,6 +27,8 @@ private:
     gbkfit::parameters_fit_info* m_fit_info;
 
     std::map<std::string,gbkfit::nddataset*> m_datasets;
+
+    gbkfit::instrument* m_instrument;
 
 public:
 
@@ -41,7 +43,6 @@ public:
     void run(void);
 
 }; // class application
-
 
 } // namespace gbkfit_app_cli
 

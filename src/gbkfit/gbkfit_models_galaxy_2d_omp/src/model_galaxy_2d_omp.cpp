@@ -3,38 +3,95 @@
 #include "gbkfit/models/galaxy_2d_omp/kernels_omp.hpp"
 #include "gbkfit/ndarray_host.hpp"
 
+#include "gbkfit/instrument.hpp"
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
-
+#include "gbkfit/utility.hpp"
 namespace gbkfit {
 namespace models {
 namespace galaxy_2d {
 
 
-model_galaxy_2d_omp::model_galaxy_2d_omp(int width, int height, float step_x, float step_y, int upsampling_x, int upsampling_y,
-                                         profile_flux_type profile_flux, profile_rcur_type profile_rcur)
-    : model_galaxy_2d(width,height,step_x,step_y,upsampling_x,upsampling_y,profile_flux,profile_rcur)
+model_galaxy_2d_omp::model_galaxy_2d_omp(profile_flx_type profile_flx, profile_vel_type profile_vel)
+    : model_galaxy_2d(profile_flx,profile_vel)
 {
-    // psf and lsf
-
-    // cube
-
-    // output maps
-    m_model_flxmap = new ndarray_host_new({m_model_size_x,m_model_size_y});
-    m_model_velmap = new ndarray_host_new({m_model_size_x,m_model_size_y});
-    m_model_sigmap = new ndarray_host_new({m_model_size_x,m_model_size_y});
-    m_model_data_list["flxmap"] = m_model_flxmap;
-    m_model_data_list["velmap"] = m_model_velmap;
-    m_model_data_list["sigmap"] = m_model_sigmap;
-
-    m_parameter_names = {"xo","yo","pa","incl","i0","r0","rt","vt","vsys"};
-
 }
 
 model_galaxy_2d_omp::~model_galaxy_2d_omp()
 {
-    delete m_model_velmap;
-    delete m_model_sigmap;
+    delete m_data_flxcube;
+    delete m_data_flxcube_padded;
+    delete m_data_flxmap;
+    delete m_data_velmap;
+    delete m_data_sigmap;
+}
+
+
+int data_padding_x;
+int data_padding_y;
+int data_padding_z;
+
+
+void model_galaxy_2d_omp::initialize(int size_x, int size_y, int size_z, instrument *instrument)
+{
+    m_instrument = instrument;
+
+    m_step_x = m_instrument->get_step_x();
+    m_step_y = m_instrument->get_step_y();
+    m_step_z = m_instrument->get_step_z();
+
+    int psf_size_x = (10 * 4.0) / m_step_x;
+    int psf_size_y = (10 * 4.0) / m_step_y;
+    int psf_size_z = (10 * 4.0) / m_step_z;
+
+    float* psf_data_spat = new float[psf_size_x*psf_size_y];
+    float* psf_data_spec = new float[psf_size_z];
+
+
+//  ndarray_host* psf_spat = new ndarray_host_new({psf_size_x,psf_size_y});
+//  ndarray_host* psf_spec = new ndarray_host_new({psf_size_z});
+
+    m_psf_size_x = 0;
+    m_psf_size_y = 0;
+    m_psf_size_z = 0;
+
+    m_upsampling_x = 1;
+    m_upsampling_y = 1;
+    m_upsampling_z = 1;
+
+    int size_x_padded = m_upsampling_x*size_x;
+    int size_y_padded = m_upsampling_y*size_y;
+    int size_z_padded = m_upsampling_z*size_z;
+
+    data_padding_x = m_psf_size_x/2;
+    data_padding_y = m_psf_size_y/2;
+    data_padding_z = m_psf_size_z/2;
+
+
+    if (m_psf_size_x > 0) size_x_padded += m_psf_size_x-1;
+    if (m_psf_size_y > 0) size_y_padded += m_psf_size_y-1;
+    if (m_psf_size_z > 0) size_z_padded += m_psf_size_z-1;
+
+    size_x_padded = util_fft::calculate_optimal_dim_length(size_x_padded, 512, 256);
+    size_y_padded = util_fft::calculate_optimal_dim_length(size_y_padded, 512, 256);
+    size_z_padded = util_fft::calculate_optimal_dim_length(size_z_padded, 512, 256);
+
+    m_data_flxcube = new ndarray_host_new({size_x,size_y,size_z});
+    m_data_flxcube_padded = new ndarray_host_new({size_x_padded,size_y_padded,size_z_padded});
+    m_data_flxmap = new ndarray_host_new({size_x,size_y});
+    m_data_velmap = new ndarray_host_new({size_x,size_y});
+    m_data_sigmap = new ndarray_host_new({size_x,size_y});
+    m_data_map["flxcube"] = m_data_flxcube;
+    m_data_map["flxmap"] = m_data_flxmap;
+    m_data_map["velmap"] = m_data_velmap;
+    m_data_map["sigmap"] = m_data_sigmap;
+    m_data_map["flxcubea"] = m_data_flxcube_padded;
+
+    std::cout << size_x_padded << std::endl
+              << size_y_padded << std::endl
+              << size_z_padded << std::endl;
+
+
 }
 
 const std::string& model_galaxy_2d_omp::get_type_name(void) const
@@ -44,48 +101,110 @@ const std::string& model_galaxy_2d_omp::get_type_name(void) const
 
 const std::map<std::string,ndarray*>& model_galaxy_2d_omp::get_data(void) const
 {
-    return m_model_data_list;
+    return m_data_map;
 }
 
-const std::map<std::string,ndarray*>& model_galaxy_2d_omp::evaluate(int model_flux_id,
-                                                                    int model_rcur_id,
-                                                                    const float parameter_vsys,
-                                                                    const std::vector<float>& parameters_proj,
-                                                                    const std::vector<float>& parameters_flux,
-                                                                    const std::vector<float>& parameters_rcur,
-                                                                    const std::vector<float>& parameters_vsig)
+const std::map<std::string,ndarray*>& model_galaxy_2d_omp::evaluate(int profile_flx_id,
+                                                                    int profile_vel_id,
+                                                                    const float param_vsig,
+                                                                    const float param_vsys,
+                                                                    const std::vector<float>& params_prj,
+                                                                    const std::vector<float>& params_flx,
+                                                                    const std::vector<float>& params_vel)
 {
-    // get native pointers for convenience access to the underlying data
-    ndarray_host* model_flxmap = reinterpret_cast<ndarray_host*>(m_model_flxmap);
-    ndarray_host* model_velmap = reinterpret_cast<ndarray_host*>(m_model_velmap);
-    ndarray_host* model_sigmap = reinterpret_cast<ndarray_host*>(m_model_sigmap);
+#if 0
+    kernels_omp::model_image_3d_evaluate(profile_flx_id,
+                                         profile_vel_id,
+                                         param_vsig,
+                                         param_vsys,
+                                         params_prj.data(),
+                                         params_flx.data(),
+                                         params_vel.data(),
+                                         m_data_flxcube->get_shape()[0],
+                                         m_data_flxcube->get_shape()[1],
+                                         m_data_flxcube->get_shape()[2],
+                                         m_data_flxcube_padded->get_shape()[0],
+                                         m_data_flxcube_padded->get_shape()[1],
+                                         m_data_flxcube_padded->get_shape()[2],
+                                         0,0,0,
+                                         m_step_x,
+                                         m_step_y,
+                                         m_step_z,
+                                         m_data_flxcube->get_host_ptr());
+#else
 
-    // without psf
-    if(true)
-    {
-        kernels_omp::model_image_2d_evaluate(model_flxmap->get_host_ptr(),
-                                             model_velmap->get_host_ptr(),
-                                             model_sigmap->get_host_ptr(),
-                                             model_flux_id,
-                                             model_rcur_id,
-                                             m_model_size_x,
-                                             m_model_size_y,
-                                             m_step_x,
-                                             m_step_y,
-                                             parameter_vsys,
-                                             parameters_proj.data(),
-                                             parameters_proj.size(),
-                                             parameters_flux.data(),
-                                             parameters_flux.size(),
-                                             parameters_rcur.data(),
-                                             parameters_rcur.size(),
-                                             parameters_vsig.data(),
-                                             parameters_vsig.size());
-    }
-    // with psf
-    else
-    {
-    }
+    /*
+    int data_padding_x = m_psf_size_x / 2;
+    int data_padding_y = m_psf_size_y / 2;
+    int data_padding_z = m_psf_size_z / 2;
+    */
+
+    kernels_omp::model_image_3d_evaluate(profile_flx_id,
+                                         profile_vel_id,
+                                         param_vsig,
+                                         param_vsys,
+                                         params_prj.data(),
+                                         params_flx.data(),
+                                         params_vel.data(),
+                                         m_data_flxcube->get_shape()[0],
+                                         m_data_flxcube->get_shape()[1],
+                                         m_data_flxcube->get_shape()[2],
+                                         m_data_flxcube_padded->get_shape()[0],
+                                         m_data_flxcube_padded->get_shape()[1],
+                                         m_data_flxcube_padded->get_shape()[2],
+                                         data_padding_x,
+                                         data_padding_y,
+                                         data_padding_z,
+                                         m_step_x,
+                                         m_step_y,
+                                         m_step_z,
+                                         m_upsampling_x,
+                                         m_upsampling_y,
+                                         m_upsampling_z,
+                                         m_data_flxcube_padded->get_host_ptr());
+
+
+    kernels_omp::model_image_3d_downsample_and_copy(m_data_flxcube_padded->get_host_ptr(),
+                                                    m_data_flxcube->get_shape()[0],
+                                                    m_data_flxcube->get_shape()[1],
+                                                    m_data_flxcube->get_shape()[2],
+                                                    m_data_flxcube_padded->get_shape()[0],
+                                                    m_data_flxcube_padded->get_shape()[1],
+                                                    m_data_flxcube_padded->get_shape()[2],
+                                                    data_padding_x,
+                                                    data_padding_y,
+                                                    data_padding_z,
+                                                    m_upsampling_x,
+                                                    m_upsampling_y,
+                                                    m_upsampling_z,
+                                                    m_data_flxcube->get_host_ptr());
+
+
+    /*
+    kernels_omp::model_image_3d_copy(m_data_flxcube_padded->get_host_ptr(),
+                                     m_data_flxcube->get_shape()[0],
+                                     m_data_flxcube->get_shape()[1],
+                                     m_data_flxcube->get_shape()[2],
+                                     m_data_flxcube_padded->get_shape()[0],
+                                     m_data_flxcube_padded->get_shape()[1],
+                                     m_data_flxcube_padded->get_shape()[2],
+                                     m_data_flxcube->get_host_ptr());
+                                     */
+
+#endif
+
+
+    kernels_omp::model_image_3d_extract_moment_maps(m_data_flxcube->get_host_ptr(),
+                                                    m_data_flxcube->get_shape()[0],
+                                                    m_data_flxcube->get_shape()[1],
+                                                    m_data_flxcube->get_shape()[2],
+                                                    m_step_x,
+                                                    m_step_y,
+                                                    m_step_z,
+                                                    m_data_flxmap->get_host_ptr(),
+                                                    m_data_velmap->get_host_ptr(),
+                                                    m_data_sigmap->get_host_ptr());
+
 
     return get_data();
 }
@@ -116,36 +235,25 @@ model* model_factory_galaxy_2d_omp::create_model(const std::string& info) const
     std::string profile_flx_name = info_ptree.get<std::string>("profile_flx");
     std::string profile_vel_name = info_ptree.get<std::string>("profile_vel");
 
-    // Create parameter map.
-    std::map<std::string,float> parameters;
+    profile_flx_type profile_flx;
+    profile_vel_type profile_vel;
 
-    // Iterate over...
-    for(auto& info_ptree_child : info_ptree)
-    {
-        // ...parameters
-        if(info_ptree_child.first == "parameter")
-        {
-            // Parse name and value.
-            std::string parameter_name = info_ptree_child.second.get<std::string>("<xmlattr>.name");
-            float parameter_value = info_ptree_child.second.get<float>("<xmlattr>.value");
-            // Add them to the parameters map.
-            parameters.emplace(parameter_name,parameter_value);
+    if (profile_flx_name == "exponential")
+        profile_flx = gbkfit::models::galaxy_2d::exponential;
+    else
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
 
-            std::cout << parameter_name << "=" << parameter_value << std::endl;
-        }
-    }
+    if (profile_vel_name == "lramp")
+        profile_vel = gbkfit::models::galaxy_2d::lramp;
+    else if (profile_vel_name == "arctan")
+        profile_vel = gbkfit::models::galaxy_2d::arctan;
+    else if (profile_vel_name == "epinat")
+        profile_vel = gbkfit::models::galaxy_2d::epinat;
+    else
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
 
-
-    model* new_model = new gbkfit::models::galaxy_2d::model_galaxy_2d_omp(17,17,1,1,1,1,
-                                                                          gbkfit::models::galaxy_2d::model_galaxy_2d::exponential,
-                                                                          gbkfit::models::galaxy_2d::model_galaxy_2d::arctan);
-
-    // Evaluate/Initialize model with the supplied parameter values.
-    new_model->evaluate(parameters);
-
-    return new_model;
+    return new gbkfit::models::galaxy_2d::model_galaxy_2d_omp(profile_flx,profile_vel);
 }
-
 
 } // namespace galaxy_2d
 } // namespace models

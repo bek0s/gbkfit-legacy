@@ -6,6 +6,9 @@
 #include "gbkfit/nddataset.hpp"
 #include "gbkfit/parameters_fit_info.hpp"
 
+#include "gbkfit/instrument.hpp"
+#include "gbkfit/spread_function.hpp"
+
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
@@ -172,6 +175,78 @@ std::map<std::string,nddataset*> core::create_datasets(const std::string& info) 
     }
 
     return datasets;
+}
+
+instrument* core::create_instrument(const std::string& info) const
+{
+    // Parse input string as xml.
+    std::stringstream info_stream(info);
+    boost::property_tree::ptree info_ptree;
+    boost::property_tree::read_xml(info_stream,info_ptree);
+
+    // Read sampling
+    float sampling_x = info_ptree.get<float>("sampling_x");
+    float sampling_y = info_ptree.get<float>("sampling_y");
+    float sampling_z = info_ptree.get<float>("sampling_z");
+
+    // Read psf and lsf type.
+    std::string psf_type = info_ptree.get<std::string>("psf.<xmlattr>.type");
+    std::string lsf_type = info_ptree.get<std::string>("lsf.<xmlattr>.type");
+
+    point_spread_function* psf = nullptr;
+    line_spread_function* lsf = nullptr;
+
+    //
+    // Read and create psf.
+    //
+
+    if      (psf_type == "gaussian")
+    {
+        float fwhm = info_ptree.get<float>("psf.<xmlattr>.fwhm");
+        psf = new point_spread_function_gaussian(fwhm);
+    }
+    else if (psf_type == "lorentzian")
+    {
+        float fwhm = info_ptree.get<float>("psf.<xmlattr>.fwhm");
+        psf = new point_spread_function_lorentzian(fwhm);
+
+    }
+    else if (psf_type == "moffat")
+    {
+        float fwhm = info_ptree.get<float>("psf.<xmlattr>.fwhm");
+        float beta = info_ptree.get<float>("psf.<xmlattr>.beta",4.765f);
+        psf = new point_spread_function_moffat(fwhm,beta);
+    }
+
+    //
+    // Read and create lsf.
+    //
+
+    if (    lsf_type == "gaussian")
+    {
+        float fwhm = info_ptree.get<float>("lsf.<xmlattr>.fwhm");
+        lsf = new line_spread_function_gaussian(fwhm);
+    }
+    else if (lsf_type == "lorentzian")
+    {
+        float fwhm = info_ptree.get<float>("lsf.<xmlattr>.fwhm");
+        lsf = new line_spread_function_lorentzian(fwhm);
+    }
+    else if (lsf_type == "moffat")
+    {
+        float fwhm = info_ptree.get<float>("lsf.<xmlattr>.fwhm");
+        float beta = info_ptree.get<float>("lsf.<xmlattr>.beta",4.765f);
+        lsf = new line_spread_function_moffat(fwhm,beta);
+    }
+
+    //
+    // Create instrument
+    //
+
+    instrument* new_instrument = new instrument(sampling_x, sampling_y, sampling_z, psf, lsf);
+
+    return new_instrument;
+
 }
 
 } // namespace gbkfit

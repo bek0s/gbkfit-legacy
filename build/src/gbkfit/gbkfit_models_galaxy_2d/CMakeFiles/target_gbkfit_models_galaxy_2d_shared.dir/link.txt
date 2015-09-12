@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC -g  -shared -Wl,-soname,libgbkfit_models_galaxy_2d_shared_d.so -o ../../../lib/libgbkfit_models_galaxy_2d_shared_d.so CMakeFiles/target_gbkfit_models_galaxy_2d_object.dir/src/model_factory_galaxy_2d.cpp.o CMakeFiles/target_gbkfit_models_galaxy_2d_object.dir/src/model_galaxy_2d.cpp.o 

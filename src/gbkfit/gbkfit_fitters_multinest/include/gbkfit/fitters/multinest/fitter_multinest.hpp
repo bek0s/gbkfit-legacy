@@ -8,7 +8,6 @@ namespace gbkfit {
 namespace fitters {
 namespace multinest {
 
-
 //!
 //! \brief The fitter_multinest class
 //!
@@ -26,7 +25,6 @@ public:
     void fit(model* model, const std::map<std::string,nddataset*>& data, parameters_fit_info& params_info) const final;
 
 }; // class fitter_multinest
-
 
 //!
 //! \brief The fitter_factory_multinest class
@@ -49,7 +47,6 @@ public:
     fitter* create_fitter(const std::string& info) const final;
 
 }; // class fitter_factory_multinest
-
 
 } // namespace multinest
 } // namespace fitters

@@ -20,10 +20,11 @@ private:
 
 public:
 
-    model_galaxy_2d_cuda(int width, int height, float step_x, float step_y, int upsampling_x, int upsampling_y,
-                        profile_flux_type profile_flux, profile_rcur_type profile_rcur);
+    model_galaxy_2d_cuda(profile_flx_type profile_flux, profile_vel_type profile_vel);
 
     ~model_galaxy_2d_cuda();
+
+    void initialize(int size_x, int size_y, int size_z, instrument* instrument) final {}
 
     const std::string& get_type_name(void) const final;
 
@@ -31,14 +32,13 @@ public:
 
 private:
 
-    const std::map<std::string,ndarray*>& evaluate(int model_flux_id,
-                                                   int model_rcur_id,
-                                                   const float parameter_vsys,
-                                                   const std::vector<float>& parameters_proj,
-                                                   const std::vector<float>& parameters_flux,
-                                                   const std::vector<float>& parameters_rcur,
-                                                   const std::vector<float>& parameters_vsig) final;
-
+    const std::map<std::string,ndarray*>& evaluate(int profile_flx_id,
+                                                   int profile_vel_id,
+                                                   const float param_vsig,
+                                                   const float param_vsys,
+                                                   const std::vector<float>& params_prj,
+                                                   const std::vector<float>& params_flx,
+                                                   const std::vector<float>& params_vel) final;
 }; // class model_galaxy_2d_cuda
 
 

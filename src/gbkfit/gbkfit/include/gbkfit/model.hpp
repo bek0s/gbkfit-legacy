@@ -6,7 +6,6 @@
 
 namespace gbkfit {
 
-
 //!
 //! \brief The model class
 //!
@@ -19,6 +18,8 @@ public:
 
     virtual ~model();
 
+    virtual void initialize(int size_x, int size_y, int size_z, instrument* instrument) = 0;
+
     virtual const std::string& get_type_name(void) const = 0;
 
     virtual const std::vector<std::string>& get_parameter_names(void) const = 0;
@@ -30,7 +31,6 @@ public:
     virtual const std::map<std::string,ndarray*>& evaluate(const std::map<std::string,float>& parameters) = 0;
 
 }; // class model
-
 
 //!
 //! \brief The model_factory class
@@ -49,7 +49,6 @@ public:
     virtual model* create_model(const std::string& info) const = 0;
 
 }; //  class model_factory
-
 
 } // namespace gbkfit
 

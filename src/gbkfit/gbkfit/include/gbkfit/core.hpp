@@ -67,6 +67,15 @@ public:
     //!
     std::map<std::string,nddataset*> create_datasets(const std::string& info) const;
 
+    //!
+    //! \brief create_instrument
+    //! \param info
+    //! \return
+    //!
+    instrument* create_instrument(const std::string& info) const;
+
+
+
 
 }; // class core
 

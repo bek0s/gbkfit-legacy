@@ -1,0 +1,2 @@
+/usr/bin/ar cq ../../../lib/libgbkfit_fitter_multinest_static_d.a  CMakeFiles/target_gbkfit_fitter_multinest_object.dir/src/fitter_multinest.cpp.o
+/usr/bin/ranlib ../../../lib/libgbkfit_fitter_multinest_static_d.a

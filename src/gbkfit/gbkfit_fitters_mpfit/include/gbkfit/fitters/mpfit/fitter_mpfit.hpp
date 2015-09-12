@@ -8,7 +8,6 @@ namespace gbkfit {
 namespace fitters {
 namespace mpfit {
 
-
 //!
 //! \brief The fitter_mpfit class
 //!
@@ -48,7 +47,6 @@ public:
     fitter* create_fitter(const std::string& info) const final;
 
 }; // class fitter_factory_mpfit
-
 
 } // namespace mpfit
 } // namespace fitters

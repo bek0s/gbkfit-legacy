@@ -9,29 +9,58 @@ namespace models {
 namespace galaxy_2d {
 
 
-/*
-const std::vector<std::vector<std::string>> model_galaxy_2d::ms_rcur_arctan = {{"1","2"}
-                                                                              ,{"3","$"}};
-                                                                              */
-
-model_galaxy_2d::model_galaxy_2d(int size_x, int size_y, float step_x, float step_y, int upsampling_x, int upsampling_y,
-                                 profile_flux_type profile_flux, profile_rcur_type profile_rcur)
-    : m_model_size_x(size_x)
-    , m_model_size_y(size_y)
-    , m_model_size_z(1)
-    , m_step_x(step_x)
-    , m_step_y(step_y)
-    , m_step_z(1)
-    , m_upsampling_x(upsampling_x)
-    , m_upsampling_y(upsampling_y)
-    , m_upsampling_z(1)
+model_galaxy_2d::model_galaxy_2d(profile_flx_type profile_flx, profile_vel_type profile_vel)
+    : m_profile_flx(profile_flx)
+    , m_profile_vel(profile_vel)
 {
-    m_model_size_x_aligned = m_model_size_x * m_upsampling_x;
-    m_model_size_y_aligned = m_model_size_y * m_upsampling_y;
-    m_model_size_z_aligned = m_model_size_z * m_upsampling_z;
+    //
+    // Projection parameters.
+    //
 
-    m_profile_flux = profile_flux;
-    m_profile_rcur = profile_rcur;
+    m_parameter_names.push_back("xo");
+    m_parameter_names.push_back("yo");
+    m_parameter_names.push_back("pa");
+    m_parameter_names.push_back("incl");
+
+    //
+    // Flux model parameters.
+    //
+
+    if (m_profile_flx == exponential) {
+        m_parameter_names.push_back("i0");
+        m_parameter_names.push_back("r0");
+    }
+
+    //
+    // Rotation curve model parameters.
+    //
+
+    if (m_profile_vel == lramp) {
+        m_parameter_names.push_back("rt");
+        m_parameter_names.push_back("vt");
+    }
+    else if (m_profile_vel == arctan) {
+        m_parameter_names.push_back("rt");
+        m_parameter_names.push_back("vt");
+    }
+    else if (m_profile_vel == epinat) {
+        m_parameter_names.push_back("rt");
+        m_parameter_names.push_back("vt");
+        m_parameter_names.push_back("a");
+        m_parameter_names.push_back("b");
+    }
+
+    //
+    // Velocity dispersion model parameters.
+    //
+
+    m_parameter_names.push_back("vsig");
+
+    //
+    // Systemic velocity parameter.
+    //
+
+    m_parameter_names.push_back("vsys");
 }
 
 model_galaxy_2d::~model_galaxy_2d()
@@ -50,36 +79,60 @@ const std::vector<float>& model_galaxy_2d::get_parameter_values(void) const
 
 const std::map<std::string,ndarray*>& model_galaxy_2d::evaluate(const std::map<std::string,float>& parameters)
 {
+    //
     // Projection parameters.
-    std::vector<float> params_proj;
-    params_proj.push_back(parameters.at("xo"));
-    params_proj.push_back(parameters.at("yo"));
-    params_proj.push_back(parameters.at("pa"));
-    params_proj.push_back(parameters.at("incl"));
+    //
 
+    std::vector<float> params_prj;
+    params_prj.push_back(parameters.at("xo"));
+    params_prj.push_back(parameters.at("yo"));
+    params_prj.push_back(parameters.at("pa"));
+    params_prj.push_back(parameters.at("incl"));
+
+    //
     // Flux model parameters.
-    std::vector<float> params_flux;
-    if(m_profile_flux == exponential) {
-        params_flux.push_back(parameters.at("i0"));
-        params_flux.push_back(parameters.at("r0"));
+    //
+
+    std::vector<float> params_flx;
+    if (m_profile_flx == exponential) {
+        params_flx.push_back(parameters.at("i0"));
+        params_flx.push_back(parameters.at("r0"));
     }
 
+    //
     // Rotation curve model parameters.
-    std::vector<float> params_rcur;
-    if(m_profile_rcur == arctan) {
-        params_rcur.push_back(parameters.at("rt"));
-        params_rcur.push_back(parameters.at("vt"));
+    //
+
+    std::vector<float> params_vel;
+    if (m_profile_vel == lramp) {
+        params_vel.push_back(parameters.at("rt"));
+        params_vel.push_back(parameters.at("vt"));
+    }
+    else if (m_profile_vel == arctan) {
+        params_vel.push_back(parameters.at("rt"));
+        params_vel.push_back(parameters.at("vt"));
+    }
+    else if (m_profile_vel == epinat) {
+        params_vel.push_back(parameters.at("rt"));
+        params_vel.push_back(parameters.at("vt"));
+        params_vel.push_back(parameters.at("a"));
+        params_vel.push_back(parameters.at("b"));
     }
 
-    // Velocity dispersion model parameters
-    std::vector<float> params_vsig;
-    params_vsig.push_back(parameters.at("vsig"));
+    //
+    // Velocity dispersion model parameters.
+    //
 
-    // velocity offset parameter
+    float param_vsig = parameters.at("vsig");
+
+    //
+    // Systemic velocity parameter.
+    //
+
     float param_vsys = parameters.at("vsys");
 
     // ...
-    return evaluate(1,1,param_vsys,params_proj,params_flux,params_rcur,params_vsig);
+    return evaluate(m_profile_flx,m_profile_vel,param_vsig,param_vsys,params_prj,params_flx,params_vel);
 }
 
 

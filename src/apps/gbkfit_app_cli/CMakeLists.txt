@@ -9,7 +9,6 @@ project(gbkfit_app_cli-project)
 
 # ==============================================================================
 
-find_package(ccfits)
 find_package(cfitsio)
 find_package(Boost COMPONENTS system REQUIRED)
 
@@ -38,8 +37,9 @@ target_include_directories(target_gbkfit_app_cli PRIVATE ${GBKFIT_MODELS_GALAXY_
 target_include_directories(target_gbkfit_app_cli PRIVATE ${GBKFIT_MODELS_GALAXY_2D_OMP_INCLUDE_DIRS})
 target_include_directories(target_gbkfit_app_cli PRIVATE ${GBKFIT_MODELS_GALAXY_2D_CUDA_INCLUDE_DIRS})
 target_include_directories(target_gbkfit_app_cli PRIVATE ${Boost_INCLUDE_DIRS})
-target_include_directories(target_gbkfit_app_cli PRIVATE ${CCFITS_INCLUDE_DIRS})
 target_include_directories(target_gbkfit_app_cli PRIVATE ${CFITSIO_INCLUDE_DIRS})
+
+
 
 target_link_libraries(target_gbkfit_app_cli PRIVATE ${GBKFIT_LIBRARY_SHARED})
 target_link_libraries(target_gbkfit_app_cli PRIVATE ${GBKFIT_CUDA_LIBRARY_SHARED})
@@ -49,8 +49,8 @@ target_link_libraries(target_gbkfit_app_cli PRIVATE ${GBKFIT_MODELS_GALAXY_2D_LI
 target_link_libraries(target_gbkfit_app_cli PRIVATE ${GBKFIT_MODELS_GALAXY_2D_OMP_LIBRARY_SHARED})
 target_link_libraries(target_gbkfit_app_cli PRIVATE ${GBKFIT_MODELS_GALAXY_2D_CUDA_LIBRARY_SHARED})
 target_link_libraries(target_gbkfit_app_cli PRIVATE ${Boost_LIBRARIES})
-target_link_libraries(target_gbkfit_app_cli PRIVATE ${CCFITS_LIBRARIES})
 target_link_libraries(target_gbkfit_app_cli PRIVATE ${CFITSIO_LIBRARIES})
+
 
 target_compile_options(target_gbkfit_app_cli PRIVATE "-Wall")
 target_compile_options(target_gbkfit_app_cli PRIVATE "-Wextra")

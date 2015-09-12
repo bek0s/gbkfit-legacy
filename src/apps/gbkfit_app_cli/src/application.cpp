@@ -19,6 +19,7 @@
 #include "gbkfit/utility.hpp"
 #include "gbkfit/parameters_fit_info.hpp"
 
+
 namespace gbkfit_app_cli {
 
 
@@ -31,6 +32,7 @@ application::application(void)
     , m_model(nullptr)
     , m_fitter(nullptr)
     , m_fit_info(nullptr)
+    , m_instrument(nullptr)
 {
 }
 
@@ -38,17 +40,15 @@ application::~application()
 {
 }
 
-int* gdata = nullptr;
-char* gdata2 = nullptr;
-
-template<typename T>
-void as(T* data)
-{
-    std::copy(gdata,gdata+1,data);
-}
-
 bool application::initialize(void)
 {
+    gbkfit::line_spread_function* lsf = new gbkfit::line_spread_function_gaussian(10);
+
+    gbkfit::ndarray* lsf_data = lsf->as_array(0.3,12);
+
+    gbkfit::fits::write_to("!lsf.fits",*lsf_data);
+
+    exit(0);
     std::cout << "Initialization started." << std::endl;
 
     // create gbkfit core
@@ -90,18 +90,21 @@ bool application::initialize(void)
     std::stringstream datasets_info;
     boost::property_tree::write_xml(datasets_info,ptree_config.get_child("gbkfit.datasets"));
 
+    std::stringstream instrument_info;
+    boost::property_tree::write_xml(instrument_info,ptree_config.get_child("gbkfit.instrument"));
+
     // create datasets
     m_datasets = m_core->create_datasets(datasets_info.str());
 
     // create model
     m_model = m_core->create_model(model_info.str());
 
-    //m_model = m_core->create_model(model_info.str());
-
     // create fitter
-//  m_fitter = m_core->create_fitter(fitter_info.str());
+    m_fitter = m_core->create_fitter(fitter_info.str());
 
     m_fit_info = m_core->create_parameters_fit_info(parameters_info.str());
+
+    m_instrument = m_core->create_instrument(instrument_info.str());
 
     std::cout << "Initialization completed." << std::endl;
 
@@ -120,6 +123,7 @@ void application::shutdown(void)
     delete m_model;
     delete m_fitter;
     delete m_fit_info;
+    delete m_instrument;
 
     for(auto& dataset : m_datasets)
     {
@@ -132,49 +136,48 @@ void application::shutdown(void)
 
 void application::run(void)
 {
+//  std::cout << gbkfit::util_num::is_odd(-1) << std::endl;
+    std::cout << gbkfit::util_num::roundu_odd(5.1) << std::endl;
+
+    exit(0);
+
     std::cout << "Main loop started." << std::endl;
-
-    gbkfit::parameters_fit_info foo;
-
-
-    foo.add_parameter("xo").add<float>("option1",4.0);
-
-    auto foo1 = foo.get_parameter("xo").get<int>("option1");
-
-    std::cout << foo1 << std::endl;
-
-
-
-
-    //gbkfit::model_parameters_fit_info::model_parameter_fit_info foo1;
-    //foo.add_parameter("xo").add("init",10).add("min",10);
-
-
-
 
     if(m_model)
     {
+        int model_size = 32;
+        int model_size_x = model_size;
+        int model_size_y = model_size;
+        float xo = model_size_x/2.0;
+        float yo = model_size_y/2.0;
+        std::cout << "xo=" << xo << ", "
+                  << "yo=" << yo << std::endl;
+
+        m_model->initialize(32,32,100,m_instrument);
+
+
         std::map<std::string,float> params = {
             {"vsys",0},
-            {"xo",8},
-            {"yo",8},
+            {"xo",xo},
+            {"yo",yo},
             {"pa",90},
             {"incl",45},
             {"i0",1.0},
             {"r0",2.0},
             {"rt",5.0},
             {"vt",200},
-            {"vsig",40}
+            {"vsig",30}
         };
 
-        m_model->get_parameter_names();
-
-    //  std::vector<gbkfit::ndarray*> data = m_model->evaluate(params);
-        std::map<std::string,gbkfit::ndarray*> data = m_model->get_data();
+        std::map<std::string,gbkfit::ndarray*> data = m_model->evaluate(params);
+        gbkfit::fits::write_to("!foo_flxcubea.fits",*data["flxcubea"]);
+        gbkfit::fits::write_to("!foo_flxcube.fits",*data["flxcube"]);
         gbkfit::fits::write_to("!foo_flxmap.fits",*data["flxmap"]);
         gbkfit::fits::write_to("!foo_velmap.fits",*data["velmap"]);
         gbkfit::fits::write_to("!foo_sigmap.fits",*data["sigmap"]);
     }
+
+    m_fitter->fit(m_model,m_datasets,*m_fit_info);
 
     std::cout << "Main loop finished." << std::endl;
 }

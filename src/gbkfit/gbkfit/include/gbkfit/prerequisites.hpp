@@ -6,6 +6,7 @@
 #include <cstring>
 
 #include <algorithm>
+#include <array>
 #include <complex>
 #include <iostream>
 #include <limits>
@@ -25,6 +26,8 @@ class core;
 class fitter;
 class fitter_factory;
 
+class instrument;
+
 class model;
 class model_factory;
 
@@ -34,6 +37,9 @@ class ndarray_host;
 class nddataset;
 
 class parameters_fit_info;
+
+class line_spread_function;
+class point_spread_function;
 
 } // namespace gbkfit
 
