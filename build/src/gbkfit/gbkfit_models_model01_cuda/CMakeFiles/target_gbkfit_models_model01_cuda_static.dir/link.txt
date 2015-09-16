@@ -1,2 +1,0 @@
-/usr/bin/ar cq ../../../lib/libgbkfit_models_model01_cuda_static_d.a  CMakeFiles/target_gbkfit_models_model01_cuda_object.dir/src/model_model01_cuda.cpp.o
-/usr/bin/ranlib ../../../lib/libgbkfit_models_model01_cuda_static_d.a

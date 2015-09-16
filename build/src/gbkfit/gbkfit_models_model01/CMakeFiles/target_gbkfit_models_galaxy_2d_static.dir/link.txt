@@ -1,2 +1,0 @@
-/usr/bin/ar cq ../../../lib/libgbkfit_models_galaxy_2d_static_d.a  CMakeFiles/target_gbkfit_models_model01_object.dir/src/model_factory_galaxy_2d.cpp.o CMakeFiles/target_gbkfit_models_model01_object.dir/src/model_galaxy_2d.cpp.o
-/usr/bin/ranlib ../../../lib/libgbkfit_models_galaxy_2d_static_d.a
