@@ -1,2 +1,0 @@
-/usr/bin/ar cq ../../../lib/libgbkfit_fitter_mpfit_static_d.a  CMakeFiles/target_gbkfit_fitter_mpfit_object.dir/src/fitter_mpfit.cpp.o CMakeFiles/target_gbkfit_fitter_mpfit_object.dir/src/mpfit/mpfit.c.o
-/usr/bin/ranlib ../../../lib/libgbkfit_fitter_mpfit_static_d.a
