@@ -1,0 +1,2 @@
+/usr/bin/ar cq ../../../lib/libgbkfit_models_model01_static_d.a  CMakeFiles/target_gbkfit_models_model01_object.dir/src/model_model01.cpp.o
+/usr/bin/ranlib ../../../lib/libgbkfit_models_model01_static_d.a

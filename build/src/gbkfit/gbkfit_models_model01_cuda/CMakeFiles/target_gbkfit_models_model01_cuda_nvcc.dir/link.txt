@@ -1,0 +1,2 @@
+/usr/bin/ar cq ../../../lib/libtarget_gbkfit_models_model01_cuda_nvcc.a  CMakeFiles/target_gbkfit_models_model01_cuda_nvcc.dir/src/target_gbkfit_models_model01_cuda_nvcc_generated_kernels_cuda_device.cu.o CMakeFiles/target_gbkfit_models_model01_cuda_nvcc.dir/src/target_gbkfit_models_model01_cuda_nvcc_generated_kernels_cuda_host.cu.o
+/usr/bin/ranlib ../../../lib/libtarget_gbkfit_models_model01_cuda_nvcc.a

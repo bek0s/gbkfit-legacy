@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC -g  -shared -Wl,-soname,libgbkfit_fftw3_shared_d.so -o ../../../lib/libgbkfit_fftw3_shared_d.so CMakeFiles/target_gbkfit_fftw3_object.dir/src/ndarray_host_fftw3.cpp.o -lfftw3 -lfftw3_omp -lfftw3_threads -lfftw3f -lfftw3f_omp -lfftw3f_threads -lfftw3l -lfftw3l_omp -lfftw3l_threads 
