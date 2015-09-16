@@ -31,14 +31,14 @@ endif()
 # Models
 #
 
-if(${GBKFIT_BUILD_GBKFIT_MODELS_GALAXY_2D})
-    add_subdirectory(gbkfit_models_galaxy_2d)
+if(${GBKFIT_BUILD_GBKFIT_MODELS_MODEL01})
+    add_subdirectory(gbkfit_models_model01)
 endif()
 
-if(${GBKFIT_BUILD_GBKFIT_MODELS_GALAXY_2D_CUDA})
-    add_subdirectory(gbkfit_models_galaxy_2d_cuda)
+if(${GBKFIT_BUILD_GBKFIT_MODELS_MODEL01_CUDA})
+    add_subdirectory(gbkfit_models_model01_cuda)
 endif()
 
-if(${GBKFIT_BUILD_GBKFIT_MODELS_GALAXY_2D_OMP})
-    add_subdirectory(gbkfit_models_galaxy_2d_omp)
+if(${GBKFIT_BUILD_GBKFIT_MODELS_MODEL01_OMP})
+    add_subdirectory(gbkfit_models_model01_omp)
 endif()

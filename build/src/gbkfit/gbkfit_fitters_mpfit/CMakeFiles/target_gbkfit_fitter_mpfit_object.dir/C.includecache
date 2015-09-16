@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../src/gbkfit/gbkfit_fitters_mpfit/./include/gbkfit/fitters/mpfit/mpfit/mpfit.h
+float.h
+-
+
+/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_fitters_mpfit/src/mpfit/mpfit.c
+stdio.h
+-
+stdlib.h
+-
+math.h
+-
+string.h
+-
+gbkfit/fitters/mpfit/mpfit/mpfit.h
+/home/bekos/code/gbkfit/gbkfit/src/gbkfit/gbkfit_fitters_mpfit/src/mpfit/gbkfit/fitters/mpfit/mpfit/mpfit.h
+

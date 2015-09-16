@@ -1,0 +1,360 @@
+
+#include "gbkfit/models/model01/model_model01_omp.hpp"
+
+
+#include "gbkfit/models/model01/kernels_omp.hpp"
+#include "gbkfit/ndarray_host.hpp"
+
+#include "gbkfit/instrument.hpp"
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+#include "gbkfit/utility.hpp"
+#include "gbkfit/fits.hpp"
+#include <omp.h>
+
+namespace gbkfit {
+namespace models {
+namespace model01 {
+
+
+model_model01_omp::model_model01_omp(profile_flx_type profile_flx, profile_vel_type profile_vel)
+    : model_model01(profile_flx,profile_vel)
+{
+}
+
+model_model01_omp::~model_model01_omp()
+{
+    delete m_data_flxcube_padded;
+    delete m_data_flxcube_padded_fft;
+
+    delete m_data_psfcube_padded;
+    delete m_data_psfcube_padded_fft;
+
+    delete m_data_flxcube;
+    delete m_data_flxmap;
+    delete m_data_velmap;
+    delete m_data_sigmap;
+
+    fftwf_destroy_plan(m_fft_plan_flxcube_r2c);
+    fftwf_destroy_plan(m_fft_plan_flxcube_c2r);
+    fftwf_destroy_plan(m_fft_plan_psfcube_r2c);
+    fftwf_cleanup_threads();
+}
+
+void model_model01_omp::initialize(int size_x, int size_y, int size_z, instrument *instrument)
+{
+    m_upsampling_x = 1;
+    m_upsampling_y = 1;
+    m_upsampling_z = 1;
+
+    //
+    // Store instrument information.
+    //
+
+    m_step_x = instrument->get_step_x();
+    m_step_y = instrument->get_step_y();
+    m_step_z = instrument->get_step_z();
+
+    m_psf_size_x = instrument->get_recommended_psf_size_cube()[0];
+    m_psf_size_y = instrument->get_recommended_psf_size_cube()[1];
+    m_psf_size_z = instrument->get_recommended_psf_size_cube()[2];
+
+    //
+    // Calculate sizes.
+    //
+
+    m_size_x = size_x;
+    m_size_y = size_y;
+    m_size_z = size_z;
+
+    m_size_padded_x = m_size_x;
+    m_size_padded_y = m_size_y;
+    m_size_padded_z = m_size_z;
+
+    if (m_psf_size_x > 0) m_size_padded_x += m_psf_size_x - 1;
+    if (m_psf_size_y > 0) m_size_padded_y += m_psf_size_y - 1;
+    if (m_psf_size_z > 0) m_size_padded_z += m_psf_size_z - 1;
+
+    m_size_padded_x *= m_upsampling_x;
+    m_size_padded_y *= m_upsampling_y;
+    m_size_padded_z *= m_upsampling_z;
+
+    m_size_padded_x = util_fft::calculate_optimal_dim_length(m_size_padded_x, 512, 256);
+    m_size_padded_y = util_fft::calculate_optimal_dim_length(m_size_padded_y, 512, 256);
+    m_size_padded_z = util_fft::calculate_optimal_dim_length(m_size_padded_z, 512, 256);
+
+    int size_padded     = m_size_padded_z*m_size_padded_y* m_size_padded_x;
+    int size_padded_fft = m_size_padded_z*m_size_padded_y*(m_size_padded_x/2+1);
+
+    //
+    // Allocate memory for flux and psf cubes.
+    //
+
+    m_data_psfcube_padded = new ndarray_host_new({m_size_padded_x, m_size_padded_y, m_size_padded_z});
+    m_data_flxcube_padded = new ndarray_host_new({m_size_padded_x, m_size_padded_y, m_size_padded_z});
+    m_data_psfcube_padded_fft = new ndarray_host_new({size_padded_fft*2});
+    m_data_flxcube_padded_fft = new ndarray_host_new({size_padded_fft*2});
+
+    //
+    // Create fft plans for flux and psf cubes.
+    //
+
+    fftwf_plan_with_nthreads(omp_get_max_threads());
+
+    m_fft_plan_flxcube_r2c = fftwf_plan_dft_r2c_3d(m_size_padded_z,
+                                                   m_size_padded_y,
+                                                   m_size_padded_x,
+                                                   m_data_flxcube_padded->get_host_ptr(),
+                                                   (fftwf_complex*)m_data_flxcube_padded_fft->get_host_ptr(),
+                                                   FFTW_ESTIMATE);
+
+    m_fft_plan_flxcube_c2r = fftwf_plan_dft_c2r_3d(m_size_padded_z,
+                                                   m_size_padded_y,
+                                                   m_size_padded_x,
+                                                   (fftwf_complex*)m_data_flxcube_padded_fft->get_host_ptr(),
+                                                   m_data_flxcube_padded->get_host_ptr(),
+                                                   FFTW_ESTIMATE);
+
+    m_fft_plan_psfcube_r2c = fftwf_plan_dft_r2c_3d(m_size_padded_z,
+                                                   m_size_padded_y,
+                                                   m_size_padded_x,
+                                                   m_data_psfcube_padded->get_host_ptr(),
+                                                   (fftwf_complex*)m_data_psfcube_padded_fft->get_host_ptr(),
+                                                   FFTW_ESTIMATE);
+
+    //
+    // Prepare psf and fft-transform it.
+    //
+
+    ndarray_host* tmp_data_psfcube_padded = instrument->create_psf_cube_data(m_size_padded_x,
+                                                                             m_size_padded_y,
+                                                                             m_size_padded_z,
+                                                                             m_step_x,
+                                                                             m_step_y,
+                                                                             m_step_z);
+    m_data_psfcube_padded->copy_data(tmp_data_psfcube_padded);
+
+    delete tmp_data_psfcube_padded;
+
+    util_image::image_shift(m_data_psfcube_padded->get_host_ptr(),
+                            m_size_padded_x,
+                            m_size_padded_y,
+                            m_size_padded_z,
+                           -m_size_padded_x/2,
+                           -m_size_padded_y/2,
+                           -m_size_padded_z/2);
+
+    fftwf_execute_dft_r2c(m_fft_plan_psfcube_r2c,
+                          m_data_psfcube_padded->get_host_ptr(),
+                          (fftwf_complex*)m_data_psfcube_padded_fft->get_host_ptr());
+
+//  fits::write_to("!psfcube_padded.fits", *m_data_psfcube_padded);
+
+    //
+    // Allocate and initialize output arrays.
+    //
+
+    m_data_flxcube = new ndarray_host_new({size_x, size_y, size_z});
+    m_data_flxmap  = new ndarray_host_new({size_x, size_y});
+    m_data_velmap  = new ndarray_host_new({size_x, size_y});
+    m_data_sigmap  = new ndarray_host_new({size_x, size_y});
+
+    std::fill(m_data_flxcube->get_host_ptr(), m_data_flxcube->get_host_ptr() + size_x*size_y*size_z, -1);
+    std::fill(m_data_flxmap ->get_host_ptr(), m_data_flxmap ->get_host_ptr() + size_x*size_y,        -1);
+    std::fill(m_data_velmap ->get_host_ptr(), m_data_velmap ->get_host_ptr() + size_x*size_y,        -1);
+    std::fill(m_data_sigmap ->get_host_ptr(), m_data_sigmap ->get_host_ptr() + size_x*size_y,        -1);
+
+    //
+    // Add output data to the output map.
+    //
+
+    m_data_map["flxcube_padded"] = m_data_flxcube_padded;
+    m_data_map["psfcube_padded"] = m_data_psfcube_padded;
+    m_data_map["flxcube"] = m_data_flxcube;
+    m_data_map["flxmap"]  = m_data_flxmap;
+    m_data_map["velmap"]  = m_data_velmap;
+    m_data_map["sigmap"]  = m_data_sigmap;
+}
+
+const std::string& model_model01_omp::get_type_name(void) const
+{
+    return model_factory_model01_omp::FACTORY_TYPE_NAME;
+}
+
+const std::map<std::string,ndarray*>& model_model01_omp::get_data(void) const
+{
+    return m_data_map;
+}
+
+const std::map<std::string,ndarray*>& model_model01_omp::evaluate(int profile_flx_id,
+                                                                  int profile_vel_id,
+                                                                  const std::vector<float>& params_prj,
+                                                                  const std::vector<float>& params_flx,
+                                                                  const std::vector<float>& params_vel,
+                                                                  const float param_vsys,
+                                                                  const float param_vsig)
+{
+    //
+    // Calculate margins.
+    //
+
+    int upsampled_psf_size_x = m_psf_size_x*m_upsampling_x;
+    int upsampled_psf_size_y = m_psf_size_y*m_upsampling_y;
+    int upsampled_psf_size_z = m_psf_size_z*m_upsampling_z;
+    int upsampled_padding_x0 = upsampled_psf_size_x/2;
+    int upsampled_padding_y0 = upsampled_psf_size_y/2;
+    int upsampled_padding_z0 = upsampled_psf_size_z/2;
+    int upsampled_padding_x1 = upsampled_psf_size_x - upsampled_padding_x0 - 1;
+    int upsampled_padding_y1 = upsampled_psf_size_y - upsampled_padding_y0 - 1;
+    int upsampled_padding_z1 = upsampled_psf_size_z - upsampled_padding_z0 - 1;
+
+    //
+    // Set a constant value to all pixels. Used for debug.
+    //
+
+#if 0
+    float fill_value = 0.1;
+    kernels_omp::array_3d_fill(m_size_padded_x,
+                               m_size_padded_y,
+                               m_size_padded_z,
+                               fill_value,
+                               m_data_flxcube_padded->get_host_ptr());
+#endif
+
+    //
+    // Evaluate cube model (upsampling + padding).
+    //
+
+    kernels_omp::model_image_3d_evaluate(profile_flx_id,
+                                         profile_vel_id,
+                                         param_vsig,
+                                         param_vsys,
+                                         params_prj.data(),
+                                         params_flx.data(),
+                                         params_vel.data(),
+                                         m_size_x,
+                                         m_size_y,
+                                         m_size_z,
+                                         m_step_x,
+                                         m_step_y,
+                                         m_step_z,
+                                         m_upsampling_x,
+                                         m_upsampling_y,
+                                         m_upsampling_z,
+                                         upsampled_padding_x0,
+                                         upsampled_padding_y0,
+                                         upsampled_padding_z0,
+                                         upsampled_padding_x1,
+                                         upsampled_padding_y1,
+                                         upsampled_padding_z1,
+                                         m_size_padded_x,
+                                         m_size_padded_y,
+                                         m_size_padded_z,
+                                         m_data_flxcube_padded->get_host_ptr());
+
+//  fits::write_to("!flxcube_padded.fits", *m_data_flxcube_padded);
+
+    //
+    // Perform fft-based 3d convolution with the psf cube.
+    //
+
+    /*
+    kernels_omp::model_image_3d_convolve_fft(m_data_flxcube_padded->get_host_ptr(),
+                                             m_data_flxcube_padded_fft->get_host_ptr(),
+                                             m_data_psfcube_padded_fft->get_host_ptr(),
+                                             m_size_padded_x,
+                                             m_size_padded_y,
+                                             m_size_padded_z,
+                                             m_fft_plan_flxcube_r2c,
+                                             m_fft_plan_flxcube_c2r);*/
+
+//  fits::write_to("!flxcube_padded_conv.fits", *m_data_flxcube_padded);
+
+//  exit(0);
+
+    //
+    // Downsample cube and remove padding.
+    //
+
+    kernels_omp::model_image_3d_downsample_and_copy(m_data_flxcube_padded->get_host_ptr(),
+                                                    m_size_x,
+                                                    m_size_y,
+                                                    m_size_z,
+                                                    upsampled_padding_x0,
+                                                    upsampled_padding_y0,
+                                                    upsampled_padding_z0,
+                                                    m_size_padded_x,
+                                                    m_size_padded_y,
+                                                    m_size_padded_z,
+                                                    m_upsampling_x,
+                                                    m_upsampling_y,
+                                                    m_upsampling_z,
+                                                    m_data_flxcube->get_host_ptr());
+
+    //
+    // Extract moment maps from cube.
+    //
+
+    kernels_omp::model_image_3d_extract_moment_maps(m_data_flxcube->get_host_ptr(),
+                                                    m_size_x,
+                                                    m_size_y,
+                                                    m_size_z,
+                                                    m_step_x,
+                                                    m_step_y,
+                                                    m_step_z,
+                                                    m_data_flxmap->get_host_ptr(),
+                                                    m_data_velmap->get_host_ptr(),
+                                                    m_data_sigmap->get_host_ptr());
+
+    return get_data();
+}
+
+const std::string model_factory_model01_omp::FACTORY_TYPE_NAME = "gbkfit.models.model_model01_omp";
+
+model_factory_model01_omp::model_factory_model01_omp(void)
+{
+}
+
+model_factory_model01_omp::~model_factory_model01_omp()
+{
+}
+
+const std::string& model_factory_model01_omp::get_type_name(void) const
+{
+    return FACTORY_TYPE_NAME;
+}
+
+model* model_factory_model01_omp::create_model(const std::string& info) const
+{
+    // Parse input string as xml.
+    std::stringstream info_stream(info);
+    boost::property_tree::ptree info_ptree;
+    boost::property_tree::read_xml(info_stream,info_ptree);
+
+    // Read flux and velocity profile names.
+    std::string profile_flx_name = info_ptree.get<std::string>("profile_flx");
+    std::string profile_vel_name = info_ptree.get<std::string>("profile_vel");
+
+    profile_flx_type profile_flx;
+    profile_vel_type profile_vel;
+
+    if (profile_flx_name == "exponential")
+        profile_flx = gbkfit::models::model01::exponential;
+    else
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
+
+    if (profile_vel_name == "lramp")
+        profile_vel = gbkfit::models::model01::lramp;
+    else if (profile_vel_name == "arctan")
+        profile_vel = gbkfit::models::model01::arctan;
+    else if (profile_vel_name == "epinat")
+        profile_vel = gbkfit::models::model01::epinat;
+    else
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
+
+    return new gbkfit::models::model01::model_model01_omp(profile_flx,profile_vel);
+}
+
+} // namespace galaxy_2d
+} // namespace models
+} // namespace gbkfit

@@ -3,7 +3,6 @@
 #define GBKFIT_FITS_UTIL_HPP
 
 #include "gbkfit/prerequisites.hpp"
-#include <boost/lexical_cast.hpp>
 
 namespace gbkfit {
 namespace fits {
@@ -31,11 +30,7 @@ public:
 
     template<typename T>
     void set_key(const std::string& name, const T& value, const std::string& comment)
-    {
-        std::string value_str = boost::lexical_cast<std::string>(value);
-        m_key_names.push_back(name);
-        m_key_values.push_back(value_str);
-    }
+    {}
 
     template<typename T>
     void get_key(const std::string& name, T& value, std::string& comment)

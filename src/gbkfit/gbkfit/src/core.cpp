@@ -7,7 +7,7 @@
 #include "gbkfit/parameters_fit_info.hpp"
 
 #include "gbkfit/instrument.hpp"
-#include "gbkfit/spread_function.hpp"
+#include "gbkfit/spread_functions.hpp"
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
@@ -141,7 +141,7 @@ nddataset* core::create_dataset(const std::string& info) const
 }
 
 std::map<std::string,nddataset*> core::create_datasets(const std::string& info) const
-{   
+{
     // Parse input string as xml.
     std::stringstream info_stream(info);
     boost::property_tree::ptree info_ptree;

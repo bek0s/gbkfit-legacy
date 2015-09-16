@@ -8,14 +8,13 @@
 
 #include "gbkfit/fitters/mpfit/fitter_mpfit.hpp"
 #include "gbkfit/fitters/multinest/fitter_multinest.hpp"
-#include "gbkfit/models/galaxy_2d/model_galaxy_2d.hpp"
-#include "gbkfit/models/galaxy_2d_omp/model_galaxy_2d_omp.hpp"
-#include "gbkfit/models/galaxy_2d_cuda/model_galaxy_2d_cuda.hpp"
+#include "gbkfit/models/model01/model_model01.hpp"
+#include "gbkfit/models/model01/model_model01_omp.hpp"
+#include "gbkfit/models/model01/model_model01_cuda.hpp"
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
-#include "gbkfit/spread_function.hpp"
 #include "gbkfit/utility.hpp"
 #include "gbkfit/parameters_fit_info.hpp"
 
@@ -25,8 +24,8 @@ namespace gbkfit_app_cli {
 
 application::application(void)
     : m_core(nullptr)
-    , m_model_factory_galaxy_2d_cuda(nullptr)
-    , m_model_factory_galaxy_2d_omp(nullptr)
+    , m_model_factory_model01_cuda(nullptr)
+    , m_model_factory_model01_omp(nullptr)
     , m_fitter_factory_mpfit(nullptr)
     , m_fitter_factory_multinest(nullptr)
     , m_model(nullptr)
@@ -42,29 +41,22 @@ application::~application()
 
 bool application::initialize(void)
 {
-    gbkfit::line_spread_function* lsf = new gbkfit::line_spread_function_gaussian(10);
-
-    gbkfit::ndarray* lsf_data = lsf->as_array(0.3,12);
-
-    gbkfit::fits::write_to("!lsf.fits",*lsf_data);
-
-    exit(0);
     std::cout << "Initialization started." << std::endl;
 
     // create gbkfit core
     m_core = new gbkfit::core();
 
     // create model factories
-    m_model_factory_galaxy_2d_cuda = new gbkfit::models::galaxy_2d::model_factory_galaxy_2d_cuda();
-    m_model_factory_galaxy_2d_omp = new gbkfit::models::galaxy_2d::model_factory_galaxy_2d_omp();
+    m_model_factory_model01_cuda = new gbkfit::models::model01::model_factory_model01_cuda();
+    m_model_factory_model01_omp = new gbkfit::models::model01::model_factory_model01_omp();
 
     // create fitter factories
     m_fitter_factory_mpfit = new gbkfit::fitters::mpfit::fitter_factory_mpfit();
     m_fitter_factory_multinest = new gbkfit::fitters::multinest::fitter_factory_multinest();
 
     // add model factories to the gbkfit core
-    m_core->add_model_factory(m_model_factory_galaxy_2d_cuda);
-    m_core->add_model_factory(m_model_factory_galaxy_2d_omp);
+    m_core->add_model_factory(m_model_factory_model01_cuda);
+    m_core->add_model_factory(m_model_factory_model01_omp);
 
     // add fitter factories to the gbkfit core
     m_core->add_fitter_factory(m_fitter_factory_mpfit);
@@ -72,7 +64,7 @@ bool application::initialize(void)
 
     // read configuration
     boost::property_tree::ptree ptree_config;
-    boost::property_tree::read_xml("../../tools/gbkfit_config.xml",ptree_config);
+    boost::property_tree::read_xml("../../config/test_config_01.xml",ptree_config, boost::property_tree::xml_parser::trim_whitespace);
 
     // get model info
     std::stringstream model_info;
@@ -116,8 +108,8 @@ void application::shutdown(void)
     std::cout << "Shutdown started." << std::endl;
 
     delete m_core;
-    delete m_model_factory_galaxy_2d_cuda;
-    delete m_model_factory_galaxy_2d_omp;
+    delete m_model_factory_model01_cuda;
+    delete m_model_factory_model01_omp;
     delete m_fitter_factory_mpfit;
     delete m_fitter_factory_multinest;
     delete m_model;
@@ -136,16 +128,11 @@ void application::shutdown(void)
 
 void application::run(void)
 {
-//  std::cout << gbkfit::util_num::is_odd(-1) << std::endl;
-    std::cout << gbkfit::util_num::roundu_odd(5.1) << std::endl;
-
-    exit(0);
-
     std::cout << "Main loop started." << std::endl;
 
     if(m_model)
     {
-        int model_size = 32;
+        int model_size = 33;
         int model_size_x = model_size;
         int model_size_y = model_size;
         float xo = model_size_x/2.0;
@@ -153,7 +140,7 @@ void application::run(void)
         std::cout << "xo=" << xo << ", "
                   << "yo=" << yo << std::endl;
 
-        m_model->initialize(32,32,100,m_instrument);
+        m_model->initialize(model_size,model_size,100,m_instrument);
 
 
         std::map<std::string,float> params = {
@@ -170,14 +157,15 @@ void application::run(void)
         };
 
         std::map<std::string,gbkfit::ndarray*> data = m_model->evaluate(params);
-        gbkfit::fits::write_to("!foo_flxcubea.fits",*data["flxcubea"]);
+    //  gbkfit::fits::write_to("!foo_flxcube_padded.fits",*data["flxcube_padded"]);
+    //  gbkfit::fits::write_to("!foo_psfcube_padded.fits",*data["psfcube_padded"]);
         gbkfit::fits::write_to("!foo_flxcube.fits",*data["flxcube"]);
         gbkfit::fits::write_to("!foo_flxmap.fits",*data["flxmap"]);
         gbkfit::fits::write_to("!foo_velmap.fits",*data["velmap"]);
         gbkfit::fits::write_to("!foo_sigmap.fits",*data["sigmap"]);
     }
 
-    m_fitter->fit(m_model,m_datasets,*m_fit_info);
+//  m_fitter->fit(m_model,m_datasets,*m_fit_info);
 
     std::cout << "Main loop finished." << std::endl;
 }

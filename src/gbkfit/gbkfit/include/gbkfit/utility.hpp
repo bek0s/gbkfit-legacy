@@ -9,7 +9,7 @@ namespace gbkfit {
 namespace util_num
 {
 
-std::uint32_t roundu_po2(std::uint32_t num)
+inline std::uint32_t roundu_po2(std::uint32_t num)
 {
     num--;
     num |= num >> 1;
@@ -21,7 +21,7 @@ std::uint32_t roundu_po2(std::uint32_t num)
     return num;
 }
 
-std::uint32_t roundd_po2 (std::uint32_t num)
+inline std::uint32_t roundd_po2 (std::uint32_t num)
 {
     num = num | (num >> 1);
     num = num | (num >> 2);
@@ -31,43 +31,43 @@ std::uint32_t roundd_po2 (std::uint32_t num)
     return num - (num >> 1);
 }
 
-std::uint32_t roundu_multiple(std::uint32_t num, std::uint32_t multiple)
+inline std::uint32_t roundu_multiple(std::uint32_t num, std::uint32_t multiple)
 {
     return (num % multiple != 0) ? (num - num % multiple + multiple) : num;
 }
 
-std::uint32_t roundd_multiple(std::uint32_t num, std::uint32_t multiple)
+inline std::uint32_t roundd_multiple(std::uint32_t num, std::uint32_t multiple)
 {
     return (num / multiple) * multiple;
 }
 
-bool is_odd(int num)
+inline bool is_odd(int num)
 {
     return num & 1;
 }
 
-bool is_even(int num)
+inline bool is_even(int num)
 {
     return !is_odd(num);
 }
 
-int roundd_even(float num)
+inline int roundd_even(float num)
 {
     return 2.0 * std::floor(num * 0.5);
 }
 
-int roundu_even(float num)
+inline int roundu_even(float num)
 {
     return 2.0 * std::ceil(num * 0.5);
 }
 
-int roundd_odd(float num)
+inline int roundd_odd(float num)
 {
     int num_even = roundd_even(num);
     return num_even + 1.0 > num ? num_even - 1.0 : num_even + 1.0;
 }
 
-int roundu_odd(float num)
+inline int roundu_odd(float num)
 {
     int num_even = roundu_even(num);
     return num_even - 1.0 < num ? num_even + 1.0 : num_even - 1.0;
@@ -78,7 +78,7 @@ int roundu_odd(float num)
 namespace util_fft
 {
 
-std::uint32_t calculate_optimal_dim_length(std::uint32_t length, std::uint32_t po2_length_max, std::uint32_t multiple)
+inline std::uint32_t calculate_optimal_dim_length(std::uint32_t length, std::uint32_t po2_length_max, std::uint32_t multiple)
 {
     std::uint32_t length_new = util_num::roundu_po2(length);
     if (length_new > po2_length_max)
@@ -87,6 +87,11 @@ std::uint32_t calculate_optimal_dim_length(std::uint32_t length, std::uint32_t p
 }
 
 } // namespace util_fft
+
+namespace util_image
+{
+    void image_shift(float* data, int size_x, int size_y, int size_z, int shift_x, int shift_y, int shift_z);
+} // namespace util_image
 
 template<typename TKey,typename TValue>
 std::map<TKey,TValue> vectors_to_map(const std::vector<TKey>& keys, const std::vector<TValue>& values)

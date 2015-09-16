@@ -1,0 +1,2 @@
+/usr/bin/ar cq ../../../lib/libgbc_static_d.a  CMakeFiles/target_gbc_object.dir/src/dynlib/dynamic_library.cpp.o
+/usr/bin/ranlib ../../../lib/libgbc_static_d.a

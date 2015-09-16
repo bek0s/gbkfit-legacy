@@ -17,11 +17,12 @@ private:
 
     gbkfit::core* m_core;
 
-    gbkfit::model_factory* m_model_factory_galaxy_2d_cuda;
-    gbkfit::model_factory* m_model_factory_galaxy_2d_omp;
+    gbkfit::model_factory* m_model_factory_model01_cuda;
+    gbkfit::model_factory* m_model_factory_model01_omp;
 
     gbkfit::fitter_factory* m_fitter_factory_mpfit;
     gbkfit::fitter_factory* m_fitter_factory_multinest;
+
     gbkfit::model* m_model;
     gbkfit::fitter* m_fitter;
     gbkfit::parameters_fit_info* m_fit_info;

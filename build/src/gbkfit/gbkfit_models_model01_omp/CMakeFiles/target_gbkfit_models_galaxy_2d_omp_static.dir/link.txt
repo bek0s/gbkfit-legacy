@@ -1,0 +1,2 @@
+/usr/bin/ar cq ../../../lib/libgbkfit_models_model01_omp_static_d.a  CMakeFiles/target_gbkfit_models_model01_omp_object.dir/src/kernels_omp.cpp.o CMakeFiles/target_gbkfit_models_model01_omp_object.dir/src/model_galaxy_2d_omp.cpp.o
+/usr/bin/ranlib ../../../lib/libgbkfit_models_model01_omp_static_d.a
