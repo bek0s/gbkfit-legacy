@@ -7,10 +7,10 @@
 #include "gbkfit/nddataset.hpp"
 
 #include "gbkfit/fitters/mpfit/fitter_mpfit.hpp"
-#include "gbkfit/fitters/multinest/fitter_multinest.hpp"
+//#include "gbkfit/fitters/multinest/fitter_multinest.hpp"
 #include "gbkfit/models/model01/model_model01.hpp"
 #include "gbkfit/models/model01/model_model01_omp.hpp"
-#include "gbkfit/models/model01/model_model01_cuda.hpp"
+//#include "gbkfit/models/model01/model_model01_cuda.hpp"
 
 #include <boost/program_options.hpp>
 #include <boost/property_tree/ptree.hpp>
@@ -78,17 +78,17 @@ bool application::initialize(void)
     // Create factories and add the to the gbkfit core.
     //
 
-    m_model_factory_model01_cuda = new gbkfit::models::model01::model_factory_model01_cuda();
+//  m_model_factory_model01_cuda = new gbkfit::models::model01::model_factory_model01_cuda();
     m_model_factory_model01_omp = new gbkfit::models::model01::model_factory_model01_omp();
 
     m_fitter_factory_mpfit = new gbkfit::fitters::mpfit::fitter_factory_mpfit();
-    m_fitter_factory_multinest = new gbkfit::fitters::multinest::fitter_factory_multinest();
+//  m_fitter_factory_multinest = new gbkfit::fitters::multinest::fitter_factory_multinest();
 
-    m_core->add_model_factory(m_model_factory_model01_cuda);
+//  m_core->add_model_factory(m_model_factory_model01_cuda);
     m_core->add_model_factory(m_model_factory_model01_omp);
 
     m_core->add_fitter_factory(m_fitter_factory_mpfit);
-    m_core->add_fitter_factory(m_fitter_factory_multinest);
+//  m_core->add_fitter_factory(m_fitter_factory_multinest);
 
     //
     // Read XML configuration for different components.
