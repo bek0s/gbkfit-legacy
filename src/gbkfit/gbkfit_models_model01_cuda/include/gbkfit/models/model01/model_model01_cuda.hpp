@@ -23,7 +23,7 @@ public:
 
     ~model_model01_cuda();
 
-    void initialize(int size_x, int size_y, int size_z, instrument* instrument) final {}
+    void initialize(int size_x, int size_y, int size_z, instrument* instrument) final;
 
     const std::string& get_type_name(void) const final;
 
