@@ -91,7 +91,7 @@ bool application::initialize(void)
 //  m_core->add_fitter_factory(m_fitter_factory_multinest);
 
     //
-    // Read XML configuration for different components.
+    // Read XML configuration and prepare to send it to different components.
     //
 
     boost::property_tree::ptree ptree_config;
@@ -163,6 +163,8 @@ void application::run(void)
     std::cout << "Main loop started." << std::endl;
 
     // Initialize model.
+//  int model_size_x = 49; // m_datasets.begin()->second->get_data("data")->get_shape()[0];
+//  int model_size_y = 49; // m_datasets.begin()->second->get_data("data")->get_shape()[1];
     int model_size_x = m_datasets.begin()->second->get_data("data")->get_shape()[0];
     int model_size_y = m_datasets.begin()->second->get_data("data")->get_shape()[1];
     int model_size_z = 101;
@@ -172,16 +174,16 @@ void application::run(void)
     float yo = model_size_y/2.0;
 
     std::map<std::string,float> params = {
+        {"vsig",50},
         {"vsys",0},
         {"xo",xo},
         {"yo",yo},
-        {"pa",90},
+        {"pa",45},
         {"incl",45},
         {"i0",1.0},
-        {"r0",16.0},
-        {"rt",5.0},
-        {"vt",200},
-        {"vsig",30}
+        {"r0",10.0},
+        {"rt",4.0},
+        {"vt",200}
     };
 
     std::map<std::string,gbkfit::ndarray*> data = m_model->evaluate(params);

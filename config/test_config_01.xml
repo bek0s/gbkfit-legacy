@@ -24,19 +24,19 @@
 
     <datasets>
         <dataset name="flxmap">
-            <data name="data">../../data/flxmap.fits</data>
-            <data name="mask">../../data/flxmap_msk.fits</data>
-            <data name="error">../../data/flxmap_err.fits</data>
+            <data name="data">../../data/mock/mock_03_flxmap.fits[0]</data>
+            <data name="mask">../../data/mock/mock_03_flxmap.fits[2]</data>
+            <data name="error">../../data/mock/mock_03_flxmap.fits[1]</data>
         </dataset>
         <dataset name="velmap">
-            <data name="data">../../data/velmap.fits</data>
-            <data name="mask">../../data/velmap_msk.fits</data>
-            <data name="error">../../data/velmap_err.fits</data>
+            <data name="data">../../data/mock/mock_03_velmap.fits[0]</data>
+            <data name="mask">../../data/mock/mock_03_velmap.fits[2]</data>
+            <data name="error">../../data/mock/mock_03_velmap.fits[1]</data>
         </dataset>
         <dataset name="sigmap">
-            <data name="data">../../data/sigmap.fits</data>
-            <data name="mask">../../data/sigmap_msk.fits</data>
-            <data name="error">../../data/sigmap_err.fits</data>
+            <data name="data">../../data/mock/mock_03_sigmap.fits[0]</data>
+            <data name="mask">../../data/mock/mock_03_sigmap.fits[2]</data>
+            <data name="error">../../data/mock/mock_03_sigmap.fits[1]</data>
         </dataset>
     </datasets>
 
@@ -59,7 +59,7 @@
         <sampling_x>1.0</sampling_x>
         <sampling_y>1.0</sampling_y>
         <sampling_z>10.0</sampling_z>
-        <psf type="gaussian" fwhm="4.5"/>
+        <psf type="gaussian" fwhm="2.5"/>
         <lsf type="gaussian" fwhm="30"/>
     </instrument>
 
@@ -113,23 +113,22 @@
 
     <fitter>
         <type>gbkfit.fitters.mpfit</type>
-        <maxiters>2000</maxiters>
     </fitter>
 
     <!-- Parameter information. -->
     <parameters>
-        <parameter name="vsig" init="80"  fixed="0" min="1" max="200"/>
-        <parameter name="vsys" init="0"   fixed="1" min="0" max="0"/>
-        <parameter name="xo"   init="16"  fixed="1" min="0" max="32"/>
-        <parameter name="yo"   init="16"  fixed="1" min="0" max="32"/>
+        <parameter name="vsig" init="30"  fixed="0" min="1" max="150"/>
+        <parameter name="vsys" init="0"   fixed="0" min="-100" max="100"/>
+        <parameter name="xo"   init="20"  fixed="0" min="0" max="49"/>
+        <parameter name="yo"   init="20"  fixed="0" min="0" max="49"/>
         <parameter name="pa"   init="90"  fixed="0" min="0" max="360"/>
-        <parameter name="incl" init="45"  fixed="0" min="1" max="85"/>
-        <parameter name="i0"   init="1"   fixed="1" min="0" max="2"/>
-        <parameter name="r0"   init="2"   fixed="1" min="1" max="3"/>
-        <parameter name="rt"   init="5"   fixed="0" min="1" max="32"/>
-        <parameter name="vt"   init="200" fixed="0" min="1" max="500"/>
-        <parameter name="a"    init="1.0" fixed="1" min="1" max="1"/>
-        <parameter name="b"    init="1.0" fixed="1" min="1" max="1"/>
+        <parameter name="incl" init="60"  fixed="0" min="5" max="85"/>
+        <parameter name="i0"   init="1"   fixed="1" min="0.5" max="2"/>
+        <parameter name="r0"   init="10"  fixed="1" min="1" max="30"/>
+        <parameter name="rt"   init="4"   fixed="0" min="1" max="30"/>
+        <parameter name="vt"   init="100" fixed="0" min="1" max="500"/>
+        <parameter name="a"    init="1.0" fixed="1" min="0.5" max="2"/>
+        <parameter name="b"    init="1.0" fixed="1" min="0.5" max="2"/>
     </parameters>
 
     <!--

@@ -1,4 +1,3 @@
 build/*
-data/*
 .directory
 CMakeLists.txt.user
