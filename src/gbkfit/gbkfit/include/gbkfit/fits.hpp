@@ -45,10 +45,17 @@ public:
     {}
 
     std::string get_key_comment(const std::string& keyname, std::string& comment) const
-    {}
+    {
+        (void)keyname;
+        (void)comment;
+        return std::string();
+    }
 
     void set_key_comment(const std::string& keyname, const std::string& comment)
-    {}
+    {
+        (void)keyname;
+        (void)comment;
+    }
 
 }; // class header
 

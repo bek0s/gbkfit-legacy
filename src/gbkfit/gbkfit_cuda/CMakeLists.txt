@@ -14,12 +14,10 @@ find_package(CUDA REQUIRED)
 # ==============================================================================
 
 set(HEADER_FILES
-    include/gbkfit/cuda/convolver_cuda.hpp
     include/gbkfit/cuda/ndarray_cuda.hpp
 )
 
 set(SOURCE_FILES
-    src/convolver_cuda.cpp
     src/ndarray_cuda.cpp
 )
 

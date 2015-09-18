@@ -15,6 +15,8 @@ class application
 
 private:
 
+    std::string m_filename_config;
+
     gbkfit::core* m_core;
 
     gbkfit::model_factory* m_model_factory_model01_cuda;

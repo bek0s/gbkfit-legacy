@@ -78,12 +78,12 @@ inline int roundu_odd(float num)
 namespace util_fft
 {
 
-inline std::uint32_t calculate_optimal_dim_length(std::uint32_t length, std::uint32_t po2_length_max, std::uint32_t multiple)
+inline int calculate_optimal_dim_length(std::uint32_t length, std::uint32_t po2_length_max, std::uint32_t multiple)
 {
     std::uint32_t length_new = util_num::roundu_po2(length);
     if (length_new > po2_length_max)
         length_new = util_num::roundu_multiple(length,multiple);
-    return length_new;
+    return static_cast<int>(length_new);
 }
 
 } // namespace util_fft
@@ -91,6 +91,11 @@ inline std::uint32_t calculate_optimal_dim_length(std::uint32_t length, std::uin
 namespace util_image
 {
     void image_shift(float* data, int size_x, int size_y, int size_z, int shift_x, int shift_y, int shift_z);
+
+    void image_copy_padded(const float* src, int size_x, int size_y, int size_z, int size_x_padded, int size_y_padded, int size_z_padded, float* dst);
+
+    void image_fill_padded(float value, int size_x, int size_y, int size_z, int size_x_padded, int size_y_padded, int size_z_padded, float* data);
+
 } // namespace util_image
 
 template<typename TKey,typename TValue>

@@ -15,14 +15,9 @@ find_package(Boost REQUIRED)
 # ==============================================================================
 
 set(HEADER_FILES
-    include/gbkfit/convolver.hpp
     include/gbkfit/core.hpp
-    include/gbkfit/datamodel.hpp
     include/gbkfit/fits.hpp
     include/gbkfit/fitter.hpp
-    include/gbkfit/galmodel.hpp
-    include/gbkfit/gbkfit.hpp
-    include/gbkfit/image_util.hpp
     include/gbkfit/instrument.hpp
     include/gbkfit/math.hpp
     include/gbkfit/model.hpp
@@ -30,7 +25,6 @@ set(HEADER_FILES
     include/gbkfit/ndarray_host.hpp
     include/gbkfit/nddataset.hpp
     include/gbkfit/ndshape.hpp
-    include/gbkfit/num_util.hpp
     include/gbkfit/parameters_fit_info.hpp
     include/gbkfit/prerequisites.hpp
     include/gbkfit/spread_functions.hpp
@@ -39,22 +33,17 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    src/convolver.cpp
     src/core.cpp
-    src/datamodel.cpp
-    src/fitter.cpp
     src/fits.cpp
-    src/galmodel.cpp
-    src/gbkfit.cpp
-    src/image_util.cpp
+    src/fitter.cpp
     src/instrument.cpp
     src/model.cpp
     src/ndarray.cpp
     src/ndarray_host.cpp
     src/nddataset.cpp
     src/ndshape.cpp
-    src/spread_functions.cpp
     src/parameters_fit_info.cpp
+    src/spread_functions.cpp
     src/utility.cpp
 )
 

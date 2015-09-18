@@ -110,6 +110,16 @@ ndarray_host* instrument::create_psf_cube_data(int size_x, int size_y, int size_
     return cube_data;
 }
 
+ndarray_host* instrument::create_psf_cube_data(float step_x, float step_y, float step_z) const
+{
+    ndarray_host* spec_data = m_lsf->as_array(step_z);
+    ndarray_host* spat_data = m_psf->as_image(step_x, step_y);
+    ndarray_host* cube_data = create_psf_cube_data(spec_data, spat_data);
+    delete spec_data;
+    delete spat_data;
+    return cube_data;
+}
+
 ndarray_host* instrument::create_psf_spec_data(int size, float step) const
 {
     return m_lsf->as_array(size, step);
@@ -160,5 +170,7 @@ ndarray_host* instrument::create_psf_cube_data(const ndarray_host* spec_data, co
 
     return cube_data;
 }
+
+
 
 } // namespace gbkfit

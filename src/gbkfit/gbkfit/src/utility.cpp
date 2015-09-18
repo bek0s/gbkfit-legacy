@@ -40,6 +40,35 @@ namespace util_image
         delete [] data_tmp;
     }
 
+    void image_copy_padded(const float* src, int size_x, int size_y, int size_z, int size_x_padded, int size_y_padded, int size_z_padded, float* dst)
+    {
+        (void)size_z_padded;
+
+        for(int z = 0; z < size_z; ++z) {
+            for(int y = 0; y < size_y; ++y) {
+                for(int x = 0; x < size_x; ++x) {
+                    int idx_src = z*size_x*size_y + y*size_x + x;
+                    int idx_dst = z*size_x_padded*size_y_padded + y*size_x_padded + x;
+                    dst[idx_dst] = src[idx_src];
+                }
+            }
+        }
+    }
+
+    void image_fill_padded(float value, int size_x, int size_y, int size_z, int size_x_padded, int size_y_padded, int size_z_padded, float* data)
+    {
+        for(int z = 0; z < size_z_padded; ++z) {
+            for(int y = 0; y < size_y_padded; ++y) {
+                for(int x = 0; x < size_x_padded; ++x) {
+                    if(z >= size_z || y >= size_y || x >= size_x) {
+                        int idx = z*size_x_padded*size_y_padded + y*size_x_padded + x;
+                        data[idx] = value;
+                    }
+                }
+            }
+        }
+    }
+
 } // namespace util_image
 
 } // namespace gbkfit

@@ -10,7 +10,7 @@ project(gbkfit_app_cli-project)
 # ==============================================================================
 
 find_package(cfitsio)
-find_package(Boost COMPONENTS system REQUIRED)
+find_package(Boost COMPONENTS program_options system REQUIRED)
 
 # ==============================================================================
 
@@ -39,8 +39,6 @@ target_include_directories(target_gbkfit_app_cli PRIVATE ${GBKFIT_MODELS_MODEL01
 target_include_directories(target_gbkfit_app_cli PRIVATE ${Boost_INCLUDE_DIRS})
 target_include_directories(target_gbkfit_app_cli PRIVATE ${CFITSIO_INCLUDE_DIRS})
 
-
-
 target_link_libraries(target_gbkfit_app_cli PRIVATE ${GBKFIT_LIBRARY_SHARED})
 target_link_libraries(target_gbkfit_app_cli PRIVATE ${GBKFIT_CUDA_LIBRARY_SHARED})
 target_link_libraries(target_gbkfit_app_cli PRIVATE ${GBKFIT_FITTER_MPFIT_LIBRARY_SHARED})
@@ -50,7 +48,6 @@ target_link_libraries(target_gbkfit_app_cli PRIVATE ${GBKFIT_MODELS_MODEL01_OMP_
 target_link_libraries(target_gbkfit_app_cli PRIVATE ${GBKFIT_MODELS_MODEL01_CUDA_LIBRARY_SHARED})
 target_link_libraries(target_gbkfit_app_cli PRIVATE ${Boost_LIBRARIES})
 target_link_libraries(target_gbkfit_app_cli PRIVATE ${CFITSIO_LIBRARIES})
-
 
 target_compile_options(target_gbkfit_app_cli PRIVATE "-Wall")
 target_compile_options(target_gbkfit_app_cli PRIVATE "-Wextra")

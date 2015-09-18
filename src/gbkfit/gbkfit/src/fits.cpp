@@ -214,8 +214,8 @@ void get_key_comment(const std::string& filename, const std::string& keyname, st
 {
     int status = 0;
     fitsfile* fp = nullptr;
-    char keyval[512];
-    char keycomm[512];
+    char keyval[FLEN_VALUE];
+    char keycomm[FLEN_COMMENT];
 
     fits_open_file(&fp,filename.c_str(),READONLY,&status);
 

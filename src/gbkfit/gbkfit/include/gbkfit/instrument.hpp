@@ -45,6 +45,8 @@ public:
     ndarray_host* create_psf_spat_data(int size_x, int size_y) const;
     ndarray_host* create_psf_cube_data(int size_x, int size_y, int size_z) const;
 
+    ndarray_host* create_psf_cube_data(float step_x, float step_y, float step_z) const;
+
     ndarray_host* create_psf_spec_data(int size, float step) const;
     ndarray_host* create_psf_spat_data(int size_x, int size_y, float step_x, float step_y) const;
     ndarray_host* create_psf_cube_data(int size_x, int size_y, int size_z, float step_x, float step_y, float step_z) const;

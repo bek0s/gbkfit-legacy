@@ -115,7 +115,7 @@ void line_spread_function_gaussian::as_array(int size, float step, float* data) 
 
 ndshape line_spread_function_gaussian::get_recommended_size(float step) const
 {
-    return ndshape({util_num::roundu_even(5*m_fwhm/step)});
+    return ndshape({util_num::roundu_odd(5*m_fwhm/step)});
 }
 
 line_spread_function_lorentzian::line_spread_function_lorentzian(float fwhm)
@@ -250,8 +250,8 @@ point_spread_function_gaussian::~point_spread_function_gaussian()
 
 ndshape point_spread_function_gaussian::get_recommended_size(float step_x, float step_y) const
 {
-    return ndshape({util_num::roundu_even(5*m_fwhm_x/step_x),
-                    util_num::roundu_even(5*m_fwhm_y/step_y)});
+    return ndshape({util_num::roundu_odd(5*m_fwhm_x/step_x),
+                    util_num::roundu_odd(5*m_fwhm_y/step_y)});
 }
 
 void point_spread_function_gaussian::as_image(int size_x, int size_y, float step_x, float step_y, float* data) const

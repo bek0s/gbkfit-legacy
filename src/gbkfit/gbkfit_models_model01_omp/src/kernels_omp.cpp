@@ -111,27 +111,24 @@ void model_image_3d_evaluate(int profile_flx_id,
                              const float* params_prj,
                              const float* params_flx,
                              const float* params_vel,
-                             int size_x,
-                             int size_y,
-                             int size_z,
-                             float step_x,
-                             float step_y,
-                             float step_z,
-                             int upsampling_x,
-                             int upsampling_y,
-                             int upsampling_z,
-                             int upsampled_padding_x0,
-                             int upsampled_padding_y0,
-                             int upsampled_padding_z0,
-                             int upsampled_padding_x1,
-                             int upsampled_padding_y1,
-                             int upsampled_padding_z1,
-                             int upsampled_padded_size_x,
-                             int upsampled_padded_size_y,
-                             int upsampled_padded_size_z,
-                             float* flxcube_padded)
+                             int size_u_x,
+                             int size_u_y,
+                             int size_u_z,
+                             int size_up_x,
+                             int size_up_y,
+                             int size_up_z,
+                             float step_u_x,
+                             float step_u_y,
+                             float step_u_z,
+                             int padding_u_x0,
+                             int padding_u_y0,
+                             int padding_u_z0,
+                             int padding_u_x1,
+                             int padding_u_y1,
+                             int padding_u_z1,
+                             float* flxcube_up)
 {
-    (void)upsampled_padded_size_z;
+    (void)size_up_z;
 
     const float DEG_TO_RAD_F = 0.017453293f;
 
@@ -151,20 +148,20 @@ void model_image_3d_evaluate(int profile_flx_id,
     //
 
     #pragma omp parallel for
-    for(int y = 0; y < upsampled_padding_y0 + upsampled_padding_y1 + size_y*upsampling_y; ++y)
+    for(int y = 0; y < padding_u_y0 + padding_u_y1 + size_u_y; ++y)
     {
-        for(int x = 0; x < upsampled_padding_x0 + upsampled_padding_x1 + size_x*upsampling_x; ++x)
+        for(int x = 0; x < padding_u_x0 + padding_u_x1 + size_u_x; ++x)
         {
             float flx_spat, vel_spat, sig_spat, flx_spec;
             float xn, yn, zn, xe, ye, rn, sini, cosi, sinpa, cospa;
 
             // Transform image coordinates to spatial coordinates.
-            xn = x - upsampled_padding_x0;
-            yn = y - upsampled_padding_y0;
+            xn = x - padding_u_x0;
+            yn = y - padding_u_y0;
             xn += 0.5f;
             yn += 0.5f;
-            xn *= step_x/upsampling_x;
-            yn *= step_y/upsampling_y;
+            xn *= step_u_x;
+            yn *= step_u_y;
 
             // Transform spatial coordinates to disk coordinates.
             sini = std::sin(incl);
@@ -187,22 +184,21 @@ void model_image_3d_evaluate(int profile_flx_id,
 
             // Evaluate a single spectrum.
             #pragma omp simd
-            for(int z = 0; z < upsampled_padding_z0 + upsampled_padding_z1 + size_z*upsampling_z; ++z)
+            for(int z = 0; z < padding_u_z0 + padding_u_z1 + size_u_z; ++z)
             {
                 // Evaluate spectrum.
-                zn =  (z - upsampled_padding_z0 - size_z*upsampling_z/2.0+0.5f) * step_z/upsampling_z;
+                zn =  (z - padding_u_z0 - size_u_z/2.0+0.5f) * step_u_z;
 
                 evaluate_profile_gaussian(flx_spec,zn,vel_spat,sig_spat);
 
                 // Calculate the right index in the cube.
-                int idx = z*upsampled_padded_size_x*upsampled_padded_size_y +
-                          y*upsampled_padded_size_x +
+                int idx = z*size_up_x*size_up_y +
+                          y*size_up_x +
                           x;
 
                 // Save flux, we are done! Woohoo!
-                flxcube_padded[idx] = flx_spat * flx_spec;
-
-                /*
+                flxcube_up[idx] = flx_spat * flx_spec;
+#if 0
                 float zero = 0.01;
                 if(x < upsampled_padding_x0)
                     flxcube_padded[idx] = zero;
@@ -216,7 +212,8 @@ void model_image_3d_evaluate(int profile_flx_id,
                     flxcube_padded[idx] = zero;
                 if(z >= size_z*upsampling_z+upsampled_padding_z0)
                     flxcube_padded[idx] = zero;
-                */
+#endif
+
             }
         }
     }

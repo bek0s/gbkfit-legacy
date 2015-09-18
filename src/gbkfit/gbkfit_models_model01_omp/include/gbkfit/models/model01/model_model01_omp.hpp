@@ -14,11 +14,13 @@ class model_model01_omp : public model_model01
 
 private:
 
-    ndarray_host* m_data_flxcube_padded;
-    ndarray_host* m_data_flxcube_padded_fft;
+    ndarray_host* m_data_flxcube_up;
+    ndarray_host* m_data_flxcube_up_fft;
 
-    ndarray_host* m_data_psfcube_padded;
-    ndarray_host* m_data_psfcube_padded_fft;
+    ndarray_host* m_data_psfcube;
+    ndarray_host* m_data_psfcube_u;
+    ndarray_host* m_data_psfcube_up;
+    ndarray_host* m_data_psfcube_up_fft;
 
     ndarray_host* m_data_flxcube;
     ndarray_host* m_data_flxmap;
@@ -34,18 +36,23 @@ private:
     int m_size_x;
     int m_size_y;
     int m_size_z;
-
-    int m_size_padded_x;
-    int m_size_padded_y;
-    int m_size_padded_z;
+    int m_size_u_x;
+    int m_size_u_y;
+    int m_size_u_z;
+    int m_size_up_x;
+    int m_size_up_y;
+    int m_size_up_z;
 
     float m_step_x;
     float m_step_y;
     float m_step_z;
+    float m_step_u_x;
+    float m_step_u_y;
+    float m_step_u_z;
 
-    int m_psf_size_x;
-    int m_psf_size_y;
-    int m_psf_size_z;
+    int m_psf_size_u_x;
+    int m_psf_size_u_y;
+    int m_psf_size_u_z;
 
     fftwf_plan m_fft_plan_flxcube_r2c;
     fftwf_plan m_fft_plan_flxcube_c2r;
