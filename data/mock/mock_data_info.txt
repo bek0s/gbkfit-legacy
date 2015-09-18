@@ -1,8 +1,8 @@
 
-Flux profile for all three mock observations: exponential
-Rotation curve profile for all three mock observations: arctan
+Flux profile for all mock observations: exponential
+Rotation curve profile for all mock observations: arctan
 
-Common parameter values for all three datasets:
+Common parameter values for all datasets:
 vsig = 50
 vsys = 0
 xo = 24.5
@@ -39,4 +39,4 @@ Velocity dispersion map noise: sqrt(2) * 5 km/s
 
 There is a "clean" version of the data with no noise and mask under 
 the directory "no_noise_no_mask". Of course since the clean data have 
-no noise the chi-square of fit will make no sense.
+no noise the chi-square of the fit will make no sense.
