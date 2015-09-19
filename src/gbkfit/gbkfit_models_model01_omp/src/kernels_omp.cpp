@@ -3,8 +3,7 @@
 
 #include <algorithm>
 #include <cmath>
-#include <iostream>
-#include <complex>
+
 namespace gbkfit {
 namespace models {
 namespace model01 {

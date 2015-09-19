@@ -3,6 +3,8 @@
 #define GBKFIT_MODELS_MODEL01_MODEL_MODEL01_CUDA_HPP
 
 #include "gbkfit/models/model01/model_model01.hpp"
+#include <cufft.h>
+#include "gbkfit/cuda/ndarray_cuda.hpp"
 
 namespace gbkfit {
 namespace models {
@@ -13,9 +15,49 @@ class model_model01_cuda : public model_model01
 
 private:
 
-    ndarray* m_model_velmap;
-    ndarray* m_model_sigmap;
-    std::map<std::string,ndarray*> m_model_data_list;
+    cuda::ndarray_cuda* m_data_flxcube_up;
+    cuda::ndarray_cuda* m_data_flxcube_up_fft;
+
+    cuda::ndarray_cuda* m_data_psfcube;
+    cuda::ndarray_cuda* m_data_psfcube_u;
+    cuda::ndarray_cuda* m_data_psfcube_up;
+    cuda::ndarray_cuda* m_data_psfcube_up_fft;
+
+    cuda::ndarray_cuda* m_data_flxcube;
+    cuda::ndarray_cuda* m_data_flxmap;
+    cuda::ndarray_cuda* m_data_velmap;
+    cuda::ndarray_cuda* m_data_sigmap;
+
+    std::map<std::string,ndarray*> m_data_map;
+
+    int m_upsampling_x;
+    int m_upsampling_y;
+    int m_upsampling_z;
+
+    int m_size_x;
+    int m_size_y;
+    int m_size_z;
+    int m_size_u_x;
+    int m_size_u_y;
+    int m_size_u_z;
+    int m_size_up_x;
+    int m_size_up_y;
+    int m_size_up_z;
+
+    float m_step_x;
+    float m_step_y;
+    float m_step_z;
+    float m_step_u_x;
+    float m_step_u_y;
+    float m_step_u_z;
+
+    int m_psf_size_u_x;
+    int m_psf_size_u_y;
+    int m_psf_size_u_z;
+
+    cufftHandle m_fft_plan_flxcube_r2c;
+    cufftHandle m_fft_plan_flxcube_c2r;
+    cufftHandle m_fft_plan_psfcube_r2c;
 
 public:
 
@@ -59,7 +101,6 @@ public:
     model* create_model(const std::string& info) const final;
 
 }; // class model_factory_model01_cuda
-
 
 } // namespace model01
 } // namespace models

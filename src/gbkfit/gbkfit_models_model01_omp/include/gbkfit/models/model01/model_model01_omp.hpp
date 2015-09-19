@@ -99,7 +99,7 @@ public:
 
     model* create_model(const std::string& info) const final;
 
-}; // class model_factory_model01
+}; // class model_factory_model01_omp
 
 } // namespace model01
 } // namespace models

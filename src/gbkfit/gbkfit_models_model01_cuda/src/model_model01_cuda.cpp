@@ -2,11 +2,11 @@
 #include "gbkfit/models/model01/model_model01_cuda.hpp"
 #include "gbkfit/models/model01/kernels_cuda_host.hpp"
 #include "gbkfit/cuda/ndarray_cuda.hpp"
+#include "gbkfit/instrument.hpp"
 
 namespace gbkfit {
 namespace models {
 namespace model01 {
-
 
 model_model01_cuda::model_model01_cuda(profile_flx_type profile_flx, profile_vel_type profile_vel)
     : model_model01(profile_flx,profile_vel)
@@ -15,8 +15,8 @@ model_model01_cuda::model_model01_cuda(profile_flx_type profile_flx, profile_vel
 
 model_model01_cuda::~model_model01_cuda()
 {
-    delete m_model_velmap;
-    delete m_model_sigmap;
+    delete m_data_velmap;
+    delete m_data_sigmap;
 }
 
 void model_model01_cuda::initialize(int size_x, int size_y, int size_z, instrument* instrument)
@@ -25,6 +25,29 @@ void model_model01_cuda::initialize(int size_x, int size_y, int size_z, instrume
     (void)size_y;
     (void)size_z;
     (void)instrument;
+
+    m_upsampling_x = 1;
+    m_upsampling_y = 1;
+    m_upsampling_z = 1;
+
+    //
+    // Store instrument information.
+    //
+
+    m_step_x = instrument->get_step_x();
+    m_step_y = instrument->get_step_y();
+    m_step_z = instrument->get_step_z();
+    m_step_u_x = m_step_x*m_upsampling_x;
+    m_step_u_y = m_step_y*m_upsampling_y;
+    m_step_u_z = m_step_z*m_upsampling_z;
+
+    /*
+    m_data_psfcube = instrument->create_psf_cube_data(m_step_x, m_step_y, m_step_z);
+    m_data_psfcube_u = instrument->create_psf_cube_data(m_step_u_x, m_step_u_y, m_step_u_z);
+    m_psf_size_u_x = m_data_psfcube_u->get_shape()[0];
+    m_psf_size_u_y = m_data_psfcube_u->get_shape()[1];
+    m_psf_size_u_z = m_data_psfcube_u->get_shape()[2];
+    */
 }
 
 const std::string& model_model01_cuda::get_type_name(void) const
@@ -34,7 +57,7 @@ const std::string& model_model01_cuda::get_type_name(void) const
 
 const std::map<std::string,ndarray*>& model_model01_cuda::get_data(void) const
 {
-    return m_model_data_list;
+    return m_data_map;
 }
 
 const std::map<std::string,ndarray*>& model_model01_cuda::evaluate(int profile_flx_id,

@@ -9,7 +9,7 @@ project(gbkfit_models_model01_omp-project)
 
 # ==============================================================================
 
-find_package(fftw3 REQUIRED)
+find_package(fftw3)
 find_package(OpenMP REQUIRED)
 
 # ==============================================================================

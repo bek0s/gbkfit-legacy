@@ -163,14 +163,13 @@ void application::run(void)
     std::cout << "Main loop started." << std::endl;
 
     // Initialize model.
-//  int model_size_x = 49; // m_datasets.begin()->second->get_data("data")->get_shape()[0];
-//  int model_size_y = 49; // m_datasets.begin()->second->get_data("data")->get_shape()[1];
-    int model_size_x = m_datasets.begin()->second->get_data("data")->get_shape()[0];
-    int model_size_y = m_datasets.begin()->second->get_data("data")->get_shape()[1];
+    int model_size_x = 49; // m_datasets.begin()->second->get_data("data")->get_shape()[0];
+    int model_size_y = 49; // m_datasets.begin()->second->get_data("data")->get_shape()[1];
+//  int model_size_x = m_datasets.begin()->second->get_data("data")->get_shape()[0];
+//  int model_size_y = m_datasets.begin()->second->get_data("data")->get_shape()[1];
     int model_size_z = 101;
     m_model->initialize(model_size_x,model_size_y,model_size_z,m_instrument);
 
-    /*
     float xo = model_size_x/2.0;
     float yo = model_size_y/2.0;
 
@@ -196,7 +195,6 @@ void application::run(void)
     gbkfit::fits::write_to("!foo_flxmap.fits",*data["flxmap"]);
     gbkfit::fits::write_to("!foo_velmap.fits",*data["velmap"]);
     gbkfit::fits::write_to("!foo_sigmap.fits",*data["sigmap"]);
-    */
 
     // Fit (at last!)
     m_fitter->fit(m_model,m_datasets,*m_fit_info);
