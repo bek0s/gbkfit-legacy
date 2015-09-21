@@ -15,6 +15,7 @@
 #include <system_error>
 #include <valarray>
 #include <vector>
+#include <numeric>
 
 #include <boost/current_function.hpp>
 

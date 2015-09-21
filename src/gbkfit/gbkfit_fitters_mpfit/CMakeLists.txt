@@ -41,6 +41,9 @@ add_library(target_gbkfit_fitter_mpfit_shared SHARED $<TARGET_OBJECTS:target_gbk
 target_include_directories(target_gbkfit_fitter_mpfit_object PUBLIC "./include")
 target_include_directories(target_gbkfit_fitter_mpfit_object PUBLIC ${GBKFIT_INCLUDE_DIRS})
 
+target_link_libraries(target_gbkfit_fitter_mpfit_static PUBLIC ${GBKFIT_LIBRARY_SHARED})
+target_link_libraries(target_gbkfit_fitter_mpfit_shared PUBLIC ${GBKFIT_LIBRARY_SHARED})
+
 target_compile_definitions(target_gbkfit_fitter_mpfit_object PRIVATE "GBKFIT_FITTER_MPFIT_SELF_BUILD")
 
 target_compile_options(target_gbkfit_fitter_mpfit_object PRIVATE "-Wall")

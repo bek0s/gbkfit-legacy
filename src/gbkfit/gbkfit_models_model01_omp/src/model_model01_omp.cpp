@@ -10,7 +10,7 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include "gbkfit/utility.hpp"
 #include "gbkfit/fits.hpp"
-#include <omp.h>
+//#include <omp.h>
 
 namespace gbkfit {
 namespace models {
@@ -40,7 +40,7 @@ model_model01_omp::~model_model01_omp()
     fftwf_destroy_plan(m_fft_plan_flxcube_r2c);
     fftwf_destroy_plan(m_fft_plan_flxcube_c2r);
     fftwf_destroy_plan(m_fft_plan_psfcube_r2c);
-    fftwf_cleanup_threads();
+    //fftwf_cleanup_threads();
 }
 
 void model_model01_omp::initialize(int size_x, int size_y, int size_z, instrument *instrument)
@@ -99,7 +99,7 @@ void model_model01_omp::initialize(int size_x, int size_y, int size_z, instrumen
     // Create fft plans for flux and psf cubes.
     //
 
-    fftwf_plan_with_nthreads(omp_get_max_threads());
+    //fftwf_plan_with_nthreads(omp_get_max_threads());
 
     m_fft_plan_flxcube_r2c = fftwf_plan_dft_r2c_3d(m_size_up_z,
                                                    m_size_up_y,
