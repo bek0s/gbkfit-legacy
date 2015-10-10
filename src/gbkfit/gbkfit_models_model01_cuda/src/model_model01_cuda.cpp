@@ -100,7 +100,6 @@ model* model_factory_model01_cuda::create_model(const std::string& info) const
                                                            gbkfit::models::model01::arctan);
 }
 
-
 } // namespace galaxy_2d
 } // namespace models
 } // namespace gbkfit

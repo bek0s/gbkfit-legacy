@@ -5,6 +5,6 @@
 #
 # ==============================================================================
 
-if(${GBKFIT_BUILD_GBKFIT_APP_CLI})
+if(${GBKFIT_BUILD_APP_CLI})
     add_subdirectory(gbkfit_app_cli)
 endif()

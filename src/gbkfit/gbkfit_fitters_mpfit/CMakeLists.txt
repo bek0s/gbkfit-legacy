@@ -38,8 +38,11 @@ add_library(target_gbkfit_fitter_mpfit_object OBJECT ${HEADER_FILES} ${SOURCE_FI
 add_library(target_gbkfit_fitter_mpfit_static STATIC $<TARGET_OBJECTS:target_gbkfit_fitter_mpfit_object>)
 add_library(target_gbkfit_fitter_mpfit_shared SHARED $<TARGET_OBJECTS:target_gbkfit_fitter_mpfit_object>)
 
-target_include_directories(target_gbkfit_fitter_mpfit_object PUBLIC "./include")
+target_include_directories(target_gbkfit_fitter_mpfit_object PUBLIC "include")
 target_include_directories(target_gbkfit_fitter_mpfit_object PUBLIC ${GBKFIT_INCLUDE_DIRS})
+
+target_link_libraries(target_gbkfit_fitter_mpfit_static PRIVATE ${GBKFIT_LIBRARIES})
+target_link_libraries(target_gbkfit_fitter_mpfit_shared PRIVATE ${GBKFIT_LIBRARIES})
 
 target_compile_definitions(target_gbkfit_fitter_mpfit_object PRIVATE "GBKFIT_FITTER_MPFIT_SELF_BUILD")
 

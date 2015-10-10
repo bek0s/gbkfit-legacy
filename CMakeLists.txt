@@ -30,21 +30,27 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${GBKFIT_LIBRARY_OUTPUT_DIRECTORY}")
 
 # ==============================================================================
 #
+#   Include modules
+#
+# ==============================================================================
+
+# ==============================================================================
+#
 #   Create user options
 #
 # ==============================================================================
 
-option(GBKFIT_BUILD_GBKFIT_APP_CLI "build gbkfit_app_cli" TRUE)
+option(GBKFIT_BUILD_APP_CLI "Build gbkfit_app_cli" TRUE)
 
-option(GBKFIT_BUILD_GBKFIT_CUDA "build gbkfit_cuda" FALSE)
-option(GBKFIT_BUILD_GBKFIT_FFTW3 "build gbkfit_fftw3" TRUE)
+option(GBKFIT_BUILD_CUDA "Build gbkfit_cuda" FALSE)
+option(GBKFIT_BUILD_FFTW3 "Build gbkfit_fftw3" TRUE)
 
-option(GBKFIT_BUILD_GBKFIT_FITTERS_MPFIT "build gbkfit_fitters_mpfit" TRUE)
-option(GBKFIT_BUILD_GBKFIT_FITTERS_MULTINEST "build gbkfit_fitters_multinest" FALSE)
+option(GBKFIT_BUILD_FITTERS_MPFIT "Build gbkfit_fitters_mpfit" TRUE)
+option(GBKFIT_BUILD_FITTERS_MULTINEST "Build gbkfit_fitters_multinest" FALSE)
 
-option(GBKFIT_BUILD_GBKFIT_MODELS_MODEL01 "build gbkfit_models_model01" TRUE)
-option(GBKFIT_BUILD_GBKFIT_MODELS_MODEL01_CUDA "build gbkfit_models_model01_cuda" TRUE)
-option(GBKFIT_BUILD_GBKFIT_MODELS_MODEL01_OMP "build gbkfit_models_model01_omp" TRUE)
+option(GBKFIT_BUILD_MODELS_MODEL01 "Build gbkfit_models_model01" TRUE)
+option(GBKFIT_BUILD_MODELS_MODEL01_CUDA "Build gbkfit_models_model01_cuda" TRUE)
+option(GBKFIT_BUILD_MODELS_MODEL01_OMP "Build gbkfit_models_model01_omp" TRUE)
 
 # ==============================================================================
 #
