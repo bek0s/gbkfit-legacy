@@ -10,68 +10,37 @@ namespace gbkfit {
 //!
 //! \brief The core class
 //!
-class core
+class Core
 {
 
 private:
 
-    std::map<std::string,model_factory*> m_model_factories;
-    std::map<std::string,fitter_factory*> m_fitter_factories;
+    std::map<std::string,ModelFactory*> m_model_factories;
+    std::map<std::string,FitterFactory*> m_fitter_factories;
 
 public:
 
-    //!
-    //! \brief add_model_factory
-    //! \param factory
-    //!
-    void add_model_factory(model_factory* factory);
 
-    //!
-    //! \brief add_fitter_factory
-    //! \param factory
-    //!
-    void add_fitter_factory(fitter_factory* factory);
+    void add_model_factory(ModelFactory* factory);
 
-    //!
-    //! \brief create_model
-    //! \param info
-    //! \return
-    //!
-    model* create_model(const std::string& info) const;
 
-    //!
-    //! \brief create_fitter
-    //! \param info
-    //! \return
-    //!
-    fitter* create_fitter(const std::string& info) const;
+    void add_fitter_factory(FitterFactory* factory);
 
-    //!
-    //! \brief create_parameters_fit_info
-    //! \param info
-    //! \return
-    //!
-    parameters_fit_info* create_parameters_fit_info(const std::string& info) const;
 
-    //!
-    //! \brief create_dataset
-    //! \param info
-    //! \return
-    //!
-    nddataset* create_dataset(const std::string& info) const;
+    Model* create_model(const std::string& info) const;
 
-    //!
-    //! \brief create_datasets
-    //! \param info
-    //! \return
-    //!
-    std::map<std::string,nddataset*> create_datasets(const std::string& info) const;
 
-    //!
-    //! \brief create_instrument
-    //! \param info
-    //! \return
-    //!
+    Fitter* create_fitter(const std::string& info) const;
+
+
+    Parameters* create_parameters(const std::string& info) const;
+
+
+    Dataset* create_dataset(const std::string& info) const;
+
+    std::map<std::string,Dataset*> create_datasets(const std::string& info) const;
+
+
     instrument* create_instrument(const std::string& info) const;
 
 

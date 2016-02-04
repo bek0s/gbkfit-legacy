@@ -2,6 +2,8 @@
 #ifndef GBKFIT_PREREQUISITES_HPP
 #define GBKFIT_PREREQUISITES_HPP
 
+#include "gbkfit/config.hpp"
+
 #include <cinttypes>
 #include <cstring>
 
@@ -21,22 +23,22 @@
 namespace gbkfit
 {
 
-class core;
+class Core;
 
-class fitter;
-class fitter_factory;
+class Fitter;
+class FitterFactory;
 
 class instrument;
 
-class model;
-class model_factory;
+class Model;
+class ModelFactory;
 
-class ndarray;
-class ndarray_host;
+class NDArray;
+class NDArrayHost;
 
-class nddataset;
+class Dataset;
 
-class parameters_fit_info;
+class Parameters;
 
 class line_spread_function;
 class point_spread_function;

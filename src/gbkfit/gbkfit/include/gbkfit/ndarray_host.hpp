@@ -10,7 +10,7 @@ namespace gbkfit {
 //!
 //! \brief The ndarray_host class
 //!
-class ndarray_host : public ndarray
+class NDArrayHost : public NDArray
 {
 
 protected:
@@ -19,7 +19,9 @@ protected:
 
 public:
 
-    ~ndarray_host();
+    NDArrayHost(const NDShape &shape);
+
+    ~NDArrayHost();
 
     pointer get_host_ptr(void);
 
@@ -29,51 +31,11 @@ public:
 
     void write_data(const_pointer data) final;
 
-    void copy_data(const ndarray* src) final;
+    void write_data(const NDArray* src) final;
 
-    void copy_data(const ndarray_host* src);
-
-protected:
-
-    ndarray_host(const ndshape &shape);
+    void write_data(const NDArrayHost* src);
 
 }; // class ndarray_host
-
-//!
-//! \brief The ndarray_host_malloc class
-//!
-class ndarray_host_malloc : public ndarray_host
-{
-
-public:
-
-    ndarray_host_malloc(const ndshape& shape);
-
-    ndarray_host_malloc(const ndshape& shape, const_pointer data);
-
-    ndarray_host_malloc(const ndarray& array);
-
-    ~ndarray_host_malloc();
-
-}; // class ndarray_host_malloc
-
-//!
-//! \brief The ndarray_host_new class
-//!
-class ndarray_host_new : public ndarray_host
-{
-
-public:
-
-    ndarray_host_new(const ndshape& shape);
-
-    ndarray_host_new(const ndshape& shape, const_pointer data);
-
-    ndarray_host_new(const ndarray& array);
-
-    ~ndarray_host_new();
-
-}; // class ndarray_host_new
 
 } // namespace gbkfit
 

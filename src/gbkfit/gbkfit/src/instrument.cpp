@@ -37,116 +37,116 @@ float instrument::get_step_z(void) const
     return m_step_z;
 }
 
-ndshape instrument::get_recommended_psf_size_spec(void) const
+NDShape instrument::get_recommended_psf_size_spec(void) const
 {
     return get_recommended_psf_size_spec(m_step_z);
 }
 
-ndshape instrument::get_recommended_psf_size_spat(void) const
+NDShape instrument::get_recommended_psf_size_spat(void) const
 {
     return get_recommended_psf_size_spat(m_step_x, m_step_y);
 }
 
-ndshape instrument::get_recommended_psf_size_cube(void) const
+NDShape instrument::get_recommended_psf_size_cube(void) const
 {
     return get_recommended_psf_size_cube(m_step_x, m_step_y, m_step_z);
 }
 
-ndshape instrument::get_recommended_psf_size_spec(float step) const
+NDShape instrument::get_recommended_psf_size_spec(float step) const
 {
     return m_lsf->get_recommended_size(step);
 }
 
-ndshape instrument::get_recommended_psf_size_spat(float step_x, float step_y) const
+NDShape instrument::get_recommended_psf_size_spat(float step_x, float step_y) const
 {
     return m_psf->get_recommended_size(step_x, step_y);
 }
 
-ndshape instrument::get_recommended_psf_size_cube(float step_x, float step_y, float step_z) const
+NDShape instrument::get_recommended_psf_size_cube(float step_x, float step_y, float step_z) const
 {
-    ndshape size_lsf = get_recommended_psf_size_spec(step_z);
-    ndshape size_psf = get_recommended_psf_size_spat(step_x, step_y);
+    NDShape size_lsf = get_recommended_psf_size_spec(step_z);
+    NDShape size_psf = get_recommended_psf_size_spat(step_x, step_y);
 
-    return ndshape({size_psf[0], size_psf[1], size_lsf[0]});
+    return NDShape({size_psf[0], size_psf[1], size_lsf[0]});
 }
 
-ndarray_host* instrument::create_psf_spec_data(void) const
+NDArrayHost* instrument::create_psf_spec_data(void) const
 {
     return m_lsf->as_array(m_step_z);
 }
 
-ndarray_host* instrument::create_psf_spat_data(void) const
+NDArrayHost* instrument::create_psf_spat_data(void) const
 {
     return m_psf->as_image(m_step_x, m_step_y);
 }
 
-ndarray_host* instrument::create_psf_cube_data(void) const
+NDArrayHost* instrument::create_psf_cube_data(void) const
 {
-    ndarray_host* spec_data = create_psf_spec_data();
-    ndarray_host* spat_data = create_psf_spat_data();
-    ndarray_host* cube_data = create_psf_cube_data(spec_data, spat_data);
+    NDArrayHost* spec_data = create_psf_spec_data();
+    NDArrayHost* spat_data = create_psf_spat_data();
+    NDArrayHost* cube_data = create_psf_cube_data(spec_data, spat_data);
     delete spec_data;
     delete spat_data;
     return cube_data;
 }
 
-ndarray_host* instrument::create_psf_spec_data(int size) const
+NDArrayHost* instrument::create_psf_spec_data(int size) const
 {
     return m_lsf->as_array(size, m_step_z);
 }
 
-ndarray_host* instrument::create_psf_spat_data(int size_x, int size_y) const
+NDArrayHost* instrument::create_psf_spat_data(int size_x, int size_y) const
 {
     return m_psf->as_image(size_x, size_y, m_step_x, m_step_y);
 }
 
-ndarray_host* instrument::create_psf_cube_data(int size_x, int size_y, int size_z) const
+NDArrayHost* instrument::create_psf_cube_data(int size_x, int size_y, int size_z) const
 {
-    ndarray_host* spec_data = create_psf_spec_data(size_z);
-    ndarray_host* spat_data = create_psf_spat_data(size_x, size_y);
-    ndarray_host* cube_data = create_psf_cube_data(spec_data, spat_data);
+    NDArrayHost* spec_data = create_psf_spec_data(size_z);
+    NDArrayHost* spat_data = create_psf_spat_data(size_x, size_y);
+    NDArrayHost* cube_data = create_psf_cube_data(spec_data, spat_data);
     delete spec_data;
     delete spat_data;
     return cube_data;
 }
 
-ndarray_host* instrument::create_psf_cube_data(float step_x, float step_y, float step_z) const
+NDArrayHost* instrument::create_psf_cube_data(float step_x, float step_y, float step_z) const
 {
-    ndarray_host* spec_data = m_lsf->as_array(step_z);
-    ndarray_host* spat_data = m_psf->as_image(step_x, step_y);
-    ndarray_host* cube_data = create_psf_cube_data(spec_data, spat_data);
+    NDArrayHost* spec_data = m_lsf->as_array(step_z);
+    NDArrayHost* spat_data = m_psf->as_image(step_x, step_y);
+    NDArrayHost* cube_data = create_psf_cube_data(spec_data, spat_data);
     delete spec_data;
     delete spat_data;
     return cube_data;
 }
 
-ndarray_host* instrument::create_psf_spec_data(int size, float step) const
+NDArrayHost* instrument::create_psf_spec_data(int size, float step) const
 {
     return m_lsf->as_array(size, step);
 }
 
-ndarray_host* instrument::create_psf_spat_data(int size_x, int size_y, float step_x, float step_y) const
+NDArrayHost* instrument::create_psf_spat_data(int size_x, int size_y, float step_x, float step_y) const
 {
     return m_psf->as_image(size_x, size_y, step_x, step_y);
 }
 
-ndarray_host* instrument::create_psf_cube_data(int size_x, int size_y, int size_z, float step_x, float step_y, float step_z) const
+NDArrayHost* instrument::create_psf_cube_data(int size_x, int size_y, int size_z, float step_x, float step_y, float step_z) const
 {
-    ndarray_host* spec_data = create_psf_spec_data(size_z, step_z);
-    ndarray_host* spat_data = create_psf_spat_data(size_x, size_y, step_x, step_y);
-    ndarray_host* cube_data = create_psf_cube_data(spec_data, spat_data);
+    NDArrayHost* spec_data = create_psf_spec_data(size_z, step_z);
+    NDArrayHost* spat_data = create_psf_spat_data(size_x, size_y, step_x, step_y);
+    NDArrayHost* cube_data = create_psf_cube_data(spec_data, spat_data);
     delete spec_data;
     delete spat_data;
     return cube_data;
 }
 
-ndarray_host* instrument::create_psf_cube_data(const ndarray_host* spec_data, const ndarray_host* spat_data) const
+NDArrayHost* instrument::create_psf_cube_data(const NDArrayHost* spec_data, const NDArrayHost* spat_data) const
 {
     int size_x = spat_data->get_shape()[0];
     int size_y = spat_data->get_shape()[1];
     int size_z = spec_data->get_shape()[0];
 
-    ndarray_host* cube_data = new ndarray_host_new({size_x, size_y, size_z});
+    NDArrayHost* cube_data = new NDArrayHost({size_x, size_y, size_z});
 
     const float* spec_data_raw = spec_data->get_host_ptr();
     const float* spat_data_raw = spat_data->get_host_ptr();

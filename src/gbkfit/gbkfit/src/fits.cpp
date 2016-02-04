@@ -15,7 +15,9 @@ template<typename T>
 int select_fits_data_type(void)
 {
     int type = 0;
-    if      (std::is_same<T, bool>::value)
+    if      (std::is_same<T, std::string>::value)
+        type = TSTRING;
+    else if (std::is_same<T, bool>::value)
         type = TLOGICAL;
     else if (std::is_same<T, unsigned char>::value)
         type = TBYTE;
@@ -79,7 +81,7 @@ int select_fits_image_type(void)
     return type;
 }
 
-header get_header(const std::string& filename)
+Header get_header(const std::string& filename)
 {
     int status = 0;
     fitsfile* fp = nullptr;
@@ -98,10 +100,10 @@ header get_header(const std::string& filename)
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
     }
 
-    return header();
+    return Header();
 }
 
-ndarray* get_data(const std::string& filename)
+NDArray* get_data(const std::string& filename)
 {
     int status = 0;
     fitsfile* fp = nullptr;
@@ -123,10 +125,10 @@ ndarray* get_data(const std::string& filename)
     fits_get_img_size(fp,naxis,naxes,&status);
 
     // Create shape
-    ndshape shape(std::vector<ndshape::value_type>(naxes,naxes+naxis));
+    NDShape shape(std::vector<NDShape::value_type>(naxes,naxes+naxis));
 
     // Allocate data. We use std::unique_pointer as an exception guard.
-    std::unique_ptr<ndarray_host> data = std::make_unique<ndarray_host_new>(shape);
+    std::unique_ptr<NDArrayHost> data = std::make_unique<NDArrayHost>(shape);
 
     // Select fits data type. For now convert everything to float.
     datatype = select_fits_data_type<float>();
@@ -150,9 +152,9 @@ ndarray* get_data(const std::string& filename)
     return data.release();
 }
 
-void write_to(const std::string& filename, const ndarray& data)
+void write_to(const std::string& filename, const NDArray& data)
 {
-    const ndshape& shape = data.get_shape();
+    const NDShape& shape = data.get_shape();
 
     int status = 0;
     fitsfile* fp = nullptr;
@@ -170,7 +172,10 @@ void write_to(const std::string& filename, const ndarray& data)
     std::fill_n(firstpix,naxis,1);
 
     // Create a copy of the data on the host. We use std::unique_pointer as an exception guard.
-    std::unique_ptr<ndarray_host> data_host = std::make_unique<ndarray_host_new>(data);
+    std::unique_ptr<NDArrayHost> data_host = std::make_unique<NDArrayHost>(shape);
+    //data_host->write_data(&data);
+
+    data.read_data(data_host->get_host_ptr());
 
     fits_create_file(&fp,filename.c_str(),&status);
 
@@ -236,6 +241,36 @@ void set_key(const std::string& filename, const std::string& keyname, const T& v
     set_key_comment(filename,keyname,comment);
 }
 
+std::string get_errstatus_string(int status)
+{
+    char errtext[80];
+    fits_get_errstatus(status,errtext);
+    return std::string(errtext);
+}
+
+template<>
+void set_key_value(const std::string& filename, const std::string& keyname, const std::string& value)
+{
+    int status = 0;
+    fitsfile* fp = nullptr;
+    int datatype = select_fits_data_type<std::string>();
+
+    char value2[FLEN_VALUE];
+    std::fill_n(value2,FLEN_VALUE,0);
+    std::strncpy(value2,value.c_str(),FLEN_VALUE);
+    value2[FLEN_VALUE-1] = '\0';
+
+    fits_open_file(&fp,filename.c_str(),READWRITE,&status);
+
+    fits_update_key(fp,datatype,keyname.c_str(),value2,nullptr,&status);
+
+    fits_close_file(fp,&status);
+
+    if (status) {
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
+    }
+}
+
 template<typename T>
 void set_key_value(const std::string& filename, const std::string& keyname, const T& value)
 {
@@ -290,6 +325,9 @@ template void get_key<float>(const std::string& filename, const std::string& key
 template void get_key_value<float>(const std::string& filename, const std::string& keyname, float& value);
 template void set_key<float>(const std::string& filename, const std::string& keyname, const float& value, const std::string& comment);
 template void set_key_value<float>(const std::string& filename, const std::string& keyname, const float& value);
+
+template void set_key<std::string>(const std::string& filename, const std::string& keyname, const std::string& value, const std::string& comment);
+template void set_key_value<std::string>(const std::string& filename, const std::string& keyname, const std::string& value);
 
 } // namespace fits
 } // namespace gbkfit

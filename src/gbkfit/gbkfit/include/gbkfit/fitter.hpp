@@ -11,18 +11,18 @@ namespace gbkfit
 //!
 //! \brief The fitter class
 //!
-class fitter
+class Fitter
 {
 
 public:
 
-    fitter(void);
+    Fitter(void);
 
-    virtual ~fitter();
+    virtual ~Fitter();
 
     virtual const std::string& get_type_name(void) const = 0;
 
-    virtual void fit(model* model, const std::map<std::string,nddataset*>& data, parameters_fit_info& params_info) const = 0;
+    virtual void fit(Model* model, const std::map<std::string,Dataset*>& data, Parameters& params_info) const = 0;
 
 }; // class fitter
 
@@ -30,18 +30,18 @@ public:
 //!
 //! \brief The fitter_factory class
 //!
-class fitter_factory
+class FitterFactory
 {
 
 public:
 
-    fitter_factory(void);
+    FitterFactory(void);
 
-    virtual ~fitter_factory();
+    virtual ~FitterFactory();
 
     virtual const std::string& get_type_name(void) const = 0;
 
-    virtual fitter* create_fitter(const std::string& info) const = 0;
+    virtual Fitter* create_fitter(const std::string& info) const = 0;
 
 }; //  class fitter_factory
 

@@ -4,60 +4,50 @@
 
 namespace gbkfit {
 
-
-nddataset::nddataset(void)
+Dataset::Dataset(const std::string& type)
+    : m_type(type)
 {
 }
 
-nddataset::~nddataset()
+Dataset::~Dataset()
 {
 }
 
-bool nddataset::has_data(const std::string& name) const
+const std::string& Dataset::get_type(void) const
+{
+    return m_type;
+}
+
+bool Dataset::has_data(const std::string& name) const
 {
     return m_data_map.find(name) != m_data_map.end();
 }
 
-ndarray* nddataset::get_data(const std::string& name)
+NDArray* Dataset::get_data(const std::string& name)
 {
     auto iter = m_data_map.find(name);
-
-    if(iter == m_data_map.end()) {
+    if (iter == m_data_map.end()) {
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
     }
-
     return iter->second;
 }
 
-const ndarray* nddataset::get_data(const std::string& name) const
+const NDArray* Dataset::get_data(const std::string& name) const
 {
     auto iter = m_data_map.find(name);
-
-    if(iter == m_data_map.end()) {
+    if (iter == m_data_map.end()) {
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
     }
-
     return iter->second;
 }
 
-void nddataset::add_data(const std::string& name, ndarray* data)
+void Dataset::add_data(const std::string& name, NDArray* data)
 {
     auto iter = m_data_map.find(name);
-
-    if(iter != m_data_map.end()) {
+    if (iter != m_data_map.end()) {
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
     }
-
     m_data_map.emplace(name,data);
 }
-
-void nddataset::__destroy(void)
-{
-    for(auto& data : m_data_map)
-    {
-        delete data.second;
-    }
-}
-
 
 } // namespace gbkfit

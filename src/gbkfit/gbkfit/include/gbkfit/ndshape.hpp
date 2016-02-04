@@ -8,9 +8,9 @@ namespace gbkfit {
 
 
 //!
-//! \brief The ndshape class
+//! \brief The gbkfit::ndshape class
 //!
-class ndshape
+class NDShape
 {
 
 public:
@@ -24,11 +24,11 @@ private:
 
 public:
 
-    ndshape(const std::vector<value_type>& shape);
+    NDShape(const std::vector<value_type>& shape);
 
-    ndshape(const std::initializer_list<value_type>& shape);
+    NDShape(const std::initializer_list<value_type>& shape);
 
-    virtual ~ndshape();
+    virtual ~NDShape();
 
     size_type get_dim_count(void) const;
 
@@ -42,9 +42,9 @@ public:
 
     value_type& operator[](size_type idx);
 
-    bool operator==(const ndshape& rhs) const;
+    bool operator==(const NDShape& rhs) const;
 
-    bool operator!=(const ndshape& rhs) const;
+    bool operator!=(const NDShape& rhs) const;
 
 }; // class ndshape
 

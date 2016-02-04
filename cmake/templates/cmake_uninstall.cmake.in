@@ -4,20 +4,6 @@
 #
 # ==============================================================================
 
-#
-#   This policy determines whether the list command will ignore
-#   empty elements in the list. CMake 2.4 and below list commands
-#   ignored all empty elements in the list. The OLD behavior for
-#   this policy is to ignore empty list elements. The NEW behavior
-#   for this policy is to correctly count empty elements in a list.
-#
-
-if(COMMAND cmake_policy)
-    if(POLICY CMP0007)
-	CMAKE_POLICY(SET CMP0007 OLD)
-    ENDIF()
-ENDIF()
-
 # Make sure install_manifest.txt exists
 if (NOT EXISTS "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt")
     message(FATAL_ERROR "Cannot find install manifest: \"@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt\"")

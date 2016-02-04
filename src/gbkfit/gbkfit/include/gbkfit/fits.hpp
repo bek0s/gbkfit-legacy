@@ -10,7 +10,7 @@ namespace fits {
 //!
 //! \brief The header class
 //!
-class header
+class Header
 {
 
 public:
@@ -65,21 +65,21 @@ public:
 //! \param filename
 //! \return
 //!
-header get_header(const std::string& filename);
+Header get_header(const std::string& filename);
 
 //!
 //! \brief get_data
 //! \param filename
 //! \return
 //!
-ndarray* get_data(const std::string& filename);
+NDArray* get_data(const std::string& filename);
 
 //!
 //! \brief write_to
 //! \param filename
 //! \param data
 //!
-void write_to(const std::string& filename, const ndarray& data);
+void write_to(const std::string& filename, const NDArray& data);
 
 //!
 //! \brief get_key

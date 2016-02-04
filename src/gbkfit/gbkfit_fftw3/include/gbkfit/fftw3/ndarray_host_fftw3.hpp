@@ -10,14 +10,14 @@ namespace fftw3 {
 //!
 //! \brief The ndarray_host_fftw3 class
 //!
-class ndarray_host_fftw3 : public ndarray_host
+class ndarray_host_fftw3 : public NDArrayHost
 {
 
 public:
 
-    ndarray_host_fftw3(const ndshape& shape);
+    ndarray_host_fftw3(const NDShape& shape);
 
-    ndarray_host_fftw3(const ndshape& shape, const_pointer data);
+    ndarray_host_fftw3(const NDShape& shape, const_pointer data);
 
     ~ndarray_host_fftw3();
 

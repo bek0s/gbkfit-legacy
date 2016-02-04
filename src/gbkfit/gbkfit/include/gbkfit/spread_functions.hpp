@@ -15,9 +15,9 @@ class line_spread_function
 public:
     line_spread_function(void);
     virtual ~line_spread_function();
-    ndarray_host* as_array(float step) const;
-    ndarray_host* as_array(int size, float step) const;
-    virtual ndshape get_recommended_size(float step) const = 0;
+    NDArrayHost* as_array(float step) const;
+    NDArrayHost* as_array(int size, float step) const;
+    virtual NDShape get_recommended_size(float step) const = 0;
     virtual void as_array(int size, float step, float* data) const = 0;
 }; // class line_spread_function
 
@@ -33,7 +33,7 @@ private:
 public:
     line_spread_function_array(float* data, float step, int size);
     ~line_spread_function_array();
-    ndshape get_recommended_size(float step) const final;
+    NDShape get_recommended_size(float step) const final;
     void as_array(int size, float step, float* data) const final;
 }; // class line_spread_function_array
 
@@ -47,7 +47,7 @@ private:
 public:
     line_spread_function_gaussian(float fwhm);
     ~line_spread_function_gaussian();
-    ndshape get_recommended_size(float step) const final;
+    NDShape get_recommended_size(float step) const final;
     void as_array(int size, float step, float* data) const final;
 }; // class line_spread_function_gaussian
 
@@ -61,7 +61,7 @@ private:
 public:
     line_spread_function_lorentzian(float fwhm);
     ~line_spread_function_lorentzian();
-    ndshape get_recommended_size(float step) const final;
+    NDShape get_recommended_size(float step) const final;
     void as_array(int size, float step, float* data) const final;
 }; // class line_spread_function_lorentzian
 
@@ -76,7 +76,7 @@ private:
 public:
     line_spread_function_moffat(float fwhm, float beta = 4.765f);
     ~line_spread_function_moffat();
-    ndshape get_recommended_size(float step) const final;
+    NDShape get_recommended_size(float step) const final;
     void as_array(int size, float step, float* data) const final;
 }; // class line_spread_function_moffat
 
@@ -88,9 +88,9 @@ class point_spread_function
 public:
     point_spread_function(void);
     virtual ~point_spread_function();
-    ndarray_host* as_image(float step_x, float step_y) const;
-    ndarray_host* as_image(int size_x, int size_y, float step_x, float step_y) const;
-    virtual ndshape get_recommended_size(float step_x, float step_y) const = 0;
+    NDArrayHost* as_image(float step_x, float step_y) const;
+    NDArrayHost* as_image(int size_x, int size_y, float step_x, float step_y) const;
+    virtual NDShape get_recommended_size(float step_x, float step_y) const = 0;
     virtual void as_image(int size_x, int size_y, float step_x, float step_y, float* data) const = 0;
 }; // class point_spread_function
 
@@ -108,7 +108,7 @@ private:
 public:
     point_spread_function_image(float* data, int size_x, int size_y, float step_x, float step_y);
     ~point_spread_function_image();
-    ndshape get_recommended_size(float step_x, float step_y) const final;
+    NDShape get_recommended_size(float step_x, float step_y) const final;
     void as_image(int size_x, int size_y, float step_x, float step_y, float* data) const final;
 }; // class point_spread_function_image
 
@@ -125,7 +125,7 @@ public:
     point_spread_function_gaussian(float fwhm);
     point_spread_function_gaussian(float fwhm_x, float fwhm_y, float pa);
     ~point_spread_function_gaussian();
-    ndshape get_recommended_size(float step_x, float step_y) const final;
+    NDShape get_recommended_size(float step_x, float step_y) const final;
     void as_image(int size_x, int size_y, float step_x, float step_y, float* data) const final;
 }; // point_spread_function_gaussian
 
@@ -142,7 +142,7 @@ public:
     point_spread_function_lorentzian(float fwhm);
     point_spread_function_lorentzian(float fwhm_x, float fwhm_y, float pa);
     ~point_spread_function_lorentzian();
-    ndshape get_recommended_size(float step_x, float step_y) const final;
+    NDShape get_recommended_size(float step_x, float step_y) const final;
     void as_image(int size_x, int size_y, float step_x, float step_y, float* data) const final;
 }; // point_spread_function_lorentzian
 
@@ -160,7 +160,7 @@ public:
     point_spread_function_moffat(float fwhm, float beta = 4.765f);
     point_spread_function_moffat(float fwhm_x, float fwhm_y, float pa, float beta = 4.765f);
     ~point_spread_function_moffat();
-    ndshape get_recommended_size(float step_x, float step_y) const final;
+    NDShape get_recommended_size(float step_x, float step_y) const final;
     void as_image(int size_x, int size_y, float step_x, float step_y, float* data) const final;
 }; // point_spread_function_moffat
 

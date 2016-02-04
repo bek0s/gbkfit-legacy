@@ -14,11 +14,11 @@ find_package(CUDA REQUIRED)
 # ==============================================================================
 
 set(HEADER_FILES
-    include/gbkfit/cuda/ndarray_cuda.hpp
+    include/gbkfit/cuda/ndarray.hpp
 )
 
 set(SOURCE_FILES
-    src/ndarray_cuda.cpp
+    src/ndarray.cpp
 )
 
 # ==============================================================================

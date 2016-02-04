@@ -3,17 +3,16 @@
 
 int main(int argc, char** argv)
 {
-    (void)argc;
-    (void)argv;
+    gbkfit_app_cli::Application* app = new gbkfit_app_cli::Application();
 
-    gbkfit_app_cli::application* app = new gbkfit_app_cli::application();
-
-    if (app->initialize())
+    if (app->process_program_options(argc, argv))
     {
-        app->run();
+        if (app->initialize())
+        {
+            app->run();
+        }
+        app->shutdown();
     }
-
-    app->shutdown();
 
     delete app;
 

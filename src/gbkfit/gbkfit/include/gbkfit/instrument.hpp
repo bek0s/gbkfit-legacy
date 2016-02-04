@@ -29,31 +29,31 @@ public:
     float get_step_y(void) const;
     float get_step_z(void) const;
 
-    ndshape get_recommended_psf_size_spec(void) const;
-    ndshape get_recommended_psf_size_spat(void) const;
-    ndshape get_recommended_psf_size_cube(void) const;
+    NDShape get_recommended_psf_size_spec(void) const;
+    NDShape get_recommended_psf_size_spat(void) const;
+    NDShape get_recommended_psf_size_cube(void) const;
 
-    ndshape get_recommended_psf_size_spec(float step) const;
-    ndshape get_recommended_psf_size_spat(float step_x, float step_y) const;
-    ndshape get_recommended_psf_size_cube(float step_x, float step_y, float step_z) const;
+    NDShape get_recommended_psf_size_spec(float step) const;
+    NDShape get_recommended_psf_size_spat(float step_x, float step_y) const;
+    NDShape get_recommended_psf_size_cube(float step_x, float step_y, float step_z) const;
 
-    ndarray_host* create_psf_spec_data(void) const;
-    ndarray_host* create_psf_spat_data(void) const;
-    ndarray_host* create_psf_cube_data(void) const;
+    NDArrayHost* create_psf_spec_data(void) const;
+    NDArrayHost* create_psf_spat_data(void) const;
+    NDArrayHost* create_psf_cube_data(void) const;
 
-    ndarray_host* create_psf_spec_data(int size) const;
-    ndarray_host* create_psf_spat_data(int size_x, int size_y) const;
-    ndarray_host* create_psf_cube_data(int size_x, int size_y, int size_z) const;
+    NDArrayHost* create_psf_spec_data(int size) const;
+    NDArrayHost* create_psf_spat_data(int size_x, int size_y) const;
+    NDArrayHost* create_psf_cube_data(int size_x, int size_y, int size_z) const;
 
-    ndarray_host* create_psf_cube_data(float step_x, float step_y, float step_z) const;
+    NDArrayHost* create_psf_cube_data(float step_x, float step_y, float step_z) const;
 
-    ndarray_host* create_psf_spec_data(int size, float step) const;
-    ndarray_host* create_psf_spat_data(int size_x, int size_y, float step_x, float step_y) const;
-    ndarray_host* create_psf_cube_data(int size_x, int size_y, int size_z, float step_x, float step_y, float step_z) const;
+    NDArrayHost* create_psf_spec_data(int size, float step) const;
+    NDArrayHost* create_psf_spat_data(int size_x, int size_y, float step_x, float step_y) const;
+    NDArrayHost* create_psf_cube_data(int size_x, int size_y, int size_z, float step_x, float step_y, float step_z) const;
 
 private:
 
-    ndarray_host* create_psf_cube_data(const ndarray_host* spec_data, const ndarray_host* spat_data) const;
+    NDArrayHost* create_psf_cube_data(const NDArrayHost* spec_data, const NDArrayHost* spat_data) const;
 
 }; // class instrument
 

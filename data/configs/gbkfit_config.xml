@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<gbkfit>
+
+    <datasets>
+        <dataset>
+            <type>flxmap</type>
+            <data type="data"  file="./../../data/datasets/mock/no_noise_no_mask/mock_01_flxmap.fits[0]"/>
+            <data type="error" file="./../../data/datasets/mock/no_noise_no_mask/mock_01_flxmap.fits[1]"/>
+            <data type="mask"  file="./../../data/datasets/mock/no_noise_no_mask/mock_01_flxmap.fits[2]"/>
+        </dataset>
+        <dataset>
+            <type>velmap</type>
+            <data type="data"  file="./../../data/datasets/mock/no_noise_no_mask/mock_01_velmap.fits[0]"/>
+            <data type="error" file="./../../data/datasets/mock/no_noise_no_mask/mock_01_velmap.fits[1]"/>
+            <data type="mask"  file="./../../data/datasets/mock/no_noise_no_mask/mock_01_velmap.fits[2]"/>
+        </dataset>
+        <dataset>
+            <type>sigmap</type>
+            <data type="data"  file="./../../data/datasets/mock/no_noise_no_mask/mock_01_sigmap.fits[0]"/>
+            <data type="error" file="./../../data/datasets/mock/no_noise_no_mask/mock_01_sigmap.fits[1]"/>
+            <data type="mask"  file="./../../data/datasets/mock/no_noise_no_mask/mock_01_sigmap.fits[2]"/>
+        </dataset>
+    </datasets>
+
+    <instrument>
+        <sampling>
+            <x>1.0</x>
+            <y>1.0</y>
+            <z>30.0</z>
+        </sampling>
+        <psf>
+            <type>moffat</type>
+            <fwhm>2.5</fwhm>
+            <beta>4.7</beta>
+        </psf>
+        <lsf>
+            <type>gaussian</type>
+            <fwhm>30.0</fwhm>
+        </lsf>
+    </instrument>
+
+    <model_config>
+        <type>gbkfit.model.model_model01_omp</type>
+        <profile_vel>arctan</profile_vel>
+        <profile_flx>exponential</profile_flx>
+    </model_config>
+
+    <fitter_config>
+        <type>gbkfit.fitter.mpfit</type>
+        <ftol>0</ftol>
+        <xtol>0</xtol>
+        <gtol>0</gtol>
+        <epsfcn>0</epsfcn>
+        <stepfactor>0</stepfactor>
+        <covtol>0</covtol>
+        <maxiter>0</maxiter>
+        <maxfev>0</maxfev>
+        <nprint>1</nprint>
+        <douserscale>0</douserscale>
+        <nofinitecheck>0</nofinitecheck>
+    </fitter_config>
+
+    <params_config>
+        <param name="i0"   fixed="1" value="1"/>
+        <param name="r0"   fixed="1" value="10"/>
+        <param name="vsig" fixed="0" value="30"  min="1"    max="200" step="0" relstep="0" side="0" wrap="0"/>
+        <param name="vsys" fixed="0" value="0"   min="-200" max="200" step="0" relstep="0" side="0" wrap="0"/>
+        <param name="xo"   fixed="0" value="20"  min="0"    max="100" step="0" relstep="0" side="0" wrap="0"/>
+        <param name="yo"   fixed="0" value="20"  min="0"    max="100" step="0" relstep="0" side="0" wrap="0"/>
+        <param name="pa"   fixed="0" value="180" min="0"    max="360" step="0" relstep="0" side="0" wrap="0"/>
+        <param name="incl" fixed="0" value="45"  min="1"    max="89"  step="0" relstep="0" side="0" wrap="0"/>
+        <param name="rt"   fixed="0" value="1"   min="0.1"  max="50"  step="0" relstep="0" side="0" wrap="0"/>
+        <param name="vt"   fixed="0" value="200" min="10"   max="500" step="0" relstep="0" side="0" wrap="0"/>
+        <param name="a"    fixed="0" value="1"   min="0.5"  max="1.5" step="0" relstep="0" side="0" wrap="0"/>
+        <param name="b"    fixed="0" value="1"   min="0.5"  max="1.5" step="0" relstep="0" side="0" wrap="0"/>
+    </params_config>
+
+</gbkfit>

@@ -8,36 +8,41 @@
 namespace gbkfit_app_cli {
 
 //!
-//! \brief The application class
+//! \brief The Application class
 //!
-class application
+class Application
 {
 
 private:
 
-    std::string m_filename_config;
+    static const std::string DEFAULT_CONFIG_FILE;
+    static const std::string DEFAULT_GALAXY_NAME;
 
-    gbkfit::core* m_core;
+private:
 
-    gbkfit::model_factory* m_model_factory_model01_cuda;
-    gbkfit::model_factory* m_model_factory_model01_omp;
+    std::string m_config_file;
+    std::string m_galaxy_name;
 
-    gbkfit::fitter_factory* m_fitter_factory_mpfit;
-    gbkfit::fitter_factory* m_fitter_factory_multinest;
+    gbkfit::Core* m_core;
 
-    gbkfit::model* m_model;
-    gbkfit::fitter* m_fitter;
-    gbkfit::parameters_fit_info* m_fit_info;
+    std::vector<gbkfit::ModelFactory*> m_model_factories;
+    std::vector<gbkfit::FitterFactory*> m_fitter_factories;
 
-    std::map<std::string,gbkfit::nddataset*> m_datasets;
+    gbkfit::Model* m_model;
+    gbkfit::Fitter* m_fitter;
+    gbkfit::Parameters* m_parameters;
+
+    std::map<std::string,gbkfit::Dataset*> m_datasets;
 
     gbkfit::instrument* m_instrument;
 
 public:
 
-    application(void);
+    Application(void);
 
-    ~application();
+    ~Application();
+
+    bool process_program_options(int argc, char** argv);
 
     bool initialize(void);
 
@@ -45,7 +50,7 @@ public:
 
     void run(void);
 
-}; // class application
+}; // class Application
 
 } // namespace gbkfit_app_cli
 

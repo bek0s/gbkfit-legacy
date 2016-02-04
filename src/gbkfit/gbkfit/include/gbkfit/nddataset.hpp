@@ -1,42 +1,45 @@
 #pragma once
-#ifndef GBKFIT_NDDATASET_HPP
-#define GBKFIT_NDDATASET_HPP
+#ifndef GBKFIT_DATASET_HPP
+#define GBKFIT_DATASET_HPP
 
 #include "gbkfit/prerequisites.hpp"
 
 namespace gbkfit
 {
 
-
 //!
-//! \brief The nddataset class
+//! \brief The Dataset class
 //!
-class nddataset
+class Dataset
 {
 
 private:
 
-    std::map<std::string,ndarray*> m_data_map;
+    std::string m_type;
+    std::map<std::string, NDArray*> m_data_map;
 
 public:
 
-    nddataset(void);
+    Dataset(const std::string& type);
 
-    virtual ~nddataset();
+    virtual ~Dataset();
+
+    const std::string& get_type(void) const;
 
     bool has_data(const std::string& name) const;
 
-    ndarray* get_data(const std::string& name);
+    NDArray* get_data(const std::string& name);
 
-    const ndarray* get_data(const std::string& name) const;
+    const NDArray* get_data(const std::string& name) const;
 
-    void add_data(const std::string& name, ndarray* data);
+    void add_data(const std::string& name, NDArray* data);
 
-    void __destroy(void);
+}; // class Dataset
 
-}; // class nddataset
+
+typedef std::map<std::string, Dataset*> Datasets;
 
 
 } // namespace gbkfit
 
-#endif // GBKFIT_NDDATASET_HPP
+#endif // GBKFIT_DATASET_HPP

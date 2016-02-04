@@ -3,22 +3,20 @@
 
 namespace gbkfit {
 
-
-fitter::fitter(void)
+Fitter::Fitter(void)
 {
 }
 
-fitter::~fitter()
+Fitter::~Fitter()
 {
 }
 
-fitter_factory::fitter_factory(void)
+FitterFactory::FitterFactory(void)
 {
 }
 
-fitter_factory::~fitter_factory()
+FitterFactory::~FitterFactory()
 {
 }
-
 
 } // namespace gbkfit

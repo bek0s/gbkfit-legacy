@@ -3,19 +3,19 @@
 
 namespace gbkfit {
 
-model::model(void)
+Model::Model(void)
 {
 }
 
-model::~model()
+Model::~Model()
 {
 }
 
-model_factory::model_factory(void)
+ModelFactory::ModelFactory(void)
 {
 }
 
-model_factory::~model_factory()
+ModelFactory::~ModelFactory()
 {
 }
 

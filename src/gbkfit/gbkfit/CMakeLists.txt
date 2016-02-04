@@ -10,11 +10,18 @@ project(gbkfit-project)
 # ==============================================================================
 
 find_package(cfitsio)
+set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost REQUIRED)
 
 # ==============================================================================
 
+configure_file(cmake/templates/build_settings.hpp.in ${gbkfit-project_SOURCE_DIR}/include/gbkfit/build_settings.hpp)
+
+# ==============================================================================
+
 set(HEADER_FILES
+    include/gbkfit/build_settings.hpp
+    include/gbkfit/config.hpp
     include/gbkfit/core.hpp
     include/gbkfit/fits.hpp
     include/gbkfit/fitter.hpp
@@ -25,11 +32,11 @@ set(HEADER_FILES
     include/gbkfit/ndarray_host.hpp
     include/gbkfit/nddataset.hpp
     include/gbkfit/ndshape.hpp
-    include/gbkfit/parameters_fit_info.hpp
+    include/gbkfit/parameters.hpp
     include/gbkfit/prerequisites.hpp
     include/gbkfit/spread_functions.hpp
+    include/gbkfit/string_util.hpp
     include/gbkfit/utility.hpp
-
 )
 
 set(SOURCE_FILES
@@ -42,7 +49,7 @@ set(SOURCE_FILES
     src/ndarray_host.cpp
     src/nddataset.cpp
     src/ndshape.cpp
-    src/parameters_fit_info.cpp
+    src/parameters.cpp
     src/spread_functions.cpp
     src/utility.cpp
 )

@@ -9,14 +9,14 @@ namespace gbkfit {
 //!
 //! \brief The model class
 //!
-class model
+class Model
 {
 
 public:
 
-    model(void);
+    Model(void);
 
-    virtual ~model();
+    virtual ~Model();
 
     virtual void initialize(int size_x, int size_y, int size_z, instrument* instrument) = 0;
 
@@ -26,29 +26,29 @@ public:
 
     virtual const std::vector<float>& get_parameter_values(void) const = 0;
 
-    virtual const std::map<std::string,ndarray*>& get_data(void) const = 0;
+    virtual const std::map<std::string,NDArray*>& get_data(void) const = 0;
 
-    virtual const std::map<std::string,ndarray*>& evaluate(const std::map<std::string,float>& parameters) = 0;
+    virtual const std::map<std::string,NDArray*>& evaluate(const std::map<std::string,float>& parameters) = 0;
 
-}; // class model
+}; // class Model
 
 //!
 //! \brief The model_factory class
 //!
-class model_factory
+class ModelFactory
 {
 
 public:
 
-    model_factory(void);
+    ModelFactory(void);
 
-    virtual ~model_factory();
+    virtual ~ModelFactory();
 
     virtual const std::string& get_type_name(void) const = 0;
 
-    virtual model* create_model(const std::string& info) const = 0;
+    virtual Model* create_model(const std::string& info) const = 0;
 
-}; //  class model_factory
+}; //  class ModelFactory
 
 } // namespace gbkfit
 
