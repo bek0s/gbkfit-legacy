@@ -42,14 +42,14 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${GBKFIT_LIBRARY_OUTPUT_DIRECTORY}")
 
 option(GBKFIT_BUILD_APP_CLI "Build gbkfit_app_cli" TRUE)
 
-option(GBKFIT_BUILD_CUDA "Build gbkfit_cuda" FALSE)
+option(GBKFIT_BUILD_CUDA "Build gbkfit_cuda" TRUE)
 option(GBKFIT_BUILD_FFTW3 "Build gbkfit_fftw3" TRUE)
 
 option(GBKFIT_BUILD_FITTER_MPFIT "Build gbkfit_fitter_mpfit" TRUE)
-option(GBKFIT_BUILD_FITTER_MULTINEST "Build gbkfit_fitter_multinest" FALSE)
+option(GBKFIT_BUILD_FITTER_MULTINEST "Build gbkfit_fitter_multinest" TRUE)
 
 option(GBKFIT_BUILD_MODEL_MODEL01 "Build gbkfit_model_model01" TRUE)
-option(GBKFIT_BUILD_MODEL_MODEL01_CUDA "Build gbkfit_model_model01_cuda" FALSE)
+option(GBKFIT_BUILD_MODEL_MODEL01_CUDA "Build gbkfit_model_model01_cuda" TRUE)
 option(GBKFIT_BUILD_MODEL_MODEL01_OMP "Build gbkfit_model_model01_omp" TRUE)
 
 # ==============================================================================

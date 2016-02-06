@@ -9,16 +9,25 @@
 #include "gbkfit/parameters.hpp"
 #include "gbkfit/utility.hpp"
 
-#include "gbkfit/models/model01/model_model01.hpp"
+#ifdef GBKFIT_BUILD_MODEL_MODEL01_OMP
 #include "gbkfit/models/model01/model_model01_omp.hpp"
+#endif
+
+#ifdef GBKFIT_BUILD_MODEL_MODEL01_CUDA
 #include "gbkfit/models/model01/model_model01_cuda.hpp"
+#endif
+
+#ifdef GBKFIT_BUILD_FITTER_MPFIT
 #include "gbkfit/fitters/mpfit/fitter_mpfit.hpp"
 #include "gbkfit/fitters/mpfit/fitter_factory_mpfit.hpp"
+#endif
+
+#ifdef GBKFIT_BUILD_FITTER_MULTINEST
 #include "gbkfit/fitters/multinest/fitter_multinest.hpp"
 #include "gbkfit/fitters/multinest/fitter_factory_multinest.hpp"
+#endif
 
 #include <boost/program_options.hpp>
-#include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
 namespace gbkfit_app_cli {

@@ -32,7 +32,7 @@ private:
     gbkfit::Fitter* m_fitter;
     gbkfit::Parameters* m_parameters;
 
-    std::map<std::string,gbkfit::Dataset*> m_datasets;
+    std::map<std::string, gbkfit::Dataset*> m_datasets;
 
     gbkfit::instrument* m_instrument;
 

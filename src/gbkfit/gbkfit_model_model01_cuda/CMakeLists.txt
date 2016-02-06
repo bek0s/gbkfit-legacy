@@ -43,6 +43,8 @@ include_directories(include)
 SET(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -keep -arch=compute_20 -code=sm_20,sm_30,sm_35 -Xcompiler -fPIC")
 
 cuda_add_library(target_gbkfit_model_model01_cuda_nvcc ${HEADER_FILES_CUDA} ${SOURCE_FILES_CUDA})
+set_target_properties(target_gbkfit_model_model01_cuda_nvcc PROPERTIES OUTPUT_NAME "gbkfit_model_model01_cuda_nvcc")
+set_target_properties(target_gbkfit_model_model01_cuda_nvcc PROPERTIES DEBUG_POSTFIX "_d")
 
 add_library(target_gbkfit_model_model01_cuda_object OBJECT ${HEADER_FILES} ${SOURCE_FILES})
 add_library(target_gbkfit_model_model01_cuda_static STATIC $<TARGET_OBJECTS:target_gbkfit_model_model01_cuda_object>)
