@@ -1,6 +1,6 @@
 
 #include "gbkfit/fitters/mpfit/fitter_mpfit.hpp"
-#include "gbkfit/fitters/mpfit/mpfit/mpfit.h"
+#include <mpfit.h>
 
 #include "gbkfit/fitters/mpfit/fitter_factory_mpfit.hpp"
 

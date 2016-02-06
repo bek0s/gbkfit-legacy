@@ -133,6 +133,9 @@ bool Application::initialize(void)
     // Create subconfiguations.
     //
 
+    std::stringstream fitter_config_info;
+    boost::property_tree::write_xml(fitter_config_info, ptree_config.get_child("gbkfit.fitter_config"));
+
     std::cout << "creating subconfigurations..." << std::endl;
     std::stringstream datasets_info;
     boost::property_tree::write_xml(datasets_info,ptree_config.get_child("gbkfit.datasets"));
@@ -140,8 +143,7 @@ bool Application::initialize(void)
     boost::property_tree::write_xml(instrument_info, ptree_config.get_child("gbkfit.instrument"));
     std::stringstream model_config_info;
     boost::property_tree::write_xml(model_config_info, ptree_config.get_child("gbkfit.model_config"));
-    std::stringstream fitter_config_info;
-    boost::property_tree::write_xml(fitter_config_info, ptree_config.get_child("gbkfit.fitter_config"));
+
     std::stringstream params_config_info;
     boost::property_tree::write_xml(params_config_info, ptree_config.get_child("gbkfit.params_config"));
 
