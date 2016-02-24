@@ -5,21 +5,21 @@
     <datasets>
         <dataset>
             <type>flxmap</type>
-            <data type="data"  file="./../../data/datasets/mock/no_noise_no_mask/mock_01_flxmap.fits[0]"/>
-            <data type="error" file="./../../data/datasets/mock/no_noise_no_mask/mock_01_flxmap.fits[1]"/>
-            <data type="mask"  file="./../../data/datasets/mock/no_noise_no_mask/mock_01_flxmap.fits[2]"/>
+            <data>../../data/datasets/mock/mock_01/mock_01_flxmap_d.fits</data>
+            <errors>../../data/datasets/mock/mock_01/mock_01_flxmap_e.fits</errors>
+            <mask>../../data/datasets/mock/mock_01/mock_01_flxmap_m.fits</mask>
         </dataset>
         <dataset>
             <type>velmap</type>
-            <data type="data"  file="./../../data/datasets/mock/no_noise_no_mask/mock_01_velmap.fits[0]"/>
-            <data type="error" file="./../../data/datasets/mock/no_noise_no_mask/mock_01_velmap.fits[1]"/>
-            <data type="mask"  file="./../../data/datasets/mock/no_noise_no_mask/mock_01_velmap.fits[2]"/>
+            <data>../../data/datasets/mock/mock_01/mock_01_velmap_d.fits</data>
+            <errors>../../data/datasets/mock/mock_01/mock_01_velmap_e.fits</errors>
+            <mask>../../data/datasets/mock/mock_01/mock_01_velmap_m.fits</mask>
         </dataset>
         <dataset>
             <type>sigmap</type>
-            <data type="data"  file="./../../data/datasets/mock/no_noise_no_mask/mock_01_sigmap.fits[0]"/>
-            <data type="error" file="./../../data/datasets/mock/no_noise_no_mask/mock_01_sigmap.fits[1]"/>
-            <data type="mask"  file="./../../data/datasets/mock/no_noise_no_mask/mock_01_sigmap.fits[2]"/>
+            <data>../../data/datasets/mock/mock_01/mock_01_sigmap_d.fits</data>
+            <errors>../../data/datasets/mock/mock_01/mock_01_sigmap_e.fits</errors>
+            <mask>../../data/datasets/mock/mock_01/mock_01_sigmap_m.fits</mask>
         </dataset>
     </datasets>
 
@@ -31,11 +31,21 @@
         </sampling>
         <psf>
             <type>gaussian</type>
-            <fwhm>2.5</fwhm>
+            <fwhm_x>2.5</fwhm_x>
+            <fwhm_y>2.5</fwhm_y>
+            <pa>0</pa>
+            <!--
+            <type>image</type>
+            <file>../../data/datasets/mock/psf.fits</file>
+            -->
         </psf>
         <lsf>
             <type>gaussian</type>
             <fwhm>30.0</fwhm>
+            <!--
+            <type>array</type>
+            <file>../../data/datasets/mock/lsf.fits</file>
+            -->
         </lsf>
     </instrument>
 
@@ -59,20 +69,21 @@
         <douserscale>0</douserscale>
         <nofinitecheck>0</nofinitecheck>
     </fitter_config>
-
+    
     <params_config>
-        <param name="i0"   fixed="1" value="1"/>
-        <param name="r0"   fixed="1" value="10"/>
-        <param name="vsig" fixed="0" value="30"  min="1"    max="200" step="0.1" relstep="0" side="2" wrap="0"/>
-        <param name="vsys" fixed="0" value="0"   min="-200" max="200" step="0.1" relstep="0" side="2" wrap="0"/>
-        <param name="xo"   fixed="0" value="20"  min="0"    max="100" step="0.1" relstep="0" side="2" wrap="0"/>
-        <param name="yo"   fixed="0" value="20"  min="0"    max="100" step="0.1" relstep="0" side="2" wrap="0"/>
-        <param name="pa"   fixed="0" value="180" min="0"    max="360" step="0.1" relstep="0" side="2" wrap="0"/>
-        <param name="incl" fixed="0" value="45"  min="1"    max="89"  step="0.1" relstep="0" side="2" wrap="0"/>
-        <param name="rt"   fixed="0" value="1"   min="0.1"  max="50"  step="0.1" relstep="0" side="2" wrap="0"/>
-        <param name="vt"   fixed="0" value="200" min="10"   max="500" step="0.1" relstep="0" side="2" wrap="0"/>
-        <param name="a"    fixed="0" value="1"   min="0.5"  max="1.5" step="0.1" relstep="0" side="2" wrap="0"/>
-        <param name="b"    fixed="0" value="1"   min="0.5"  max="1.5" step="0.1" relstep="0" side="2" wrap="0"/>
+        <param name='i0'   fixed='1' value='1'/>
+        <param name='r0'   fixed='1' value='10'/>
+        <param name='vsig' fixed='0' value='30'  min='1'    max='150' step='0.1' relstep='0' side='2' wrap='0'/>
+        <param name='vsys' fixed='0' value='50'   min='-100'  max='100'  step='0.1' relstep='0' side='2' wrap='0'/>
+        <param name='xo'   fixed='0' value='20'  min='5'    max='45'  step='0.1' relstep='0' side='2' wrap='0'/>
+        <param name='yo'   fixed='0' value='20'  min='5'    max='45'  step='0.1' relstep='0' side='2' wrap='0'/>
+        <param name='pa'   fixed='0' value='20'  min='0'    max='90'  step='0.1' relstep='0' side='2' wrap='0'/>
+        <param name='incl' fixed='0' value='20'  min='5'    max='85'  step='0.1' relstep='0' side='2' wrap='0'/>
+        <param name='rt'   fixed='0' value='2'   min='0.01' max='10.0'  step='0.1' relstep='0' side='2' wrap='0'/>
+        <param name='vt'   fixed='0' value='100' min='50'   max='350' step='0.1' relstep='0' side='2' wrap='0'/>
+        <param name='a'    fixed='0' value='1'   min='0.5'  max='1.5' step='0.1' relstep='0' side='2' wrap='0'/>
+        <param name='b'    fixed='0' value='1'   min='0.5'  max='1.5' step='0.1' relstep='0' side='2' wrap='0'/>
     </params_config>
+    
 
 </gbkfit>

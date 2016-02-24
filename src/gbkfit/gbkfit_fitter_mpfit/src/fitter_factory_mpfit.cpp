@@ -31,17 +31,28 @@ Fitter* FitterFactoryMpfit::create_fitter(const std::string& info) const
     boost::property_tree::read_xml(info_stream, info_ptree);
 
     FitterMpfit* fitter = new FitterMpfit();
-    fitter->m_ftol          = info_ptree.get<double>("ftol");
-    fitter->m_xtol          = info_ptree.get<double>("xtol");
-    fitter->m_gtol          = info_ptree.get<double>("gtol");
-    fitter->m_epsfcn        = info_ptree.get<double>("epsfcn");
-    fitter->m_stepfactor    = info_ptree.get<double>("stepfactor");
-    fitter->m_covtol        = info_ptree.get<double>("covtol");
-    fitter->m_maxiter       = info_ptree.get<int>("maxiter");
-    fitter->m_maxfev        = info_ptree.get<int>("maxfev");
-    fitter->m_nprint        = info_ptree.get<int>("nprint");
-    fitter->m_douserscale   = info_ptree.get<int>("douserscale");
-    fitter->m_nofinitecheck = info_ptree.get<int>("nofinitecheck");
+    if (info_ptree.count("ftol") > 0)
+        fitter->m_ftol          = info_ptree.get<double>("ftol");
+    if (info_ptree.count("xtol") > 0)
+        fitter->m_xtol          = info_ptree.get<double>("xtol");
+    if (info_ptree.count("gtol") > 0)
+        fitter->m_gtol          = info_ptree.get<double>("gtol");
+    if (info_ptree.count("epsfcn") > 0)
+        fitter->m_epsfcn        = info_ptree.get<double>("epsfcn");
+    if (info_ptree.count("stepfactor") > 0)
+        fitter->m_stepfactor    = info_ptree.get<double>("stepfactor");
+    if (info_ptree.count("covtol") > 0)
+        fitter->m_covtol        = info_ptree.get<double>("covtol");
+    if (info_ptree.count("maxiter") > 0)
+        fitter->m_maxiter       = info_ptree.get<int>("maxiter");
+    if (info_ptree.count("maxfev") > 0)
+        fitter->m_maxfev        = info_ptree.get<int>("maxfev");
+    if (info_ptree.count("nprint") > 0)
+        fitter->m_nprint        = info_ptree.get<int>("nprint");
+    if (info_ptree.count("douserscale") > 0)
+        fitter->m_douserscale   = info_ptree.get<int>("douserscale");
+    if (info_ptree.count("nofinitecheck") > 0)
+        fitter->m_nofinitecheck = info_ptree.get<int>("nofinitecheck");
 
     return fitter;
 }

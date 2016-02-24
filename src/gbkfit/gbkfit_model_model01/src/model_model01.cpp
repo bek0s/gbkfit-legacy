@@ -5,7 +5,7 @@ namespace gbkfit {
 namespace models {
 namespace model01 {
 
-model_model01::model_model01(profile_flx_type profile_flx, profile_vel_type profile_vel)
+ModelModel01::ModelModel01(profile_flx_type profile_flx, profile_vel_type profile_vel)
     : m_profile_flx(profile_flx)
     , m_profile_vel(profile_vel)
 {
@@ -48,21 +48,21 @@ model_model01::model_model01(profile_flx_type profile_flx, profile_vel_type prof
     m_parameter_names.push_back("vsig");
 }
 
-model_model01::~model_model01()
+ModelModel01::~ModelModel01()
 {
 }
 
-const std::vector<std::string>& model_model01::get_parameter_names(void) const
+const std::vector<std::string>& ModelModel01::get_parameter_names(void) const
 {
     return m_parameter_names;
 }
 
-const std::vector<float>& model_model01::get_parameter_values(void) const
+const std::vector<float>& ModelModel01::get_parameter_values(void) const
 {
     return m_parameter_values;
 }
 
-const std::map<std::string,NDArray*>& model_model01::evaluate(const std::map<std::string,float>& parameters)
+const std::map<std::string,NDArray*>& ModelModel01::evaluate(const std::map<std::string,float>& parameters)
 {
     // Projection parameters.
     std::vector<float> params_prj;
@@ -109,11 +109,11 @@ const std::map<std::string,NDArray*>& model_model01::evaluate(const std::map<std
     return evaluate(m_profile_flx, m_profile_vel, params_prj, params_flx, params_vel, param_vsys, param_vsig);
 }
 
-model_factory_model01::model_factory_model01(void)
+ModelFactoryModel01::ModelFactoryModel01(void)
 {
 }
 
-model_factory_model01::~model_factory_model01()
+ModelFactoryModel01::~ModelFactoryModel01()
 {
 }
 

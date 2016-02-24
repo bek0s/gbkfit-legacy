@@ -18,7 +18,7 @@ namespace model01 {
 
 
 model_model01_omp::model_model01_omp(profile_flx_type profile_flx, profile_vel_type profile_vel)
-    : model_model01(profile_flx,profile_vel)
+    : ModelModel01(profile_flx,profile_vel)
 {
 }
 
@@ -43,7 +43,7 @@ model_model01_omp::~model_model01_omp()
     fftwf_cleanup_threads();
 }
 
-void model_model01_omp::initialize(int size_x, int size_y, int size_z, instrument *instrument)
+void model_model01_omp::initialize(int size_x, int size_y, int size_z, Instrument *instrument)
 {
     m_upsampling_x = 1;
     m_upsampling_y = 1;

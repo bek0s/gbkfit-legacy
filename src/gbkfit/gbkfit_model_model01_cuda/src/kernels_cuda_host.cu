@@ -114,6 +114,7 @@ void model_image_3d_convolve_fft(float* flxcube,
     // Perform complex-to-real transform.
     cufftExecC2R(plan_c2r, reinterpret_cast<cufftComplex*>(flxcube_complex), flxcube);
 
+    cudaDeviceSynchronize();
 }
 
 void model_image_3d_downsample_and_copy(const float* flxcube_up,

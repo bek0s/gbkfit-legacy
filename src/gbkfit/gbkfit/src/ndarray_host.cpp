@@ -9,6 +9,12 @@ NDArrayHost::NDArrayHost(const NDShape& shape)
     m_data = new value_type[get_size()];
 }
 
+NDArrayHost::NDArrayHost(const NDShape &shape, const value_type& value)
+    : NDArrayHost(shape)
+{
+    std::fill_n(m_data, get_size(), value);
+}
+
 NDArrayHost::~NDArrayHost()
 {
     delete [] m_data;
@@ -36,19 +42,16 @@ void NDArrayHost::write_data(const_pointer src)
 
 void NDArrayHost::write_data(const NDArray* src)
 {
-    if(const NDArrayHost* src_array = dynamic_cast<const NDArrayHost*>(src))
-    {
-        write_data(src_array);
-    }
-    else
-    {
-        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
-    }
+    src->read_data(get_host_ptr());
 }
 
-void NDArrayHost::write_data(const NDArrayHost* src)
+NDArrayHost::pointer NDArrayHost::map(void)
 {
-    src->read_data(get_host_ptr());
+    return m_data;
+}
+
+void NDArrayHost::unmap(void)
+{
 }
 
 } // namespace gbkfit

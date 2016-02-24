@@ -7,9 +7,6 @@
 
 namespace gbkfit {
 
-//!
-//! \brief The ndarray_host class
-//!
 class NDArrayHost : public NDArray
 {
 
@@ -19,7 +16,9 @@ protected:
 
 public:
 
-    NDArrayHost(const NDShape &shape);
+    NDArrayHost(const NDShape& shape);
+
+    NDArrayHost(const NDShape& shape, const value_type& value);
 
     ~NDArrayHost();
 
@@ -27,15 +26,17 @@ public:
 
     const_pointer get_host_ptr(void) const;
 
-    void read_data(pointer dst) const final;
+    void read_data(pointer dst) const override final;
 
-    void write_data(const_pointer data) final;
+    void write_data(const_pointer data) override final;
 
-    void write_data(const NDArray* src) final;
+    void write_data(const NDArray* src) override final;
 
-    void write_data(const NDArrayHost* src);
+    pointer map(void) override final;
 
-}; // class ndarray_host
+    void unmap(void) override final;
+
+};
 
 } // namespace gbkfit
 

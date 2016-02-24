@@ -9,7 +9,7 @@ namespace gbkfit {
 namespace models {
 namespace model01 {
 
-class model_model01_omp : public model_model01
+class model_model01_omp : public ModelModel01
 {
 
 private:
@@ -64,7 +64,7 @@ public:
 
     ~model_model01_omp();
 
-    void initialize(int size_x, int size_y, int size_z, instrument* instrument) final;
+    void initialize(int size_x, int size_y, int size_z, Instrument* Instrument) final;
 
     const std::string& get_type_name(void) const final;
 
@@ -82,7 +82,7 @@ private:
 
 }; // class model_model01_omp
 
-class model_factory_model01_omp : public model_factory_model01
+class model_factory_model01_omp : public ModelFactoryModel01
 {
 
 public:

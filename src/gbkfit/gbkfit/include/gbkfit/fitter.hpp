@@ -7,7 +7,6 @@
 namespace gbkfit
 {
 
-
 //!
 //! \brief The fitter class
 //!
@@ -26,7 +25,6 @@ public:
 
 }; // class fitter
 
-
 //!
 //! \brief The fitter_factory class
 //!
@@ -44,7 +42,6 @@ public:
     virtual Fitter* create_fitter(const std::string& info) const = 0;
 
 }; //  class fitter_factory
-
 
 } // namespace gbkfit
 

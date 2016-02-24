@@ -1,5 +1,6 @@
 
 #include "gbkfit/cuda/ndarray.hpp"
+#include "gbkfit/ndarray_host.hpp"
 
 #include <cuda_runtime_api.h>
 
@@ -16,12 +17,12 @@ NDArray::~NDArray()
 {
 }
 
-gbkfit::NDArray::pointer NDArray::get_cuda_ptr(void)
+NDArray::pointer NDArray::get_cuda_ptr(void)
 {
     return m_data;
 }
 
-gbkfit::NDArray::const_pointer NDArray::get_cuda_ptr(void) const
+NDArray::const_pointer NDArray::get_cuda_ptr(void) const
 {
     return m_data;
 }
@@ -38,9 +39,13 @@ void NDArray::write_data(const_pointer src)
 
 void NDArray::write_data(const gbkfit::NDArray* src)
 {
-    if(const gbkfit::cuda::NDArray* src_array = dynamic_cast<const gbkfit::cuda::NDArray*>(src))
+    if (const gbkfit::cuda::NDArray* src_cuda = dynamic_cast<const gbkfit::cuda::NDArray*>(src))
     {
-        write_data(src_array);
+        write_data(src_cuda->get_cuda_ptr());
+    }
+    else if (const gbkfit::NDArrayHost* src_host = dynamic_cast<const gbkfit::NDArrayHost*>(src))
+    {
+        write_data(src_host->get_host_ptr());
     }
     else
     {
@@ -48,42 +53,70 @@ void NDArray::write_data(const gbkfit::NDArray* src)
     }
 }
 
-void NDArray::write_data(const gbkfit::cuda::NDArray* src)
-{
-    write_data(src->get_cuda_ptr());
-}
-
-ndarray_device::ndarray_device(const NDShape& shape)
+NDArrayDevice::NDArrayDevice(const NDShape& shape)
     : gbkfit::cuda::NDArray(shape)
+    , m_data_mapped(nullptr)
 {
     cudaMalloc((void**)&m_data, get_size_in_bytes());
 }
 
-ndarray_device::~ndarray_device()
+NDArrayDevice::~NDArrayDevice()
 {
     cudaFree(m_data);
 }
 
-ndarray_pinned::ndarray_pinned(const NDShape& shape)
+NDArrayDevice::pointer NDArrayDevice::map(void)
+{
+    m_data_mapped = new value_type[get_size()];
+    read_data(m_data_mapped);
+    return m_data_mapped;
+}
+
+void NDArrayDevice::unmap(void)
+{
+    write_data(m_data_mapped);
+    delete [] m_data_mapped;
+    m_data_mapped = nullptr;
+}
+
+NDArrayPinned::NDArrayPinned(const NDShape& shape)
     : gbkfit::cuda::NDArray(shape)
 {
     cudaHostAlloc((void**)&m_data, get_size_in_bytes(), cudaHostAllocDefault);
 }
 
-ndarray_pinned::~ndarray_pinned()
+NDArrayPinned::~NDArrayPinned()
 {
     cudaFreeHost(m_data);
 }
 
-ndarray_managed::ndarray_managed(const NDShape& shape)
+NDArrayPinned::pointer NDArrayPinned::map(void)
+{
+    return m_data;
+}
+
+void NDArrayPinned::unmap(void)
+{
+}
+
+NDArrayManaged::NDArrayManaged(const NDShape& shape)
     : gbkfit::cuda::NDArray(shape)
 {
     cudaMallocManaged((void**)&m_data, get_size_in_bytes(), cudaMemAttachGlobal);
 }
 
-ndarray_managed::~ndarray_managed()
+NDArrayManaged::~NDArrayManaged()
 {
     cudaFree(m_data);
+}
+
+NDArrayManaged::pointer NDArrayManaged::map(void)
+{
+    return m_data;
+}
+
+void NDArrayManaged::unmap(void)
+{
 }
 
 } // namespace cuda

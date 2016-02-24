@@ -8,57 +8,74 @@ namespace gbkfit {
 namespace fits {
 
 //!
-//! \brief The header class
+//! \brief The Header class
 //!
 class Header
 {
 
 public:
 
-    std::vector<std::string> m_key_names;
-    std::vector<std::string> m_key_values;
-    std::vector<std::string> m_key_comments;
+    //!
+    //! \brief The Keyword class
+    //!
+    class Keyword
+    {
 
-    std::map<std::string,std::size_t> m_key_indices;
+    private:
+
+        std::string m_key;
+        std::string m_value;
+        std::string m_comment;
+        int m_datatype;
+
+    public:
+
+        Keyword(const std::string& key);
+
+        ~Keyword();
+
+        template<typename T>
+        void get(T& value, std::string& comment)
+        {
+            get_value<T>(value);
+            get_comment(comment);
+        }
+
+        template<typename T>
+        void set(const T& value, const std::string& comment)
+        {
+            set_value<T>(value);
+            set_comment(comment);
+        }
+
+        template<typename T>
+        void get_value(T& value) const;
+
+        template<typename T>
+        void set_value(const T& value);
+
+        void get_comment(std::string& comment) const;
+
+        void set_comment(const std::string& comment);
+
+    }; // class Keyword
 
 public:
 
-    bool has_key(const std::string& name) const
-    {
-        return m_key_indices.find(name) != m_key_indices.end();
-    }
+    std::vector<std::string> m_keyword_order;
+    std::map<std::string, Keyword> m_keywords;
 
-    template<typename T>
-    void set_key(const std::string& name, const T& value, const std::string& comment)
-    {}
+public:
 
-    template<typename T>
-    void get_key(const std::string& name, T& value, std::string& comment)
-    {}
+    bool has_keyword(const std::string& key);
 
-    template<typename T>
-    T get_key_value(const std::string& name) const
-    {}
+    void del_keyword(const std::string& key);
 
-    template<typename T>
-    void set_key_value(const std::string& name, const T& value)
-    {}
+    Keyword& add_keyword(const std::string& key);
 
-    std::string get_key_comment(const std::string& keyname, std::string& comment) const
-    {
-        (void)keyname;
-        (void)comment;
-        return std::string();
-    }
+    Keyword& get_keyword(const std::string& key);
 
-    void set_key_comment(const std::string& keyname, const std::string& comment)
-    {
-        (void)keyname;
-        (void)comment;
-    }
-
-}; // class header
-
+}; // class Header
 
 //!
 //! \brief get_header
@@ -67,80 +84,47 @@ public:
 //!
 Header get_header(const std::string& filename);
 
-//!
-//! \brief get_data
-//! \param filename
-//! \return
-//!
-NDArray* get_data(const std::string& filename);
+std::unique_ptr<NDArrayHost> get_data(const std::string& filename);
 
-//!
-//! \brief write_to
-//! \param filename
-//! \param data
-//!
 void write_to(const std::string& filename, const NDArray& data);
 
 //!
-//! \brief get_key
+//! \brief get_keyword
 //! \param filename
-//! \param keyname
+//! \param key
+//! \param value
+//!
+template<typename T>
+void get_keyword(const std::string& filename, const std::string& key, T& value);
+
+//!
+//! \brief get_keyword
+//! \param filename
+//! \param key
 //! \param value
 //! \param comment
 //!
 template<typename T>
-void get_key(const std::string& filename, const std::string& keyname, T& value, std::string& comment);
+void get_keyword(const std::string& filename, const std::string& key, T& value, std::string& comment);
 
 //!
-//! \brief get_key_value
+//! \brief set_keyword
 //! \param filename
-//! \param keyname
+//! \param key
 //! \param value
 //!
 template<typename T>
-void get_key_value(const std::string& filename, const std::string& keyname, T& value);
+void set_keyword(const std::string& filename, const std::string& key, const T& value);
 
 //!
-//! \brief get_key_comment
+//! \brief set_keyword
 //! \param filename
-//! \param keyname
-//! \param comment
-//!
-void get_key_comment(const std::string& filename, const std::string& keyname, std::string& comment);
-
-//!
-//! \brief set_key
-//! \param filename
-//! \param keyname
+//! \param key
 //! \param value
 //! \param comment
 //!
 template<typename T>
-void set_key(const std::string& filename, const std::string& keyname, const T& value, const std::string& comment);
-
-//!
-//! \brief set_key_value
-//! \param filename
-//! \param keyname
-//! \param keyvalue
-//!
-template<typename T>
-void set_key_value(const std::string& filename, const std::string& keyname, const T& value);
-
-//!
-//! \brief set_key_comment
-//! \param filename
-//! \param keyname
-//! \param comment
-//!
-void set_key_comment(const std::string& filename, const std::string& keyname, const std::string& comment);
-
-//!
-//! \brief del_key
-//! \param filename
-//! \param keyname
-//!
-void del_key(const std::string& filename, const std::string& keyname);
+void set_keyword(const std::string& filename, const std::string& key, const T& value, const std::string& comment);
 
 } // namespace fits
 } // namespace gbkfit

@@ -14,11 +14,11 @@ find_package(fftw3)
 # ==============================================================================
 
 set(HEADER_FILES
-    include/gbkfit/fftw3/ndarray_host_fftw3.hpp
+    include/gbkfit/fftw3/ndarray.hpp
 )
 
 set(SOURCE_FILES
-    src/ndarray_host_fftw3.cpp
+    src/ndarray.cpp
 )
 
 # ==============================================================================

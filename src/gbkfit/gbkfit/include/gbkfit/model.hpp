@@ -18,7 +18,7 @@ public:
 
     virtual ~Model();
 
-    virtual void initialize(int size_x, int size_y, int size_z, instrument* instrument) = 0;
+    virtual void initialize(int size_x, int size_y, int size_z, Instrument* Instrument) = 0;
 
     virtual const std::string& get_type_name(void) const = 0;
 

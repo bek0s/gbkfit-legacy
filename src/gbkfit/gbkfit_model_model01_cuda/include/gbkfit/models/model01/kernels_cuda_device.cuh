@@ -66,6 +66,12 @@ void evaluate_profile_vel_lramp(float& out, float r, float rt, float vt)
 }
 
 __device__
+void evaluate_profile_vel_david(float& out, float r, float rt, float vt)
+{
+    out = vt * (1.0f - expf(-r/rt));
+}
+
+__device__
 void evaluate_profile_vel_arctan(float& out, float r, float rt, float vt)
 {
     out = vt * (2.0f/(float)M_PI) * atanf(r/rt);
@@ -112,9 +118,15 @@ void evaluate_model_vel(float& out, float x, float r, float sini, int model_id, 
         {
             float rt = params[0];
             float vt = params[1];
-            evaluate_profile_vel_arctan(vr,r,rt,vt);
+            evaluate_profile_vel_david(vr,r,rt,vt);
         }
         else if (model_id == 3)
+        {
+            float rt = params[0];
+            float vt = params[1];
+            evaluate_profile_vel_arctan(vr,r,rt,vt);
+        }
+        else if (model_id == 4)
         {
             float rt = params[0];
             float vt = params[1];

@@ -7,7 +7,7 @@
 
 namespace gbkfit {
 
-class instrument
+class Instrument
 {
 
 private:
@@ -16,14 +16,14 @@ private:
     float m_step_y;
     float m_step_z;
 
-    point_spread_function* m_psf;
-    line_spread_function* m_lsf;
+    PointSpreadFunction* m_psf;
+    LineSpreadFunction* m_lsf;
 
 public:
 
-    instrument(float step_x, float step_y, float step_z, point_spread_function* psf, line_spread_function* lsf);
+    Instrument(float step_x, float step_y, float step_z, PointSpreadFunction* psf, LineSpreadFunction* lsf);
 
-    ~instrument();
+    ~Instrument();
 
     float get_step_x(void) const;
     float get_step_y(void) const;

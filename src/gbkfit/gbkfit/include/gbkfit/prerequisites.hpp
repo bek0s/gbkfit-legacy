@@ -24,24 +24,19 @@ namespace gbkfit
 {
 
 class Core;
-
+class Data;
+class Dataset;
 class Fitter;
 class FitterFactory;
-
-class instrument;
-
+class Instrument;
 class Model;
 class ModelFactory;
-
 class NDArray;
 class NDArrayHost;
-
-class Dataset;
-
 class Parameters;
 
-class line_spread_function;
-class point_spread_function;
+class LineSpreadFunction;
+class PointSpreadFunction;
 
 } // namespace gbkfit
 

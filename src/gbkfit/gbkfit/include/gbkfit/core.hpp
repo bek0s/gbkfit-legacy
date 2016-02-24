@@ -6,9 +6,8 @@
 
 namespace gbkfit {
 
-
 //!
-//! \brief The core class
+//! \brief The Core class
 //!
 class Core
 {
@@ -23,31 +22,21 @@ public:
 
     void add_model_factory(ModelFactory* factory);
 
-
     void add_fitter_factory(FitterFactory* factory);
-
 
     Model* create_model(const std::string& info) const;
 
-
     Fitter* create_fitter(const std::string& info) const;
-
 
     Parameters* create_parameters(const std::string& info) const;
 
-
     Dataset* create_dataset(const std::string& info) const;
 
-    std::map<std::string,Dataset*> create_datasets(const std::string& info) const;
+    std::map<std::string, Dataset*> create_datasets(const std::string& info) const;
 
+    Instrument* create_instrument(const std::string& info) const;
 
-    instrument* create_instrument(const std::string& info) const;
-
-
-
-
-}; // class core
-
+}; // class Core
 
 } // namespace gbkfit
 

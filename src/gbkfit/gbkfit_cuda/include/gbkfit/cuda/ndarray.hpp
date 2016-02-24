@@ -7,9 +7,6 @@
 namespace gbkfit {
 namespace cuda {
 
-//!
-//! \brief The gbkfit::cuda::ndarray class
-//!
 class NDArray : public gbkfit::NDArray
 {
 
@@ -25,61 +22,70 @@ public:
 
     const_pointer get_cuda_ptr(void) const;
 
-    void read_data(pointer dst) const final;
+    void read_data(pointer dst) const override final;
 
-    void write_data(const_pointer src) final;
+    void write_data(const_pointer src) override final;
 
-    void write_data(const gbkfit::NDArray* src) final;
+    void write_data(const gbkfit::NDArray* src) override final;
 
-    void write_data(const gbkfit::cuda::NDArray* src);
+    pointer map(void) override = 0;
+
+    void unmap(void) override = 0;
 
 protected:
 
     NDArray(const NDShape& shape);
 
-}; // class ndarray
+};
 
-//!
-//! \brief The ndarray_device class
-//!
-class ndarray_device : public gbkfit::cuda::NDArray
+class NDArrayDevice : public gbkfit::cuda::NDArray
+{
+
+private:
+
+    pointer m_data_mapped;
+
+public:
+
+    NDArrayDevice(const NDShape& shape);
+
+    ~NDArrayDevice();
+
+    pointer map(void) override final;
+
+    void unmap(void) override final;
+
+};
+
+class NDArrayPinned : public gbkfit::cuda::NDArray
 {
 
 public:
 
-    ndarray_device(const NDShape& shape);
+    NDArrayPinned(const NDShape& shape);
 
-    ~ndarray_device();
+    ~NDArrayPinned();
 
-}; // class ndarray_device
+    pointer map(void) override final;
 
-//!
-//! \brief The ndarray_pinned class
-//!
-class ndarray_pinned : public gbkfit::cuda::NDArray
+    void unmap(void) override final;
+
+};
+
+class NDArrayManaged : public gbkfit::cuda::NDArray
 {
 
 public:
 
-    ndarray_pinned(const NDShape& shape);
+    NDArrayManaged(const NDShape& shape);
 
-    ~ndarray_pinned();
+    ~NDArrayManaged();
 
-}; // class ndarray_pinned
+    pointer map(void) override final;
 
-//!
-//! \brief The ndarray_managed class
-//!
-class ndarray_managed : public gbkfit::cuda::NDArray
-{
+    void unmap(void) override final;
 
-public:
-
-    ndarray_managed(const NDShape& shape);
-
-    ~ndarray_managed();
-
-}; // class ndarray_managed
+};
 
 } // namespace cuda
 } // namespace gbkfit

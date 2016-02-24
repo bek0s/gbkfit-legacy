@@ -52,6 +52,8 @@ option(GBKFIT_BUILD_MODEL_MODEL01 "Build gbkfit_model_model01" TRUE)
 option(GBKFIT_BUILD_MODEL_MODEL01_CUDA "Build gbkfit_model_model01_cuda" TRUE)
 option(GBKFIT_BUILD_MODEL_MODEL01_OMP "Build gbkfit_model_model01_omp" TRUE)
 
+option(GBKFIT_BUILD_UNITTESTS_GBKFIT "Build unit tests for gbkfit" TRUE)
+
 # ==============================================================================
 #
 #   Add subdirectories

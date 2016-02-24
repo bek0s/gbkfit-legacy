@@ -38,7 +38,7 @@ target_include_directories(target_gbkfit_app_cli PRIVATE ${GBKFIT_MODEL_MODEL01_
 target_include_directories(target_gbkfit_app_cli PRIVATE ${GBKFIT_MODEL_MODEL01_OMP_INCLUDE_DIRS})
 target_include_directories(target_gbkfit_app_cli PRIVATE ${GBKFIT_MODEL_MODEL01_CUDA_INCLUDE_DIRS})
 target_include_directories(target_gbkfit_app_cli PRIVATE ${Boost_INCLUDE_DIRS})
-target_include_directories(target_gbkfit_app_cli PRIVATE ${CFITSIO_INCLUDE_DIRS})
+
 
 target_link_libraries(target_gbkfit_app_cli PRIVATE ${GBKFIT_LIBRARY_SHARED})
 target_link_libraries(target_gbkfit_app_cli PRIVATE ${GBKFIT_CUDA_LIBRARY_SHARED})
@@ -48,7 +48,7 @@ target_link_libraries(target_gbkfit_app_cli PRIVATE ${GBKFIT_MODEL_MODEL01_LIBRA
 target_link_libraries(target_gbkfit_app_cli PRIVATE ${GBKFIT_MODEL_MODEL01_OMP_LIBRARY_SHARED})
 target_link_libraries(target_gbkfit_app_cli PRIVATE ${GBKFIT_MODEL_MODEL01_CUDA_LIBRARY_SHARED})
 target_link_libraries(target_gbkfit_app_cli PRIVATE ${Boost_LIBRARIES})
-target_link_libraries(target_gbkfit_app_cli PRIVATE ${CFITSIO_LIBRARIES} cufft)
+target_link_libraries(target_gbkfit_app_cli PRIVATE cufft)
 
 target_compile_options(target_gbkfit_app_cli PRIVATE "-Wall")
 target_compile_options(target_gbkfit_app_cli PRIVATE "-Wextra")

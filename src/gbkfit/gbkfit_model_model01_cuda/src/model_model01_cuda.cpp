@@ -16,7 +16,7 @@ namespace models {
 namespace model01 {
 
 model_model01_cuda::model_model01_cuda(profile_flx_type profile_flx, profile_vel_type profile_vel)
-    : model_model01(profile_flx,profile_vel)
+    : ModelModel01(profile_flx,profile_vel)
 {
 }
 
@@ -26,11 +26,8 @@ model_model01_cuda::~model_model01_cuda()
     delete m_data_sigmap;
 }
 
-void model_model01_cuda::initialize(int size_x, int size_y, int size_z, instrument* instrument)
+void model_model01_cuda::initialize(int size_x, int size_y, int size_z, Instrument* instrument)
 {
-    (void)size_x;
-    (void)size_y;
-    (void)size_z;
     (void)instrument;
 
     m_upsampling_x = 1;
@@ -50,8 +47,8 @@ void model_model01_cuda::initialize(int size_x, int size_y, int size_z, instrume
 
     NDArrayHost* data_psfcube = instrument->create_psf_cube_data(m_step_x, m_step_y, m_step_z);
     NDArrayHost* data_psfcube_u = instrument->create_psf_cube_data(m_step_u_x, m_step_u_y, m_step_u_z);
-    m_data_psfcube = new cuda::ndarray_managed(data_psfcube->get_shape());
-    m_data_psfcube_u = new cuda::ndarray_managed(data_psfcube_u->get_shape());
+    m_data_psfcube = new cuda::NDArrayManaged(data_psfcube->get_shape());
+    m_data_psfcube_u = new cuda::NDArrayManaged(data_psfcube_u->get_shape());
     m_data_psfcube->write_data(data_psfcube->get_host_ptr());
     m_data_psfcube_u->write_data(data_psfcube_u->get_host_ptr());
     m_psf_size_u_x = m_data_psfcube_u->get_shape()[0];
@@ -82,10 +79,10 @@ void model_model01_cuda::initialize(int size_x, int size_y, int size_z, instrume
     // Allocate memory for flux and psf cubes.
     //
 
-    m_data_psfcube_up = new cuda::ndarray_managed({m_size_up_x, m_size_up_y, m_size_up_z});
-    m_data_flxcube_up = new cuda::ndarray_managed({m_size_up_x, m_size_up_y, m_size_up_z});
-    m_data_psfcube_up_fft = new cuda::ndarray_managed({size_padded_fft*2});
-    m_data_flxcube_up_fft = new cuda::ndarray_managed({size_padded_fft*2});
+    m_data_psfcube_up = new cuda::NDArrayManaged({m_size_up_x, m_size_up_y, m_size_up_z});
+    m_data_flxcube_up = new cuda::NDArrayManaged({m_size_up_x, m_size_up_y, m_size_up_z});
+    m_data_psfcube_up_fft = new cuda::NDArrayManaged({size_padded_fft*2});
+    m_data_flxcube_up_fft = new cuda::NDArrayManaged({size_padded_fft*2});
 
     //
     // Create fft plans for flux and psf cubes.
@@ -113,11 +110,6 @@ void model_model01_cuda::initialize(int size_x, int size_y, int size_z, instrume
     // Prepare psf and fft-transform it.
     //
 
-    float* ptr = m_data_psfcube_u->get_cuda_ptr();
-
-    ptr[0] = 1;
-
-    /*
     util_image::image_copy_padded(m_data_psfcube_u->get_cuda_ptr(),
                                   m_psf_size_u_x,
                                   m_psf_size_u_y,
@@ -142,27 +134,26 @@ void model_model01_cuda::initialize(int size_x, int size_y, int size_z, instrume
                             m_size_up_z,
                            -m_psf_size_u_x/2,
                            -m_psf_size_u_y/2,
-                           -m_psf_size_u_z/2);*/
+                           -m_psf_size_u_z/2);
 
     cufftExecR2C(m_fft_plan_psfcube_r2c,
                  m_data_psfcube_up->get_cuda_ptr(),
                  (cufftComplex*)m_data_psfcube_up_fft->get_cuda_ptr());
+    cudaDeviceSynchronize();
 
     //
     // Allocate and initialize output arrays.
     //
 
-    m_data_flxcube = new cuda::ndarray_managed({size_x, size_y, size_z});
-    m_data_flxmap  = new cuda::ndarray_managed({size_x, size_y});
-    m_data_velmap  = new cuda::ndarray_managed({size_x, size_y});
-    m_data_sigmap  = new cuda::ndarray_managed({size_x, size_y});
+    m_data_flxcube = new cuda::NDArrayManaged({size_x, size_y, size_z});
+    m_data_flxmap  = new cuda::NDArrayManaged({size_x, size_y});
+    m_data_velmap  = new cuda::NDArrayManaged({size_x, size_y});
+    m_data_sigmap  = new cuda::NDArrayManaged({size_x, size_y});
 
-    /*
     std::fill(m_data_flxcube->get_cuda_ptr(), m_data_flxcube->get_cuda_ptr() + size_x*size_y*size_z, -1);
     std::fill(m_data_flxmap ->get_cuda_ptr(), m_data_flxmap ->get_cuda_ptr() + size_x*size_y,        -1);
     std::fill(m_data_velmap ->get_cuda_ptr(), m_data_velmap ->get_cuda_ptr() + size_x*size_y,        -1);
     std::fill(m_data_sigmap ->get_cuda_ptr(), m_data_sigmap ->get_cuda_ptr() + size_x*size_y,        -1);
-    */
 
     //
     // Add output data to the output map.
@@ -212,7 +203,7 @@ const std::map<std::string,NDArray*>& model_model01_cuda::evaluate(int profile_f
     // Set a constant value to all pixels. Used for debug.
     //
 
-#if 1
+#if 0
     float fill_value = -0.01;
     kernels_cuda_host::array_3d_fill(m_size_up_x,
                                      m_size_up_y,
@@ -253,7 +244,7 @@ const std::map<std::string,NDArray*>& model_model01_cuda::evaluate(int profile_f
     // Perform fft-based 3d convolution with the psf cube.
     //
 
-#if 0
+#if 1
     kernels_cuda_host::model_image_3d_convolve_fft(m_data_flxcube_up->get_cuda_ptr(),
                                                    reinterpret_cast<cufftComplex*>(m_data_flxcube_up_fft->get_cuda_ptr()),
                                                    reinterpret_cast<cufftComplex*>(m_data_psfcube_up_fft->get_cuda_ptr()),
@@ -318,12 +309,10 @@ const std::string& model_factory_model01_cuda::get_type_name(void) const
 
 Model* model_factory_model01_cuda::create_model(const std::string& info) const
 {
-    // Parse input string as xml.
     std::stringstream info_stream(info);
     boost::property_tree::ptree info_ptree;
-    boost::property_tree::read_xml(info_stream,info_ptree);
+    boost::property_tree::read_xml(info_stream, info_ptree);
 
-    // Read flux and velocity profile names.
     std::string profile_flx_name = info_ptree.get<std::string>("profile_flx");
     std::string profile_vel_name = info_ptree.get<std::string>("profile_vel");
 
@@ -335,7 +324,9 @@ Model* model_factory_model01_cuda::create_model(const std::string& info) const
     else
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
 
-    if (profile_vel_name == "david")
+    if      (profile_vel_name == "lramp")
+        profile_vel = gbkfit::models::model01::lramp;
+    else if (profile_vel_name == "david")
         profile_vel = gbkfit::models::model01::david;
     else if (profile_vel_name == "arctan")
         profile_vel = gbkfit::models::model01::arctan;

@@ -34,7 +34,7 @@ private:
 
     std::map<std::string, gbkfit::Dataset*> m_datasets;
 
-    gbkfit::instrument* m_instrument;
+    gbkfit::Instrument* m_instrument;
 
 public:
 

@@ -2,10 +2,10 @@
 #include "application.hpp"
 
 #include "gbkfit/core.hpp"
+#include "gbkfit/dataset.hpp"
 #include "gbkfit/fits.hpp"
 #include "gbkfit/instrument.hpp"
 #include "gbkfit/ndarray_host.hpp"
-#include "gbkfit/nddataset.hpp"
 #include "gbkfit/parameters.hpp"
 #include "gbkfit/utility.hpp"
 
@@ -29,6 +29,17 @@
 
 #include <boost/program_options.hpp>
 #include <boost/property_tree/xml_parser.hpp>
+#include <boost/property_tree/json_parser.hpp>
+
+#include <boost/any.hpp>
+#include <experimental/any>
+#include <boost/variant.hpp>
+#include "gbkfit/property_map.hpp"
+
+#include <experimental/optional>
+
+#include "gbkfit/cuda/ndarray.hpp"
+
 
 namespace gbkfit_app_cli {
 
@@ -74,6 +85,13 @@ bool Application::process_program_options(int argc, char** argv)
 
     return true;
 }
+
+
+void set_key(const std::string* str)
+{
+
+}
+
 
 bool Application::initialize(void)
 {
@@ -133,9 +151,6 @@ bool Application::initialize(void)
     // Create subconfiguations.
     //
 
-    std::stringstream fitter_config_info;
-    boost::property_tree::write_xml(fitter_config_info, ptree_config.get_child("gbkfit.fitter_config"));
-
     std::cout << "creating subconfigurations..." << std::endl;
     std::stringstream datasets_info;
     boost::property_tree::write_xml(datasets_info,ptree_config.get_child("gbkfit.datasets"));
@@ -143,7 +158,8 @@ bool Application::initialize(void)
     boost::property_tree::write_xml(instrument_info, ptree_config.get_child("gbkfit.instrument"));
     std::stringstream model_config_info;
     boost::property_tree::write_xml(model_config_info, ptree_config.get_child("gbkfit.model_config"));
-
+    std::stringstream fitter_config_info;
+    boost::property_tree::write_xml(fitter_config_info, ptree_config.get_child("gbkfit.fitter_config"));
     std::stringstream params_config_info;
     boost::property_tree::write_xml(params_config_info, ptree_config.get_child("gbkfit.params_config"));
 
@@ -202,9 +218,9 @@ void Application::run(void)
     std::cout << "main execution path started" << std::endl;
 
     // Initialize model.
-    int model_size_x = m_datasets.begin()->second->get_data("data")->get_shape()[0];
-    int model_size_y = m_datasets.begin()->second->get_data("data")->get_shape()[1];
-    int model_size_z = 161;
+    int model_size_x = m_datasets.begin()->second->get_data()->get_shape()[0];
+    int model_size_y = m_datasets.begin()->second->get_data()->get_shape()[1];
+    int model_size_z = 201;
     m_model->initialize(model_size_x,model_size_y,model_size_z,m_instrument);
 
     //
@@ -226,17 +242,60 @@ void Application::run(void)
 
     std::map<std::string, gbkfit::NDArray*> model_data = m_model->evaluate(params);
 
+    //
+    // Output results
+    //
+
+    boost::property_tree::ptree ptree_results;
+
+    std::vector<std::string> param_options = { "name", "best", "mean", "stddev", "map" };
+
+#if 0
+    for(auto& param_name : m_model->get_parameter_names()) {
+        boost::property_tree::ptree ptree_parameter;
+        for(auto& option_name : param_options) {
+            if (m_parameters->get_parameter(param_name).has(option_name)) {
+                ptree_parameter.add("<xmlattr>." + option_name, m_parameters->get_parameter(param_name).get<std::string>(option_name));
+            }
+        }
+        ptree_results.add_child("gbkfit.results.parameters.parameter", ptree_parameter);
+    }
+    boost::property_tree::xml_writer_settings<std::string> settings(' ', 2);
+    boost::property_tree::write_xml("gbkfit_results.xml", ptree_results, std::locale(), settings);
+
+#else
+
+    boost::property_tree::ptree ptree_array;
+    for(auto& param_name : m_model->get_parameter_names())
+    {
+        boost::property_tree::ptree ptree_parameter;
+        for(auto& option_name : param_options)
+        {
+            if (m_parameters->get_parameter(param_name).has(option_name))
+            {
+                ptree_parameter.put(option_name, m_parameters->get_parameter(param_name).get<std::string>(option_name));
+            }
+
+        }
+        ptree_array.push_back(std::make_pair("", ptree_parameter));
+    }
+
+    ptree_results.add_child("parameters", ptree_array);
+
+    boost::property_tree::write_json("gbkfit_results.json", ptree_results, std::locale(), true);
+
+#endif
+
     // Write data products to disk.
     #if 1
-    gbkfit::fits::write_to("!" + m_galaxy_name + "_flxcube_up.fits",*model_data["flxcube_up"]);
-    gbkfit::fits::write_to("!" + m_galaxy_name + "_psfcube_up.fits",*model_data["psfcube_up"]);
-    gbkfit::fits::write_to("!" + m_galaxy_name + "_psfcube_u.fits",*model_data["psfcube_u"]);
-    gbkfit::fits::write_to("!" + m_galaxy_name + "_psfcube.fits",*model_data["psfcube"]);
-    gbkfit::fits::write_to("!" + m_galaxy_name + "_flxcube.fits",*model_data["flxcube"]);
-    gbkfit::fits::write_to("!" + m_galaxy_name + "_flxmap.fits",*model_data["flxmap"]);
-
-    gbkfit::fits::write_to("!" + m_galaxy_name + "_velmap_mdl.fits",*model_data["velmap"]);
-    gbkfit::fits::write_to("!" + m_galaxy_name + "_sigmap_mdl.fits",*model_data["sigmap"]);
+    gbkfit::fits::write_to("!flxcube_up.fits",*model_data["flxcube_up"]);
+    gbkfit::fits::write_to("!psfcube_up.fits",*model_data["psfcube_up"]);
+    gbkfit::fits::write_to("!psfcube_u.fits",*model_data["psfcube_u"]);
+    gbkfit::fits::write_to("!psfcube.fits",*model_data["psfcube"]);
+    gbkfit::fits::write_to("!flxcube_mdl.fits",*model_data["flxcube"]);
+    gbkfit::fits::write_to("!flxmap_mdl.fits",*model_data["flxmap"]);
+    gbkfit::fits::write_to("!velmap_mdl.fits",*model_data["velmap"]);
+    gbkfit::fits::write_to("!sigmap_mdl.fits",*model_data["sigmap"]);
 
     /*
     gbkfit::fits::write_to("!" + m_galaxy_id + "_velmap_res.fits",*resid_data_velmap);

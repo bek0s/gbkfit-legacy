@@ -1,17 +1,16 @@
 
 #include "gbkfit/fitters/mpfit/fitter_mpfit.hpp"
-#include <mpfit.h>
-
 #include "gbkfit/fitters/mpfit/fitter_factory_mpfit.hpp"
 
+#include "gbkfit/dataset.hpp"
 #include "gbkfit/model.hpp"
-#include "gbkfit/nddataset.hpp"
 #include "gbkfit/ndarray_host.hpp"
 #include "gbkfit/parameters.hpp"
+#include "gbkfit/string_util.hpp"
 #include "gbkfit/utility.hpp"
 
-#include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
+#include <mpfit.h>
 
 namespace gbkfit {
 namespace fitters {
@@ -149,7 +148,7 @@ int mpfit_callback(int num_measurements, int num_parameters, double* parameters,
 
 #if 1
     // Provide debug information about the current set of parameters.
-    std::cout << gbkfit::to_string(param_map) << std::endl;
+    std::cout << gbkfit::string_util::to_string(param_map) << std::endl;
 #endif
 
     //
@@ -256,9 +255,9 @@ void FitterMpfit::fit(Model* model, const std::map<std::string,Dataset*>& datase
         dataset_names.push_back(dataset_name);
 
         // Get input data pointer shortcuts for convenience.
-        NDArray* input_data_dat = std::get<1>(dataset)->get_data("data");
-        NDArray* input_data_msk = std::get<1>(dataset)->get_data("mask");
-        NDArray* input_data_err = std::get<1>(dataset)->get_data("error");
+        const NDArray* input_data_dat = std::get<1>(dataset)->get_data();
+        const NDArray* input_data_msk = std::get<1>(dataset)->get_mask();
+        const NDArray* input_data_err = std::get<1>(dataset)->get_errors();
 
         // Allocate host memory for the input data and the model.
         data_map_dat[dataset_name] = new NDArrayHost(input_data_dat->get_shape());
@@ -386,9 +385,12 @@ void FitterMpfit::fit(Model* model, const std::map<std::string,Dataset*>& datase
                   << " best="   << std::setw(8) << param_best   << ","
                   << " stddev=" << std::setw(8) << param_stddev << std::endl;
 
-        params_info.get_parameter(param_name)
-                .add("best", param_best)
-                .add("stddev", param_stddev);
+        if (mpfit_params_info[i].fixed) {
+            params_info.get_parameter(param_name).add("best", param_best);
+        } else {
+            params_info.get_parameter(param_name).add("best", param_best);
+            params_info.get_parameter(param_name).add("stddev", param_stddev);
+        }
     }
 
     //

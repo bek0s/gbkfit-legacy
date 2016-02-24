@@ -1,0 +1,99 @@
+
+Mock observations information
+=============================
+
+This file provides information about the simulated data that accompany gbkfit.
+
+-------------------------------------------------------------------------------
+
+## Models
+
+The model used to create the three simulated observations is a combination of
+a thin disk, a photometric profile, a rotation curve, and a intrinsic velocity
+dispersion.
+
+
+### The surface brightness profile
+
+I(r) = i0 \* exp(-r/r0)
+
+where i0 is the brightness at the center of the galaxy, and r0 the scale length.
+
+### The arctan rotation curve
+
+V(r) = (2/pi) \* vt \* arctan(r/rt)
+
+where rt is the turn-over radius, and vt the asymptotic maximum circular
+velocity.
+
+### The rest of the model parameters
+
+- xo: RA of the galactic center.
+- yo: DEC of the galactic center.
+- pa: The position angle of the projected galactic disc.
+- incl: The inclination of the galactic disc with respect to the line of sigh.
+- vsys: The systemic velocity of the galaxy.
+- vsig: The intrinsic velocity dispersion which assumed to be constant across
+        the galactic disc.
+
+-------------------------------------------------------------------------------
+
+## Model parameter values
+
+All simulated observations share the same values for the following model
+parameters:
+
+- i0 = 1
+- r0 = 10
+- xo = 24.5
+- yo = 24.5
+- pa = 45
+- rt = 4
+- vt = 200
+- vsig = 50
+- vsys = 0
+
+Each mock observation has a different inclination:
+
+- mock_01: incl = 20 degrees
+- mock_02: incl = 45 degrees
+- mock_03: incl = 70 degrees
+
+-------------------------------------------------------------------------------
+
+## Instrument
+
+All mock observations have the same dimensions, PSF, LSF and sampling:
+
+- Width: 49 pixels
+- Height: 49 pixels
+- PSF: Gaussian, fwhm=2.5 pixels
+- LSF: Gaussian, fwhm=30 km/s
+- Spatial sampling: 1.0 pixels
+- Spectral sampling: 10.0 km/s per pixel
+
+-------------------------------------------------------------------------------
+
+## Noise
+
+All mock observations include Gaussian noise:
+
+- Velocity map noise: 5 km/s
+- Velocity dispersion map noise: sqrt(2) \* 5 km/s
+
+There is a version of the data with no noise under the directory "clean".
+Actually, this version includes noise but is extremely low. This is done in
+order to make sense out of the reduced chi squared value.
+
+-------------------------------------------------------------------------------
+
+## Data files
+
+The following naming convention is used for all FITS files:
+
+- Files ending with "_d.fits": measurements
+- Files ending with "_e.fits": measurement errors
+- Files ending with "_m.fits": mask
+
+The files "lsf.fits" and "psf.fits" correspond to the LSF and PSF respectively, 
+as described in the Instrument Section.

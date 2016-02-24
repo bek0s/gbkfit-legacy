@@ -2,8 +2,8 @@
 #include "gbkfit/fitters/multinest/fitter_factory_multinest.hpp"
 #include "gbkfit/fitters/multinest/fitter_multinest.hpp"
 
+#include "gbkfit/dataset.hpp"
 #include "gbkfit/model.hpp"
-#include "gbkfit/nddataset.hpp"
 #include "gbkfit/ndarray_host.hpp"
 #include "gbkfit/parameters.hpp"
 #include "gbkfit/utility.hpp"
@@ -204,9 +204,9 @@ void FitterMultinest::fit(Model* model, const std::map<std::string,Dataset*>& da
         dataset_names.push_back(dataset_name);
 
         // Get input data pointer shortcuts for convenience.
-        NDArray* input_data_dat = std::get<1>(dataset)->get_data("data");
-        NDArray* input_data_msk = std::get<1>(dataset)->get_data("mask");
-        NDArray* input_data_err = std::get<1>(dataset)->get_data("error");
+        const NDArray* input_data_dat = std::get<1>(dataset)->get_data();
+        const NDArray* input_data_msk = std::get<1>(dataset)->get_mask();
+        const NDArray* input_data_err = std::get<1>(dataset)->get_errors();
 
         // Allocate host memory for the input data and the model.
         data_map_dat[dataset_name] = new NDArrayHost(input_data_dat->get_shape());
@@ -257,7 +257,7 @@ void FitterMultinest::fit(Model* model, const std::map<std::string,Dataset*>& da
         }
         else
         {
-            udata.param_value[i] = params_info.get_parameter(param_name).get<float>("init");
+            udata.param_value[i] = params_info.get_parameter(param_name).get<float>("value");
             udata.param_mean[i] = udata.param_value[i];
             udata.param_stddev[i] = 0.0;
             udata.param_best[i] = udata.param_value[i];
@@ -277,12 +277,12 @@ void FitterMultinest::fit(Model* model, const std::map<std::string,Dataset*>& da
     // ...
     //
 
-    int IS = 1;                         // do Nested Importance Sampling?
-    int mmodal = 0;                     // do mode separation?
-    int ceff = 0;                       // run in constant efficiency mode?
-    int nlive = 50;                     // number of live points
-    double efr = 1.0;                   // set the required efficiency
-    double tol = 0.5;                   // tol, defines the stopping criteria
+    int IS = m_is;                         // do Nested Importance Sampling?
+    int mmodal = m_mmodal;                     // do mode separation?
+    int ceff = m_ceff;                       // run in constant efficiency mode?
+    int nlive = m_nlive;                // number of live points
+    double efr = m_efr;                   // set the required efficiency
+    double tol = m_tol;                   // tol, defines the stopping criteria
     int ndims = free_param_counter;     // dimensionality (no. of free parameters)
     int nPar = free_param_counter;      // total no. of parameters including free & derived parameters
     int nClsPar = free_param_counter;   // no. of parameters to do mode separation on
@@ -300,7 +300,7 @@ void FitterMultinest::fit(Model* model, const std::map<std::string,Dataset*>& da
     int initMPI = 0;                    // initialize MPI routines?, relevant only if compiling with MPI
                                         // set it to F if you want your main program to handle MPI initialization
     double logZero = -1E90;             // points with loglike < logZero will be ignored by MultiNest
-    int maxiter = 1500;                 // max no. of iterations, a non-positive value means infinity. MultiNest will terminate if either it
+    int maxiter = m_maxiter;            // max no. of iterations, a non-positive value means infinity. MultiNest will terminate if either it
                                         // has done max no. of iterations or convergence criterion (defined through tol) has been satisfied
 
     nested::run(IS,
@@ -351,11 +351,14 @@ void FitterMultinest::fit(Model* model, const std::map<std::string,Dataset*>& da
                   << " best="   << std::setw(8) << param_best   << ","
                   << " map="    << std::setw(8) << param_map    << std::endl;
 
-        params_info.get_parameter(param_name)
-                .add("mean", param_mean)
-                .add("stddev", param_stddev)
-                .add("best", param_best)
-                .add("map", param_map);
+        if (udata.param_fixed[i]) {
+            params_info.get_parameter(param_name).add("best", param_best);
+        } else {
+            params_info.get_parameter(param_name).add("best", param_best);
+            params_info.get_parameter(param_name).add("mean", param_mean);
+            params_info.get_parameter(param_name).add("stddev", param_stddev);
+            params_info.get_parameter(param_name).add("map", param_map);
+        }
     }
 
     //

@@ -110,27 +110,6 @@ std::map<TKey,TValue> vectors_to_map(const std::vector<TKey>& keys, const std::v
     return map;
 }
 
-template<typename T>
-std::string to_string(T value)
-{
-    std::ostringstream stream;
-    stream << value;
-    return stream.str();
-}
-
-template<typename Tkey, typename Tvalue>
-std::string to_string(const std::map<Tkey, Tvalue>& map)
-{
-    std::ostringstream stream;
-    stream << "std::map [";
-    for(auto iter = map.begin(); iter != map.end(); ++iter)
-    {
-        stream << "(" << to_string((*iter).first) << ", " << to_string((*iter).second) << ")" << (std::next(iter) != map.end() ? ", " : "");
-    }
-    stream << "]";
-    return stream.str();
-}
-
 } // namespace gbkfit
 
 #endif // GBKFIT_UTILITY_HPP

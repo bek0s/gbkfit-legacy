@@ -7,9 +7,6 @@
 
 namespace gbkfit {
 
-//!
-//! \brief The ndarray class
-//!
 class NDArray
 {
 
@@ -22,8 +19,6 @@ public:
     typedef const value_type& const_reference;
     typedef std::size_t       size_type;
 
-    typedef std::unique_ptr<value_type[], std::function<void(pointer)>> mapped_array;
-
 private:
 
     NDShape m_shape;
@@ -32,7 +27,7 @@ public:
 
     virtual ~NDArray();
 
-    const NDShape &get_shape(void) const;
+    const NDShape& get_shape(void) const;
 
     size_type get_size(void) const;
 
@@ -44,11 +39,15 @@ public:
 
     virtual void write_data(const NDArray* src) = 0;
 
+    virtual pointer map(void) = 0;
+
+    virtual void unmap(void) = 0;
+
 protected:
 
     NDArray(const NDShape& shape);
 
-}; // class ndarray
+};
 
 } // namespace gbkfit
 

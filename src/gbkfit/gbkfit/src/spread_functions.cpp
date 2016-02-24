@@ -37,42 +37,42 @@ void evaluate_data_2d(float* data, int size_x, int size_y, float step_x, float s
     math::normalize_integral(data, size_x*size_y);
 }
 
-line_spread_function::line_spread_function(void)
+LineSpreadFunction::LineSpreadFunction(void)
 {
 }
 
-line_spread_function::~line_spread_function()
+LineSpreadFunction::~LineSpreadFunction()
 {
 }
 
-NDArrayHost* line_spread_function::as_array(float step) const
+NDArrayHost* LineSpreadFunction::as_array(float step) const
 {
     NDShape size = get_recommended_size(step);
     return as_array(size[0],step);
 }
 
-NDArrayHost* line_spread_function::as_array(int size, float step) const
+NDArrayHost* LineSpreadFunction::as_array(int size, float step) const
 {
     NDArrayHost* data = new NDArrayHost({size});
     as_array(size, step, data->get_host_ptr());
     return data;
 }
 
-line_spread_function_array::line_spread_function_array(float* data, float step, int size)
+LineSpreadFunctionArray::LineSpreadFunctionArray(float* data, int size, float step)
     : m_data(nullptr)
-    , m_step(step)
     , m_size(size)
+    , m_step(step)
 {
     m_data = new float[m_size];
     std::copy(data, data+size, m_data);
 }
 
-line_spread_function_array::~line_spread_function_array()
+LineSpreadFunctionArray::~LineSpreadFunctionArray()
 {
     delete [] m_data;
 }
 
-NDShape line_spread_function_array::get_recommended_size(float step) const
+NDShape LineSpreadFunctionArray::get_recommended_size(float step) const
 {
     if (step != m_step) {
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
@@ -80,7 +80,7 @@ NDShape line_spread_function_array::get_recommended_size(float step) const
     return NDShape({m_size});
 }
 
-void line_spread_function_array::as_array(int size, float step, float* data) const
+void LineSpreadFunctionArray::as_array(int size, float step, float* data) const
 {
     if (size != m_size) {
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
@@ -91,16 +91,16 @@ void line_spread_function_array::as_array(int size, float step, float* data) con
     std::copy_n(m_data, m_size, data);
 }
 
-line_spread_function_gaussian::line_spread_function_gaussian(float fwhm)
+LineSpreadFunctionGaussian::LineSpreadFunctionGaussian(float fwhm)
     : m_fwhm(fwhm)
 {
 }
 
-line_spread_function_gaussian::~line_spread_function_gaussian()
+LineSpreadFunctionGaussian::~LineSpreadFunctionGaussian()
 {
 }
 
-void line_spread_function_gaussian::as_array(int size, float step, float* data) const
+void LineSpreadFunctionGaussian::as_array(int size, float step, float* data) const
 {
     float sigma = math::gaussian_sigma_from_fwhm(m_fwhm);
 
@@ -113,26 +113,26 @@ void line_spread_function_gaussian::as_array(int size, float step, float* data) 
     evaluate_data_1d(data, size, step, eval_func);
 }
 
-NDShape line_spread_function_gaussian::get_recommended_size(float step) const
+NDShape LineSpreadFunctionGaussian::get_recommended_size(float step) const
 {
     return NDShape({util_num::roundu_odd(5*m_fwhm/step)});
 }
 
-line_spread_function_lorentzian::line_spread_function_lorentzian(float fwhm)
+LineSpreadFunctionLorentzian::LineSpreadFunctionLorentzian(float fwhm)
     : m_fwhm(fwhm)
 {
 }
 
-line_spread_function_lorentzian::~line_spread_function_lorentzian()
+LineSpreadFunctionLorentzian::~LineSpreadFunctionLorentzian()
 {
 }
 
-NDShape line_spread_function_lorentzian::get_recommended_size(float step) const
+NDShape LineSpreadFunctionLorentzian::get_recommended_size(float step) const
 {
     return NDShape({util_num::roundu_odd(5*m_fwhm/step)});
 }
 
-void line_spread_function_lorentzian::as_array(int size, float step, float* data) const
+void LineSpreadFunctionLorentzian::as_array(int size, float step, float* data) const
 {
     float gamma = math::lorentzian_gamma_from_fwhm(m_fwhm);
 
@@ -145,22 +145,22 @@ void line_spread_function_lorentzian::as_array(int size, float step, float* data
     evaluate_data_1d(data, size, step, eval_func);
 }
 
-line_spread_function_moffat::line_spread_function_moffat(float fwhm, float beta)
+LineSpreadFunctionMoffat::LineSpreadFunctionMoffat(float fwhm, float beta)
     : m_fwhm(fwhm)
     , m_beta(beta)
 {
 }
 
-line_spread_function_moffat::~line_spread_function_moffat()
+LineSpreadFunctionMoffat::~LineSpreadFunctionMoffat()
 {
 }
 
-NDShape line_spread_function_moffat::get_recommended_size(float step) const
+NDShape LineSpreadFunctionMoffat::get_recommended_size(float step) const
 {
     return NDShape({util_num::roundu_odd(5*m_fwhm/step)});
 }
 
-void line_spread_function_moffat::as_array(int size, float step, float *data) const
+void LineSpreadFunctionMoffat::as_array(int size, float step, float *data) const
 {
     float alpha = math::moffat_alpha_from_beta_and_fwhm(m_beta, m_fwhm);
 
@@ -174,44 +174,44 @@ void line_spread_function_moffat::as_array(int size, float step, float *data) co
     evaluate_data_1d(data, size, step, eval_func);
 }
 
-point_spread_function::point_spread_function(void)
+PointSpreadFunction::PointSpreadFunction(void)
 {
 }
 
-point_spread_function::~point_spread_function()
+PointSpreadFunction::~PointSpreadFunction()
 {
 }
 
-NDArrayHost* point_spread_function::as_image(float step_x, float step_y) const
+NDArrayHost* PointSpreadFunction::as_image(float step_x, float step_y) const
 {
     NDShape shape = get_recommended_size(step_x, step_y);
     return as_image(shape[0], shape[1], step_x, step_y);
 }
 
-NDArrayHost* point_spread_function::as_image(int size_x, int size_y, float step_x, float step_y) const
+NDArrayHost* PointSpreadFunction::as_image(int size_x, int size_y, float step_x, float step_y) const
 {
     NDArrayHost* data = new NDArrayHost({size_x, size_y});
     as_image(size_x, size_y, step_x, step_y, data->get_host_ptr());
     return data;
 }
 
-point_spread_function_image::point_spread_function_image(float* data, int size_x, int size_y, float step_x, float step_y)
+PointSpreadFunctionImage::PointSpreadFunctionImage(float* data, int size_x, int size_y, float step_x, float step_y)
     : m_data(nullptr)
-    , m_step_x(step_x)
-    , m_step_y(step_y)
     , m_size_x(size_x)
     , m_size_y(size_y)
+    , m_step_x(step_x)
+    , m_step_y(step_y)
 {
     m_data = new float[m_size_x*m_size_y];
     std::copy(data, data+size_x*size_y, m_data);
 }
 
-point_spread_function_image::~point_spread_function_image()
+PointSpreadFunctionImage::~PointSpreadFunctionImage()
 {
     delete [] m_data;
 }
 
-NDShape point_spread_function_image::get_recommended_size(float step_x, float step_y) const
+NDShape PointSpreadFunctionImage::get_recommended_size(float step_x, float step_y) const
 {
     if (step_x != m_step_x || step_y != m_step_y) {
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
@@ -220,7 +220,7 @@ NDShape point_spread_function_image::get_recommended_size(float step_x, float st
     return NDShape({m_size_x, m_size_y});
 }
 
-void point_spread_function_image::as_image(int size_x, int size_y, float step_x, float step_y, float* data) const
+void PointSpreadFunctionImage::as_image(int size_x, int size_y, float step_x, float step_y, float* data) const
 {
     if (size_x != m_size_x || size_y != m_size_y) {
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
@@ -232,29 +232,29 @@ void point_spread_function_image::as_image(int size_x, int size_y, float step_x,
     std::copy_n(m_data, m_size_x*m_size_y, data);
 }
 
-point_spread_function_gaussian::point_spread_function_gaussian(float fwhm)
-    : point_spread_function_gaussian(fwhm, fwhm, 0)
+PointSpreadFunctionGaussian::PointSpreadFunctionGaussian(float fwhm)
+    : PointSpreadFunctionGaussian(fwhm, fwhm, 0)
 {
 }
 
-point_spread_function_gaussian::point_spread_function_gaussian(float fwhm_x, float fwhm_y, float pa)
+PointSpreadFunctionGaussian::PointSpreadFunctionGaussian(float fwhm_x, float fwhm_y, float pa)
     : m_fwhm_x(fwhm_x)
     , m_fwhm_y(fwhm_y)
     , m_pa(pa)
 {
 }
 
-point_spread_function_gaussian::~point_spread_function_gaussian()
+PointSpreadFunctionGaussian::~PointSpreadFunctionGaussian()
 {
 }
 
-NDShape point_spread_function_gaussian::get_recommended_size(float step_x, float step_y) const
+NDShape PointSpreadFunctionGaussian::get_recommended_size(float step_x, float step_y) const
 {
     return NDShape({util_num::roundu_odd(5*m_fwhm_x/step_x),
                     util_num::roundu_odd(5*m_fwhm_y/step_y)});
 }
 
-void point_spread_function_gaussian::as_image(int size_x, int size_y, float step_x, float step_y, float* data) const
+void PointSpreadFunctionGaussian::as_image(int size_x, int size_y, float step_x, float step_y, float* data) const
 {
     float sigma_x = math::gaussian_sigma_from_fwhm(m_fwhm_x);
     float sigma_y = math::gaussian_sigma_from_fwhm(m_fwhm_y);
@@ -270,29 +270,29 @@ void point_spread_function_gaussian::as_image(int size_x, int size_y, float step
     evaluate_data_2d(data, size_x, size_y, step_x, step_y, eval_func);
 }
 
-point_spread_function_lorentzian::point_spread_function_lorentzian(float fwhm)
-    : point_spread_function_lorentzian(fwhm, fwhm, 0)
+PointSpreadFunctionLorentzian::PointSpreadFunctionLorentzian(float fwhm)
+    : PointSpreadFunctionLorentzian(fwhm, fwhm, 0)
 {
 }
 
-point_spread_function_lorentzian::point_spread_function_lorentzian(float fwhm_x, float fwhm_y, float pa)
+PointSpreadFunctionLorentzian::PointSpreadFunctionLorentzian(float fwhm_x, float fwhm_y, float pa)
     : m_fwhm_x(fwhm_x)
     , m_fwhm_y(fwhm_y)
     , m_pa(pa)
 {
 }
 
-point_spread_function_lorentzian::~point_spread_function_lorentzian()
+PointSpreadFunctionLorentzian::~PointSpreadFunctionLorentzian()
 {
 }
 
-NDShape point_spread_function_lorentzian::get_recommended_size(float step_x, float step_y) const
+NDShape PointSpreadFunctionLorentzian::get_recommended_size(float step_x, float step_y) const
 {
     return NDShape({util_num::roundu_odd(5*m_fwhm_x/step_x),
                     util_num::roundu_odd(5*m_fwhm_y/step_y)});
 }
 
-void point_spread_function_lorentzian::as_image(int size_x, int size_y, float step_x, float step_y, float* data) const
+void PointSpreadFunctionLorentzian::as_image(int size_x, int size_y, float step_x, float step_y, float* data) const
 {
     float gamma_x = math::lorentzian_gamma_from_fwhm(m_fwhm_x);
     float gamma_y = math::lorentzian_gamma_from_fwhm(m_fwhm_y);
@@ -308,12 +308,12 @@ void point_spread_function_lorentzian::as_image(int size_x, int size_y, float st
     evaluate_data_2d(data, size_x, size_y, step_x, step_y, eval_func);
 }
 
-point_spread_function_moffat::point_spread_function_moffat(float fwhm, float beta)
-    : point_spread_function_moffat(fwhm, fwhm, 0, beta)
+PointSpreadFunctionMoffat::PointSpreadFunctionMoffat(float fwhm, float beta)
+    : PointSpreadFunctionMoffat(fwhm, fwhm, 0, beta)
 {
 }
 
-point_spread_function_moffat::point_spread_function_moffat(float fwhm_x, float fwhm_y, float pa, float beta)
+PointSpreadFunctionMoffat::PointSpreadFunctionMoffat(float fwhm_x, float fwhm_y, float pa, float beta)
     : m_fwhm_x(fwhm_x)
     , m_fwhm_y(fwhm_y)
     , m_beta(beta)
@@ -321,17 +321,17 @@ point_spread_function_moffat::point_spread_function_moffat(float fwhm_x, float f
 {
 }
 
-point_spread_function_moffat::~point_spread_function_moffat()
+PointSpreadFunctionMoffat::~PointSpreadFunctionMoffat()
 {
 }
 
-NDShape point_spread_function_moffat::get_recommended_size(float step_x, float step_y) const
+NDShape PointSpreadFunctionMoffat::get_recommended_size(float step_x, float step_y) const
 {
     return NDShape({util_num::roundu_odd(5*m_fwhm_x/step_x),
                     util_num::roundu_odd(5*m_fwhm_y/step_y)});
 }
 
-void point_spread_function_moffat::as_image(int size_x, int size_y, float step_x, float step_y, float* data) const
+void PointSpreadFunctionMoffat::as_image(int size_x, int size_y, float step_x, float step_y, float* data) const
 {
     float alpha_x = math::moffat_alpha_from_beta_and_fwhm(m_beta, m_fwhm_x);
     float alpha_y = math::moffat_alpha_from_beta_and_fwhm(m_beta, m_fwhm_y);

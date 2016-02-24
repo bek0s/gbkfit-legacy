@@ -20,9 +20,9 @@ enum profile_vel_type {
 };
 
 //!
-//! \brief The model_model01 class
+//! \brief The ModelModel01 class
 //!
-class model_model01 : public Model
+class ModelModel01 : public Model
 {
 
 protected:
@@ -35,9 +35,9 @@ protected:
 
 public:
 
-    model_model01(profile_flx_type profile_flx, profile_vel_type profile_vel);
+    ModelModel01(profile_flx_type profile_flx, profile_vel_type profile_vel);
 
-    ~model_model01();
+    ~ModelModel01();
 
     const std::vector<std::string>& get_parameter_names(void) const final;
 
@@ -55,21 +55,21 @@ private:
                                                            const float param_vsys,
                                                            const float patam_vsig) = 0;
 
-}; // class model_model01
+}; // class ModelModel01
 
 //!
-//! \brief The model_factory_model01 class
+//! \brief The ModelFactoryModel01 class
 //!
-class model_factory_model01 : public ModelFactory
+class ModelFactoryModel01 : public ModelFactory
 {
 
 public:
 
-    model_factory_model01(void);
+    ModelFactoryModel01(void);
 
-    ~model_factory_model01();
+    ~ModelFactoryModel01();
 
-}; // class model_factory_model01
+}; // class ModelFactoryModel01
 
 } // namespace model01
 } // namespace models

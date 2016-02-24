@@ -23,6 +23,7 @@ set(HEADER_FILES
     include/gbkfit/build_settings.hpp
     include/gbkfit/config.hpp
     include/gbkfit/core.hpp
+    include/gbkfit/dataset.hpp
     include/gbkfit/fits.hpp
     include/gbkfit/fitter.hpp
     include/gbkfit/instrument.hpp
@@ -30,10 +31,11 @@ set(HEADER_FILES
     include/gbkfit/model.hpp
     include/gbkfit/ndarray.hpp
     include/gbkfit/ndarray_host.hpp
-    include/gbkfit/nddataset.hpp
     include/gbkfit/ndshape.hpp
     include/gbkfit/parameters.hpp
     include/gbkfit/prerequisites.hpp
+    include/gbkfit/property_map.hpp
+    include/gbkfit/results.hpp
     include/gbkfit/spread_functions.hpp
     include/gbkfit/string_util.hpp
     include/gbkfit/utility.hpp
@@ -41,13 +43,13 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     src/core.cpp
+    src/dataset.cpp
     src/fits.cpp
     src/fitter.cpp
     src/instrument.cpp
     src/model.cpp
     src/ndarray.cpp
     src/ndarray_host.cpp
-    src/nddataset.cpp
     src/ndshape.cpp
     src/parameters.cpp
     src/spread_functions.cpp

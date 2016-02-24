@@ -16,3 +16,9 @@ add_subdirectory(gbkfit)
 #
 
 add_subdirectory(apps)
+
+#
+# tests
+#
+
+add_subdirectory(tests)

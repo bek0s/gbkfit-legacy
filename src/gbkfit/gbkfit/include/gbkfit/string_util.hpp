@@ -11,26 +11,24 @@ namespace gbkfit {
 namespace string_util {
 
 template<typename T>
-T parse(const std::string& value)
+std::string to_string(T value)
 {
-    return boost::lexical_cast<T>(value);
+    std::ostringstream stream;
+    stream << value;
+    return stream.str();
 }
 
-template<typename T>
-T parse(const std::string& value, T dvalue)
+template<typename Tkey, typename Tvalue>
+std::string to_string(const std::map<Tkey, Tvalue>& map)
 {
-    T pvalue;
-
-    try
+    std::ostringstream stream;
+    stream << "std::map [";
+    for(auto iter = map.begin(); iter != map.end(); ++iter)
     {
-        pvalue = string_util::parse<T>(value);
+        stream << "(" << to_string((*iter).first) << ", " << to_string((*iter).second) << ")" << (std::next(iter) != map.end() ? ", " : "");
     }
-    catch(std::exception&)
-    {
-        pvalue = dvalue;
-    }
-
-    return pvalue;
+    stream << "]";
+    return stream.str();
 }
 
 } // namespace string_util

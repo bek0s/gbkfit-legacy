@@ -3,21 +3,6 @@
 
 namespace gbkfit {
 
-
-NDShape::NDShape(const std::vector<value_type>& shape)
-    : m_shape(shape)
-{
-}
-
-NDShape::NDShape(const std::initializer_list<value_type>& shape)
-    : NDShape(std::vector<value_type>(shape))
-{
-}
-
-NDShape::~NDShape()
-{
-}
-
 NDShape::size_type NDShape::get_dim_count(void) const
 {
     return m_shape.size();

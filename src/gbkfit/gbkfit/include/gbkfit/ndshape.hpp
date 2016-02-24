@@ -6,10 +6,6 @@
 
 namespace gbkfit {
 
-
-//!
-//! \brief The gbkfit::ndshape class
-//!
 class NDShape
 {
 
@@ -24,11 +20,19 @@ private:
 
 public:
 
-    NDShape(const std::vector<value_type>& shape);
+    template<typename Iterator>
+    NDShape(Iterator shape_iter_first, Iterator shape_iter_last)
+        : m_shape(shape_iter_first, shape_iter_last) {}
 
-    NDShape(const std::initializer_list<value_type>& shape);
+    template<typename T>
+    NDShape(const std::vector<T>& shape)
+        : NDShape(shape.begin(), shape.end()) {}
 
-    virtual ~NDShape();
+    template<typename T>
+    NDShape(const std::initializer_list<T>& shape)
+        : NDShape(shape.begin(), shape.end()) {}
+
+    virtual ~NDShape() {}
 
     size_type get_dim_count(void) const;
 
@@ -46,8 +50,7 @@ public:
 
     bool operator!=(const NDShape& rhs) const;
 
-}; // class ndshape
-
+}; // class NDShape
 
 } // namespace gbkfit
 
