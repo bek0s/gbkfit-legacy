@@ -193,18 +193,18 @@ const std::map<std::string,NDArray*>& model_model01_cuda::evaluate(int profile_f
     //
 
     int padding_u_x0 = m_psf_size_u_x/2;
-    int padding_u_y0 = m_psf_size_u_x/2;
-    int padding_u_z0 = m_psf_size_u_x/2;
+    int padding_u_y0 = m_psf_size_u_y/2;
+    int padding_u_z0 = m_psf_size_u_z/2;
     int padding_u_x1 = m_psf_size_u_x - padding_u_x0 - 1;
-    int padding_u_y1 = m_psf_size_u_x - padding_u_y0 - 1;
-    int padding_u_z1 = m_psf_size_u_x - padding_u_z0 - 1;
+    int padding_u_y1 = m_psf_size_u_y - padding_u_y0 - 1;
+    int padding_u_z1 = m_psf_size_u_z - padding_u_z0 - 1;
 
     //
     // Set a constant value to all pixels. Used for debug.
     //
 
-#if 0
-    float fill_value = -0.01;
+#if 1
+    float fill_value = 0;
     kernels_cuda_host::array_3d_fill(m_size_up_x,
                                      m_size_up_y,
                                      m_size_up_z,

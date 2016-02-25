@@ -162,9 +162,11 @@ void model_image_3d_evaluate(int profile_flx_id,
     const int full_size_u_z = padding_u_z0 + padding_u_z1 + size_u_z;
 
     #pragma omp parallel for
-    for(int y = 0; y < full_size_u_y; ++y)
+//  for(int y = 0; y < full_size_u_y; ++y)
+    for(int y = 0; y < size_up_y; ++y)
     {
-        for(int x = 0; x < full_size_u_x; ++x)
+    //  for(int x = 0; x < full_size_u_x; ++x)
+        for(int x = 0; x < size_up_x; ++x)
         {
             float flx_spat, vel_spat, sig_spat, flx_spec;
             float xn, yn, zn, xe, ye, rn, sini, cosi, sinpa, cospa;
@@ -198,7 +200,8 @@ void model_image_3d_evaluate(int profile_flx_id,
 
             // Evaluate a single spectrum.
             #pragma omp simd
-            for(int z = 0; z < full_size_u_z; ++z)
+        //  for(int z = 0; z < full_size_u_z; ++z)
+            for(int z = 0; z < size_up_z; ++z)
             {
                 // Evaluate spectrum.
                 zn =  (z - padding_u_z0 - size_u_z/2.0+0.5f) * step_u_z;

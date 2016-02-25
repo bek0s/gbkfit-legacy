@@ -35,11 +35,11 @@ public:
 
     Dataset(const std::string& name, NDArray* data, NDArray* errors, NDArray* mask);
 
-    const NDArray* get_data(void) const;
+    NDArray* get_data(void) const;
 
-    const NDArray* get_errors(void) const;
+    NDArray* get_errors(void) const;
 
-    const NDArray* get_mask(void) const;
+    NDArray* get_mask(void) const;
 
 }; // class Dataset
 

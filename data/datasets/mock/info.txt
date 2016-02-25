@@ -55,9 +55,9 @@ parameters:
 
 Each mock observation has a different inclination:
 
-- mock_01: incl = 20 degrees
-- mock_02: incl = 45 degrees
-- mock_03: incl = 70 degrees
+- mock_1: incl = 20 degrees
+- mock_2: incl = 45 degrees
+- mock_3: incl = 70 degrees
 
 -------------------------------------------------------------------------------
 
@@ -78,22 +78,29 @@ All mock observations have the same dimensions, PSF, LSF and sampling:
 
 All mock observations include Gaussian noise:
 
-- Velocity map noise: 5 km/s
-- Velocity dispersion map noise: sqrt(2) \* 5 km/s
+- Velocity map noise: 2 km/s
+- Velocity dispersion map noise: 3 km/s
 
-There is a version of the data with no noise under the directory "clean".
-Actually, this version includes noise but is extremely low. This is done in
-order to make sense out of the reduced chi squared value.
+There is a version of the data with no noise under the directory "clean". This 
+data were created using gbkfit, and it is used by the script "create_data.py" 
+in order to generate the noisy data.
 
 -------------------------------------------------------------------------------
 
 ## Data files
+
+For each mock observation the following are available:
+
+- Velocity map (velmap).
+- Velocity dispersion map (sigmap).
+- Flux map (flxmap). The support for flux maps in gbkfit is experimental. Do 
+not use them. Just ignore them.
+
+The files "lsf.fits" and "psf.fits" correspond to the LSF and PSF respectively, 
+as described in the Instrument Section.
 
 The following naming convention is used for all FITS files:
 
 - Files ending with "_d.fits": measurements
 - Files ending with "_e.fits": measurement errors
 - Files ending with "_m.fits": mask
-
-The files "lsf.fits" and "psf.fits" correspond to the LSF and PSF respectively, 
-as described in the Instrument Section.

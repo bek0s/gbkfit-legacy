@@ -34,17 +34,17 @@ Dataset::~Dataset()
     delete m_mask;
 }
 
-const NDArray* Dataset::get_data(void) const
+NDArray* Dataset::get_data(void) const
 {
     return m_data;
 }
 
-const NDArray* Dataset::get_errors(void) const
+NDArray* Dataset::get_errors(void) const
 {
     return m_errors;
 }
 
-const NDArray* Dataset::get_mask(void) const
+NDArray* Dataset::get_mask(void) const
 {
     return m_mask;
 }

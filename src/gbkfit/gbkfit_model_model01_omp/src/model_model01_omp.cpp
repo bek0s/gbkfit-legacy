@@ -79,9 +79,15 @@ void model_model01_omp::initialize(int size_x, int size_y, int size_z, Instrumen
     m_size_up_x = m_size_u_x + m_psf_size_u_x - 1;
     m_size_up_y = m_size_u_y + m_psf_size_u_y - 1;
     m_size_up_z = m_size_u_z + m_psf_size_u_z - 1;
+#if 1
     m_size_up_x = util_fft::calculate_optimal_dim_length(static_cast<std::uint32_t>(m_size_up_x), 512, 256);
     m_size_up_y = util_fft::calculate_optimal_dim_length(static_cast<std::uint32_t>(m_size_up_y), 512, 256);
     m_size_up_z = util_fft::calculate_optimal_dim_length(static_cast<std::uint32_t>(m_size_up_z), 512, 256);
+#else
+    m_size_up_x = static_cast<std::uint32_t>(m_size_up_x);
+    m_size_up_y = static_cast<std::uint32_t>(m_size_up_y);
+    m_size_up_z = static_cast<std::uint32_t>(m_size_up_z);
+#endif
 
     int size_padded     = m_size_up_z*m_size_up_y* m_size_up_x;
     int size_padded_fft = m_size_up_z*m_size_up_y*(m_size_up_x/2+1);
@@ -207,25 +213,24 @@ const std::map<std::string,NDArray*>& model_model01_omp::evaluate(int profile_fl
     //
 
     int padding_u_x0 = m_psf_size_u_x/2;
-    int padding_u_y0 = m_psf_size_u_x/2;
-    int padding_u_z0 = m_psf_size_u_x/2;
+    int padding_u_y0 = m_psf_size_u_y/2;
+    int padding_u_z0 = m_psf_size_u_z/2;
     int padding_u_x1 = m_psf_size_u_x - padding_u_x0 - 1;
-    int padding_u_y1 = m_psf_size_u_x - padding_u_y0 - 1;
-    int padding_u_z1 = m_psf_size_u_x - padding_u_z0 - 1;
+    int padding_u_y1 = m_psf_size_u_y - padding_u_y0 - 1;
+    int padding_u_z1 = m_psf_size_u_z - padding_u_z0 - 1;
 
     //
     // Set a constant value to all pixels. Used for debug.
     //
 
 #if 1
-    float fill_value = -0.01;
+    float fill_value = 1000;
     kernels_omp::array_3d_fill(m_size_up_x,
                                m_size_up_y,
                                m_size_up_z,
                                fill_value,
                                m_data_flxcube_up->get_host_ptr());
 #endif
-
     //
     // Evaluate cube model (upsampling + padding).
     //
@@ -253,8 +258,6 @@ const std::map<std::string,NDArray*>& model_model01_omp::evaluate(int profile_fl
                                          padding_u_y1,
                                          padding_u_z1,
                                          m_data_flxcube_up->get_host_ptr());
-
-//  fits::write_to("!__debug_flxcube_up.fits", *m_data_flxcube_up);
 
     //
     // Perform fft-based 3d convolution with the psf cube.

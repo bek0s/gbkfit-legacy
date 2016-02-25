@@ -207,19 +207,22 @@ void model_image_3d_evaluate(int profile_flx_id,
     // Evaluate spectral cube data.
     //
 
-    const int full_size_u_x = padding_u_x0 + padding_u_x1 + size_u_x;
-    const int full_size_u_y = padding_u_y0 + padding_u_y1 + size_u_y;
-    const int full_size_u_z = padding_u_z0 + padding_u_z1 + size_u_z;
-    const int full_size_u = full_size_u_x*full_size_u_y*full_size_u_z;
+//  const int full_size_u_x = padding_u_x0 + padding_u_x1 + size_u_x;
+//  const int full_size_u_y = padding_u_y0 + padding_u_y1 + size_u_y;
+//  const int full_size_u_z = padding_u_z0 + padding_u_z1 + size_u_z;
+//  const int full_size_u = full_size_u_x*full_size_u_y*full_size_u_z;
 
-    while(idx < full_size_u)
+//  while(idx < full_size_u)
+    while(idx < size_up_x*size_up_y*size_up_z)
     {
         int x, y, z;
         float flx_spat, vel_spat, sig_spat, flx_spec;
         float xn, yn, zn, xe, ye, rn, sini, cosi, sinpa, cospa;
 
         // Calculate cube indices.
-        map_index_1d_to_3d(x, y, z, idx, full_size_u_x, full_size_u_y, full_size_u_z);
+    //  map_index_1d_to_3d(x, y, z, idx, full_size_u_x, full_size_u_y, full_size_u_z);
+
+        map_index_1d_to_3d(x, y, z, idx, size_up_x, size_up_y, size_up_z);
 
         // Transform image coordinates to spatial coordinates.
         xn = x - padding_u_x0;

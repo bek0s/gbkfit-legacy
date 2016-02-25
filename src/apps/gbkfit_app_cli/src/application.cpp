@@ -242,6 +242,50 @@ void Application::run(void)
 
     std::map<std::string, gbkfit::NDArray*> model_data = m_model->evaluate(params);
 
+    float* velmap_mdl = model_data["velmap"]->map();
+    float* sigmap_mdl = model_data["sigmap"]->map();
+
+    float* velmap_data_d = m_datasets["velmap"]->get_data()->map();
+    float* velmap_data_e = m_datasets["velmap"]->get_errors()->map();
+    float* velmap_data_m = m_datasets["velmap"]->get_mask()->map();
+
+    float* sigmap_data_d = m_datasets["sigmap"]->get_data()->map();
+    float* sigmap_data_e = m_datasets["sigmap"]->get_errors()->map();
+    float* sigmap_data_m = m_datasets["sigmap"]->get_mask()->map();
+
+
+    int dof = 0;
+    float chi2 = 0;
+    float chi2_red = 0;
+    for(int i = 0; i < 49*49; ++i)
+    {
+        float vel_m = velmap_data_m[i];
+        float sig_m = sigmap_data_m[i];
+
+        if (vel_m > 0) {
+            float residual = (velmap_data_d[i] - velmap_mdl[i]) / velmap_data_e[i];
+            chi2 += (residual*residual);
+            dof++;
+        }
+
+        if (sig_m > 0) {
+            float residual = (sigmap_data_d[i] - sigmap_mdl[i]) / sigmap_data_e[i];
+            chi2 += (residual*residual);
+            dof++;
+        }
+    }
+
+    chi2_red = chi2 / dof;
+
+    std::cout << "chi2: " << chi2 << std::endl
+              << "chi2_red: " << chi2_red << std::endl;
+    /*
+    model_data["velmap"]->unmap();
+    model_data["sigmap"]->unmap();
+    m_datasets["velmap"]->get_data()->unmap();
+    m_datasets["sigmap"]->get_data()->unmap();
+    */
+
     //
     // Output results
     //

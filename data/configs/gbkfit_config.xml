@@ -3,23 +3,25 @@
 <gbkfit>
 
     <datasets>
+        <!--
         <dataset>
             <type>flxmap</type>
-            <data>../../data/datasets/mock/mock_01/mock_01_flxmap_d.fits</data>
-            <errors>../../data/datasets/mock/mock_01/mock_01_flxmap_e.fits</errors>
-            <mask>../../data/datasets/mock/mock_01/mock_01_flxmap_m.fits</mask>
+            <data>../../data/datasets/mock/mock_1/mock_1_flxmap_d.fits</data>
+            <errors>../../data/datasets/mock/mock_1/mock_1_flxmap_e.fits</errors>
+            <mask>../../data/datasets/mock/mock_1/mock_1_flxmap_m.fits</mask>
         </dataset>
+        -->
         <dataset>
             <type>velmap</type>
-            <data>../../data/datasets/mock/mock_01/mock_01_velmap_d.fits</data>
-            <errors>../../data/datasets/mock/mock_01/mock_01_velmap_e.fits</errors>
-            <mask>../../data/datasets/mock/mock_01/mock_01_velmap_m.fits</mask>
+            <data>../../data/datasets/mock/mock_1/mock_1_velmap_d.fits</data>
+            <errors>../../data/datasets/mock/mock_1/mock_1_velmap_e.fits</errors>
+            <mask>../../data/datasets/mock/mock_1/mock_1_velmap_m.fits</mask>
         </dataset>
         <dataset>
             <type>sigmap</type>
-            <data>../../data/datasets/mock/mock_01/mock_01_sigmap_d.fits</data>
-            <errors>../../data/datasets/mock/mock_01/mock_01_sigmap_e.fits</errors>
-            <mask>../../data/datasets/mock/mock_01/mock_01_sigmap_m.fits</mask>
+            <data>../../data/datasets/mock/mock_1/mock_1_sigmap_d.fits</data>
+            <errors>../../data/datasets/mock/mock_1/mock_1_sigmap_e.fits</errors>
+            <mask>../../data/datasets/mock/mock_1/mock_1_sigmap_m.fits</mask>
         </dataset>
     </datasets>
 
@@ -57,6 +59,7 @@
 
     <fitter_config>
         <type>gbkfit.fitter.mpfit</type>
+        
         <ftol>0</ftol>
         <xtol>0</xtol>
         <gtol>0</gtol>
@@ -68,22 +71,46 @@
         <nprint>1</nprint>
         <douserscale>0</douserscale>
         <nofinitecheck>0</nofinitecheck>
+        
+        <efr>1.0</efr>
+        <tol>0.5</tol>
+        <is>1</is>
+        <ceff>0</ceff>
+        <nlive>50</nlive>
+        <mmodal>0</mmodal>
+                                            
     </fitter_config>
     
+    <!--
     <params_config>
         <param name='i0'   fixed='1' value='1'/>
         <param name='r0'   fixed='1' value='10'/>
-        <param name='vsig' fixed='0' value='30'  min='1'    max='150' step='0.1' relstep='0' side='2' wrap='0'/>
-        <param name='vsys' fixed='0' value='50'   min='-100'  max='100'  step='0.1' relstep='0' side='2' wrap='0'/>
-        <param name='xo'   fixed='0' value='20'  min='5'    max='45'  step='0.1' relstep='0' side='2' wrap='0'/>
-        <param name='yo'   fixed='0' value='20'  min='5'    max='45'  step='0.1' relstep='0' side='2' wrap='0'/>
-        <param name='pa'   fixed='0' value='20'  min='0'    max='90'  step='0.1' relstep='0' side='2' wrap='0'/>
-        <param name='incl' fixed='0' value='20'  min='5'    max='85'  step='0.1' relstep='0' side='2' wrap='0'/>
-        <param name='rt'   fixed='0' value='2'   min='0.01' max='10.0'  step='0.1' relstep='0' side='2' wrap='0'/>
-        <param name='vt'   fixed='0' value='100' min='50'   max='350' step='0.1' relstep='0' side='2' wrap='0'/>
+        <param name='vsig' fixed='1' value='50'  min='1'    max='150' step='0.1' relstep='0' side='2' wrap='0'/>
+        <param name='vsys' fixed='1' value='0'   min='-50'  max='50'  step='0.1' relstep='0' side='2' wrap='0'/>
+        <param name='xo'   fixed='1' value='24.5'  min='5'    max='45'  step='0.1' relstep='0' side='2' wrap='0'/>
+        <param name='yo'   fixed='1' value='24.5'  min='5'    max='45'  step='0.1' relstep='0' side='2' wrap='0'/>
+        <param name='pa'   fixed='1' value='45'  min='0'    max='90'  step='0.1' relstep='0' side='2' wrap='0'/>
+        <param name='incl' fixed='1' value='20'  min='5'    max='85'  step='0.1' relstep='0' side='2' wrap='0'/>
+        <param name='rt'   fixed='1' value='4'   min='0.01' max='10.0'  step='0.1' relstep='0' side='2' wrap='0'/>
+        <param name='vt'   fixed='1' value='200' min='50'   max='350' step='0.1' relstep='0' side='2' wrap='0'/>
         <param name='a'    fixed='0' value='1'   min='0.5'  max='1.5' step='0.1' relstep='0' side='2' wrap='0'/>
         <param name='b'    fixed='0' value='1'   min='0.5'  max='1.5' step='0.1' relstep='0' side='2' wrap='0'/>
     </params_config>
-    
+    -->
+
+    <params_config>
+        <param name='i0'   fixed='1' value='1'/>
+        <param name='r0'   fixed='1' value='10'/>
+        <param name='vsig' fixed='0' value='30'  min='1'    max='100' step='0.01' relstep='0' side='2' wrap='0'/>
+        <param name='vsys' fixed='0' value='50'   min='-50'  max='50'  step='0.01' relstep='0' side='2' wrap='0'/>
+        <param name='xo'   fixed='0' value='20'  min='5'    max='45'  step='0.01' relstep='0' side='2' wrap='0'/>
+        <param name='yo'   fixed='0' value='20'  min='5'    max='45'  step='0.01' relstep='0' side='2' wrap='0'/>
+        <param name='pa'   fixed='0' value='20'  min='0'    max='90'  step='0.01' relstep='0' side='2' wrap='0'/>
+        <param name='incl' fixed='0' value='20'  min='5'    max='85'  step='0.01' relstep='0' side='2' wrap='0'/>
+        <param name='rt'   fixed='0' value='2'   min='0.01' max='10.0'  step='0.01' relstep='0' side='2' wrap='0'/>
+        <param name='vt'   fixed='0' value='150' min='100'   max='300' step='0.01' relstep='0' side='2' wrap='0'/>
+        <param name='a'    fixed='0' value='1'   min='0.5'  max='1.5' step='0.01' relstep='0' side='2' wrap='0'/>
+        <param name='b'    fixed='0' value='1'   min='0.5'  max='1.5' step='0.01' relstep='0' side='2' wrap='0'/>
+    </params_config>
 
 </gbkfit>
