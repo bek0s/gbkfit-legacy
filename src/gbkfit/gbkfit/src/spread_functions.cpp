@@ -34,6 +34,8 @@ void evaluate_data_2d(float* data, int size_x, int size_y, float step_x, float s
         }
     }
 
+    //util_image::image_flip_2d(data, size_x, size_y);
+
     math::normalize_integral(data, size_x*size_y);
 }
 
@@ -250,6 +252,8 @@ PointSpreadFunctionGaussian::~PointSpreadFunctionGaussian()
 
 NDShape PointSpreadFunctionGaussian::get_recommended_size(float step_x, float step_y) const
 {
+    // FIXME
+
     return NDShape({util_num::roundu_odd(5*m_fwhm_x/step_x),
                     util_num::roundu_odd(5*m_fwhm_y/step_y)});
 }

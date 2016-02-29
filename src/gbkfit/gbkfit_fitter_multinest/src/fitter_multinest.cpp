@@ -145,7 +145,7 @@ void multinest_callback_dumper(int& nsamples, int& nlive, int& npar, double** ph
             free_params_counter++;
         }
 
-        str << udata->param_name[i] << ": " << udata->param_best[i] << ", ";
+        str << udata->param_name[i] << ": " << udata->param_mean[i] << ", ";
     }
 
     std::cout << str.str() << std::endl;
@@ -287,8 +287,8 @@ void FitterMultinest::fit(Model* model, const std::map<std::string,Dataset*>& da
     int nPar = free_param_counter;      // total no. of parameters including free & derived parameters
     int nClsPar = free_param_counter;   // no. of parameters to do mode separation on
     int updInt = 1;                   // after how many iterations feedback is required & the output files should be updated
-    double Ztol = -1E90;                // all the modes with logZ < Ztol are ignored
-    int maxModes = 100;                 // expected max no. of modes (used only for memory allocation)
+    double Ztol = -3.40282e+37;                // all the modes with logZ < Ztol are ignored
+    int maxModes = 20;                 // expected max no. of modes (used only for memory allocation)
     int* pWrap = new int[ndims];        // which parameters to have periodic boundary conditions?
     for(int i = 0; i < ndims; i++)
         pWrap[i] = 0;
@@ -299,7 +299,7 @@ void FitterMultinest::fit(Model* model, const std::map<std::string,Dataset*>& da
     int outfile = 0;                    // write output files?
     int initMPI = 0;                    // initialize MPI routines?, relevant only if compiling with MPI
                                         // set it to F if you want your main program to handle MPI initialization
-    double logZero = -1E90;             // points with loglike < logZero will be ignored by MultiNest
+    double logZero = -3.40282e+37;             // points with loglike < logZero will be ignored by MultiNest
     int maxiter = m_maxiter;            // max no. of iterations, a non-positive value means infinity. MultiNest will terminate if either it
                                         // has done max no. of iterations or convergence criterion (defined through tol) has been satisfied
 

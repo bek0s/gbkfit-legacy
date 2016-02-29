@@ -31,15 +31,6 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
-#include <boost/any.hpp>
-#include <experimental/any>
-#include <boost/variant.hpp>
-#include "gbkfit/property_map.hpp"
-
-#include <experimental/optional>
-
-#include "gbkfit/cuda/ndarray.hpp"
-
 
 namespace gbkfit_app_cli {
 
@@ -220,7 +211,7 @@ void Application::run(void)
     // Initialize model.
     int model_size_x = m_datasets.begin()->second->get_data()->get_shape()[0];
     int model_size_y = m_datasets.begin()->second->get_data()->get_shape()[1];
-    int model_size_z = 201;
+    int model_size_z = 161;
     m_model->initialize(model_size_x,model_size_y,model_size_z,m_instrument);
 
     //
@@ -257,7 +248,7 @@ void Application::run(void)
     int dof = 0;
     float chi2 = 0;
     float chi2_red = 0;
-    for(int i = 0; i < 49*49; ++i)
+    for(int i = 0; i < model_size_x*model_size_y; ++i)
     {
         float vel_m = velmap_data_m[i];
         float sig_m = sigmap_data_m[i];

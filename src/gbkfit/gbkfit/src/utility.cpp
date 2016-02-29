@@ -69,6 +69,29 @@ namespace util_image
         }
     }
 
+    void image_flip_2d(float* data, int size_x, int size_y)
+    {
+        for(int y = 0; y < size_y/2; ++y)
+        {
+            int ya = y;
+            int yb = size_y - ya - 1;
+
+            for (int x = 0; x < size_x/2; ++x)
+            {
+                int xa = x;
+                int xb = size_x - xa - 1;
+
+                int idxa = ya*size_x + xa;
+                int idxb = yb*size_x + xb;
+
+                float tmp;
+                tmp = data[idxa];
+                data[idxa] = data[idxb];
+                data[idxb] = tmp;
+            }
+        }
+    }
+
 } // namespace util_image
 
 } // namespace gbkfit

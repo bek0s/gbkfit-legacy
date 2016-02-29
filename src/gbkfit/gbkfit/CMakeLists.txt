@@ -15,10 +15,6 @@ find_package(Boost REQUIRED)
 
 # ==============================================================================
 
-configure_file(cmake/templates/build_settings.hpp.in ${gbkfit-project_SOURCE_DIR}/include/gbkfit/build_settings.hpp)
-
-# ==============================================================================
-
 set(HEADER_FILES
     include/gbkfit/build_settings.hpp
     include/gbkfit/config.hpp

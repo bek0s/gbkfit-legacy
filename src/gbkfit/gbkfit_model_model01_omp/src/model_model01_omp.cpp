@@ -224,7 +224,7 @@ const std::map<std::string,NDArray*>& model_model01_omp::evaluate(int profile_fl
     //
 
 #if 1
-    float fill_value = 1000;
+    float fill_value = 0;
     kernels_omp::array_3d_fill(m_size_up_x,
                                m_size_up_y,
                                m_size_up_z,
@@ -308,6 +308,7 @@ const std::map<std::string,NDArray*>& model_model01_omp::evaluate(int profile_fl
                                                     m_data_velmap->get_host_ptr(),
                                                     m_data_sigmap->get_host_ptr());
 
+    //exit(0);
     return get_data();
 }
 

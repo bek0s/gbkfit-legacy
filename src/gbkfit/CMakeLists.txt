@@ -15,10 +15,6 @@ if(${GBKFIT_BUILD_FFTW3})
     add_subdirectory(gbkfit_fftw3)
 endif()
 
-if(${GBKFIT_BUILD_OCL})
-    add_subdirectory(gbkfit_ocl)
-endif()
-
 #
 # Fitters
 #

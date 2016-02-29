@@ -3,7 +3,7 @@
 <gbkfit>
 
     <datasets>
-        <!--
+        <!-- flxmap still experimental, do not use.
         <dataset>
             <type>flxmap</type>
             <data>../../data/datasets/mock/mock_1/mock_1_flxmap_d.fits</data>
@@ -52,13 +52,13 @@
     </instrument>
 
     <model_config>
-        <type>gbkfit.model.model_model01_omp</type>
+        <type>gbkfit.model.model_model01_cuda</type>
         <profile_vel>arctan</profile_vel>
         <profile_flx>exponential</profile_flx>
     </model_config>
 
     <fitter_config>
-        <type>gbkfit.fitter.mpfit</type>
+        <type>gbkfit.fitter.multinest</type>
         
         <ftol>0</ftol>
         <xtol>0</xtol>
@@ -80,7 +80,7 @@
         <mmodal>0</mmodal>
                                             
     </fitter_config>
-    
+
     <!--
     <params_config>
         <param name='i0'   fixed='1' value='1'/>

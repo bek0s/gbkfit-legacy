@@ -97,6 +97,8 @@ namespace util_image
 
     void image_fill_padded(float value, int size_x, int size_y, int size_z, int size_x_padded, int size_y_padded, int size_z_padded, float* data);
 
+    void image_flip_2d(float* data, int size_x, int size_y);
+
 } // namespace util_image
 
 template<typename TKey,typename TValue>
