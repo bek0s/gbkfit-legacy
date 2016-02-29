@@ -211,7 +211,7 @@ void Application::run(void)
     // Initialize model.
     int model_size_x = m_datasets.begin()->second->get_data()->get_shape()[0];
     int model_size_y = m_datasets.begin()->second->get_data()->get_shape()[1];
-    int model_size_z = 161;
+    int model_size_z = 201;
     m_model->initialize(model_size_x,model_size_y,model_size_z,m_instrument);
 
     //
@@ -323,9 +323,9 @@ void Application::run(void)
 
     // Write data products to disk.
     #if 1
-    gbkfit::fits::write_to("!flxcube_up.fits",*model_data["flxcube_up"]);
-    gbkfit::fits::write_to("!psfcube_up.fits",*model_data["psfcube_up"]);
-    gbkfit::fits::write_to("!psfcube_u.fits",*model_data["psfcube_u"]);
+//  gbkfit::fits::write_to("!flxcube_up.fits",*model_data["flxcube_up"]);
+//  gbkfit::fits::write_to("!psfcube_up.fits",*model_data["psfcube_up"]);
+//  gbkfit::fits::write_to("!psfcube_u.fits",*model_data["psfcube_u"]);
     gbkfit::fits::write_to("!psfcube.fits",*model_data["psfcube"]);
     gbkfit::fits::write_to("!flxcube_mdl.fits",*model_data["flxcube"]);
     gbkfit::fits::write_to("!flxmap_mdl.fits",*model_data["flxmap"]);

@@ -60,7 +60,7 @@ option(GBKFIT_BUILD_MODEL_MODEL01_OMP "Build gbkfit_model_model01_omp" TRUE)
 #
 # ==============================================================================
 
-configure_file(cmake/templates/build_settings.hpp.in src/gbkfit/gbkfit/include/gbkfit/build_settings.hpp)
+configure_file(cmake/templates/build_settings.hpp.in ${PROJECT_SOURCE_DIR}/src/gbkfit/gbkfit/include/gbkfit/build_settings.hpp)
 
 # ==============================================================================
 #
