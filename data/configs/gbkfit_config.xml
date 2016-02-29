@@ -52,13 +52,13 @@
     </instrument>
 
     <model_config>
-        <type>gbkfit.model.model_model01_cuda</type>
+        <type>gbkfit.model.model_model01_omp</type>
         <profile_vel>arctan</profile_vel>
         <profile_flx>exponential</profile_flx>
     </model_config>
 
     <fitter_config>
-        <type>gbkfit.fitter.multinest</type>
+        <type>gbkfit.fitter.mpfit</type>
         
         <ftol>0</ftol>
         <xtol>0</xtol>
