@@ -1,142 +1,177 @@
 
 #include "gbkfit/core.hpp"
 #include "gbkfit/dataset.hpp"
+#include "gbkfit/dmodel.hpp"
 #include "gbkfit/fits.hpp"
 #include "gbkfit/fitter.hpp"
+#include "gbkfit/gmodel.hpp"
 #include "gbkfit/instrument.hpp"
+#include "gbkfit/json.hpp"
 #include "gbkfit/model.hpp"
 #include "gbkfit/ndarray_host.hpp"
 #include "gbkfit/parameters.hpp"
 #include "gbkfit/spread_functions.hpp"
 
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
-
 namespace gbkfit {
 
-void Core::add_model_factory(ModelFactory* factory)
+Core::Core(void)
 {
-    m_model_factories[factory->get_type_name()] = factory;
 }
 
-void Core::add_fitter_factory(FitterFactory* factory)
+Core::~Core()
 {
-    m_fitter_factories[factory->get_type_name()] = factory;
+    for(auto& dataset : m_datasets)
+        delete dataset;
+
+    for(auto& instrument : m_instruments)
+        delete instrument;
+
+    for(auto& psf : m_psfs)
+        delete psf;
+
+    for(auto& lsf : m_lsfs)
+        delete lsf;
+
+    for(auto& model : m_models)
+        get_model_factory(model->get_type())->destroy(model);
+
+    for(auto& dmodel : m_dmodels)
+        get_dmodel_factory(dmodel->get_type())->destroy(dmodel);
+
+    for(auto& gmodel : m_gmodels)
+        get_gmodel_factory(gmodel->get_type())->destroy(gmodel);
+
+    for(auto& fitter : m_fitters)
+        get_fitter_factory(fitter->get_type())->destroy(fitter);
+
+    for(auto& parameters : m_parameters)
+        delete parameters;
 }
 
-Model* Core::create_model(const std::string& info) const
+void Core::add_dmodel_factory(const DModelFactory* factory)
 {
-    std::stringstream info_stream(info);
-    boost::property_tree::ptree info_ptree;
-    boost::property_tree::read_xml(info_stream, info_ptree);
-
-    std::string model_type = info_ptree.get<std::string>("type");
-
-    auto iter = m_model_factories.find(model_type);
-    if (iter == m_model_factories.end()) {
+    if (m_dmodel_factories.count(factory->get_type()))
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
-    }
 
-    return iter->second->create_model(info);
+    m_dmodel_factories[factory->get_type()] = factory;
 }
 
-Fitter* Core::create_fitter(const std::string& info) const
+void Core::add_gmodel_factory(const GModelFactory* factory)
 {
-    std::stringstream info_stream(info);
-    boost::property_tree::ptree info_ptree;
-    boost::property_tree::read_xml(info_stream, info_ptree);
-
-    std::string fitter_type = info_ptree.get<std::string>("type");
-
-    auto iter = m_fitter_factories.find(fitter_type);
-    if (iter == m_fitter_factories.end()){
+    if (m_gmodel_factories.count(factory->get_type()))
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
-    }
 
-    return iter->second->create_fitter(info);
+    m_gmodel_factories[factory->get_type()] = factory;
 }
 
-Parameters* Core::create_parameters(const std::string& info) const
+void Core::add_model_factory(const ModelFactory* factory)
 {
-    std::stringstream info_stream(info);
-    boost::property_tree::ptree info_ptree;
-    boost::property_tree::read_xml(info_stream, info_ptree);
+    m_model_factories[factory->get_type()] = factory;
+}
+
+void Core::add_fitter_factory(const FitterFactory* factory)
+{
+    m_fitter_factories[factory->get_type()] = factory;
+}
+
+Model* Core::create_model(const std::string& info)
+{
+    nlohmann::json info_root = nlohmann::json::parse(info);
+
+    std::string type = info_root.at("type");
+
+    Model* model = get_model_factory(type)->create(info);
+
+    m_models.push_back(model);
+
+    return model;
+}
+
+Fitter* Core::create_fitter(const std::string& info)
+{
+    nlohmann::json info_root = nlohmann::json::parse(info);
+
+    std::string type = info_root.at("type");
+
+    Fitter* fitter = get_fitter_factory(type)->create(info);
+
+    m_fitters.push_back(fitter);
+
+    return fitter;
+}
+
+Parameters* Core::create_parameters(const std::string& info)
+{
+    nlohmann::json info_root = nlohmann::json::parse(info);
 
     Parameters* params = new Parameters();
 
     // Iterate over parameters
-    for(auto& info_ptree_child : info_ptree)
+    for(auto& info_param : info_root)
     {
-        if(info_ptree_child.first == "param")
-        {
-            std::string param_name = info_ptree_child.second.get<std::string>("<xmlattr>.name");
-            params->add_parameter(param_name);
+        Parameter& param = params->add(info_param.at("name"));
 
-            // Iterate over parameter options
-            for(auto& option : info_ptree_child.second.get_child("<xmlattr>"))
-            {
-                params->get_parameter(param_name).add<std::string>(option.first, option.second.data());
-            }
+        // Iterate over parameter options
+        for (auto it = info_param.begin(); it != info_param.end(); ++it)
+        {
+            param.add<std::string>(it.key(), it.value().dump());
         }
     }
+
+    m_parameters.push_back(params);
 
     return params;
 }
 
-Dataset* Core::create_dataset(const std::string& info) const
+Dataset* Core::create_dataset(const std::string& info)
 {
-    std::stringstream info_stream(info);
-    boost::property_tree::ptree info_ptree;
-    boost::property_tree::read_xml(info_stream, info_ptree);
+    nlohmann::json info_root = nlohmann::json::parse(info);
 
-    std::string dataset_type = info_ptree.get<std::string>("type");
-    std::string file_dataset_d = info_ptree.get<std::string>("data", "");
-    std::string file_dataset_e = info_ptree.get<std::string>("errors", "");
-    std::string file_dataset_m = info_ptree.get<std::string>("mask", "");
+    std::string type = info_root.at("type").get<std::string>();
+
+    std::string file_dataset_d = info_root.count("data") ? info_root.at("data").get<std::string>() : "";
+    std::string file_dataset_e = info_root.count("error") ? info_root.at("error").get<std::string>() : "";
+    std::string file_dataset_m = info_root.count("mask") ? info_root.at("mask").get<std::string>() : "";
+
     std::unique_ptr<NDArray> dataset_d = file_dataset_d.length() ? fits::get_data(file_dataset_d) : nullptr;
     std::unique_ptr<NDArray> dataset_e = file_dataset_e.length() ? fits::get_data(file_dataset_e) : nullptr;
     std::unique_ptr<NDArray> dataset_m = file_dataset_m.length() ? fits::get_data(file_dataset_m) : nullptr;
 
-    return new Dataset(dataset_type, dataset_d.release(), dataset_e.release(), dataset_m.release());
+    Dataset* dataset = new Dataset(type, dataset_d.release(), dataset_e.release(), dataset_m.release());
+    m_datasets.push_back(dataset);
+
+    return dataset;
 }
 
-std::map<std::string, Dataset*> Core::create_datasets(const std::string& info) const
+std::vector<Dataset*> Core::create_datasets(const std::string& info)
 {
-    std::stringstream info_stream(info);
-    boost::property_tree::ptree info_ptree;
-    boost::property_tree::read_xml(info_stream, info_ptree);
+    nlohmann::json info_root = nlohmann::json::parse(info);
 
-    std::map<std::string, Dataset*> datasets;
+    std::vector<Dataset*> datasets;
 
-    // Iterate over datasets
-    for(auto& info_ptree_child : info_ptree)
+    for(auto& info_child : info_root)
     {
-        if(info_ptree_child.first == "dataset")
-        {
-            std::stringstream dataset_info;
-            boost::property_tree::write_xml(dataset_info, info_ptree_child.second);
+        std::string foo = info_child.dump();
 
-            Dataset* dataset = create_dataset(dataset_info.str());
-
-            datasets.emplace(dataset->get_name(), dataset);
-        }
+        Dataset* dataset = create_dataset(foo);
+        datasets.push_back(dataset);
     }
+
 
     return datasets;
 }
 
-Instrument* Core::create_instrument(const std::string& info) const
+Instrument* Core::create_instrument(const std::string& info)
 {
-    std::stringstream info_stream(info);
-    boost::property_tree::ptree info_ptree;
-    boost::property_tree::read_xml(info_stream,info_ptree);
+    nlohmann::json info_root = nlohmann::json::parse(info);
 
-    float sampling_x = info_ptree.get<float>("sampling.x");
-    float sampling_y = info_ptree.get<float>("sampling.y");
-    float sampling_z = info_ptree.get<float>("sampling.z");
 
-    std::string psf_type = info_ptree.get<std::string>("psf.type");
-    std::string lsf_type = info_ptree.get<std::string>("lsf.type");
+    float sampling_x = info_root.at("sampling_x").get<float>();
+    float sampling_y = info_root.at("sampling_y").get<float>();
+    float sampling_z = info_root.at("sampling_z").get<float>();
+
+    std::string psf_type = info_root.at("psf").at("type").get<std::string>();
+    std::string lsf_type = info_root.at("lsf").at("type").get<std::string>();
 
     PointSpreadFunction* psf = nullptr;
     LineSpreadFunction* lsf = nullptr;
@@ -147,33 +182,33 @@ Instrument* Core::create_instrument(const std::string& info) const
 
     if      (psf_type == "gaussian")
     {
-        float fwhm_x = info_ptree.get<float>("psf.fwhm_x");
-        float fwhm_y = info_ptree.get<float>("psf.fwhm_y");
-        float pa = info_ptree.get<float>("psf.pa");
+        float fwhm_x = info_root.at("psf").at("fwhm_x").get<float>();
+        float fwhm_y = info_root.at("psf").at("fwhm_y").get<float>();
+        float pa = info_root.at("psf").at("pa").get<float>();
 
         psf = new PointSpreadFunctionGaussian(fwhm_x, fwhm_y, pa);
     }
     else if (psf_type == "lorentzian")
     {
-        float fwhm_x = info_ptree.get<float>("psf.fwhm_x");
-        float fwhm_y = info_ptree.get<float>("psf.fwhm_y");
-        float pa = info_ptree.get<float>("psf.pa");
+        float fwhm_x = info_root.at("psf").at("fwhm_x").get<float>();
+        float fwhm_y = info_root.at("psf").at("fwhm_y").get<float>();
+        float pa = info_root.at("psf").at("pa").get<float>();
 
         psf = new PointSpreadFunctionLorentzian(fwhm_x, fwhm_y, pa);
 
     }
     else if (psf_type == "moffat")
     {
-        float fwhm_x = info_ptree.get<float>("psf.fwhm_x");
-        float fwhm_y = info_ptree.get<float>("psf.fwhm_y");
-        float beta = info_ptree.get<float>("psf.beta");
-        float pa = info_ptree.get<float>("psf.pa");
+        float fwhm_x = info_root.at("psf").at("fwhm_x").get<float>();
+        float fwhm_y = info_root.at("psf").at("fwhm_y").get<float>();
+        float beta = info_root.at("psf").at("beta").get<float>();
+        float pa = info_root.at("psf").at("pa").get<float>();
 
         psf = new PointSpreadFunctionMoffat(fwhm_x, fwhm_y, pa, beta);
     }
     else if (psf_type == "image")
     {
-        std::string file = info_ptree.get<std::string>("psf.file");
+        std::string file = info_root.at("psf").at("file").get<std::string>();
 
         std::shared_ptr<NDArrayHost> data = fits::get_data(file);
 
@@ -183,6 +218,12 @@ Instrument* Core::create_instrument(const std::string& info) const
                                            sampling_x,
                                            sampling_y);
     }
+    else
+    {
+        psf = new PointSpreadFunctionNone();
+    }
+
+    m_psfs.push_back(psf);
 
     //
     // Create lsf
@@ -190,26 +231,26 @@ Instrument* Core::create_instrument(const std::string& info) const
 
     if      (lsf_type == "gaussian")
     {
-        float fwhm = info_ptree.get<float>("lsf.fwhm");
+        float fwhm = info_root.at("lsf").at("fwhm").get<float>();
 
         lsf = new LineSpreadFunctionGaussian(fwhm);
     }
     else if (lsf_type == "lorentzian")
     {
-        float fwhm = info_ptree.get<float>("lsf.fwhm");
+        float fwhm = info_root.at("lsf").at("fwhm").get<float>();
 
         lsf = new LineSpreadFunctionLorentzian(fwhm);
     }
     else if (lsf_type == "moffat")
     {
-        float fwhm = info_ptree.get<float>("lsf.fwhm");
-        float beta = info_ptree.get<float>("lsf.beta");
+        float fwhm = info_root.at("lsf").at("fwhm").get<float>();
+        float beta = info_root.at("lsf").at("beta").get<float>();
 
         lsf = new LineSpreadFunctionMoffat(fwhm, beta);
     }
     else if (lsf_type == "array")
     {
-        std::string file = info_ptree.get<std::string>("lsf.file");
+        std::string file = info_root.at("lsf").at("file").get<std::string>();
 
         std::shared_ptr<NDArrayHost> data = fits::get_data(file);
 
@@ -217,6 +258,12 @@ Instrument* Core::create_instrument(const std::string& info) const
                                           data->get_shape()[0],
                                           sampling_z);
     }
+    else
+    {
+        lsf = new LineSpreadFunctionNone();
+    }
+
+    m_lsfs.push_back(lsf);
 
     //
     // Create instrument
@@ -224,8 +271,78 @@ Instrument* Core::create_instrument(const std::string& info) const
 
     Instrument* new_instrument = new Instrument(sampling_x, sampling_y, sampling_z, psf, lsf);
 
+    m_instruments.push_back(new_instrument);
+
     return new_instrument;
 
 }
+
+const ModelFactory* Core::get_model_factory(const std::string& type) const
+{
+    auto iter = m_model_factories.find(type);
+    if (iter == m_model_factories.end()) {
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
+    }
+    return iter->second;
+}
+
+const FitterFactory* Core::get_fitter_factory(const std::string& type) const
+{
+    auto iter = m_fitter_factories.find(type);
+    if (iter == m_fitter_factories.end()) {
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
+    }
+    return iter->second;
+}
+
+DModel* Core::create_dmodel(const std::string& info,
+                            const std::vector<int>& shape,
+                            const Instrument* instrument)
+{
+    nlohmann::json info_root = nlohmann::json::parse(info);
+
+    std::string type = info_root.at("type");
+
+    DModel* dmodel = get_dmodel_factory(type)->create(info, shape, instrument);
+
+    m_dmodels.push_back(dmodel);
+
+    return dmodel;
+}
+
+
+GModel* Core::create_gmodel(const std::string& info)
+{
+    nlohmann::json info_root = nlohmann::json::parse(info);
+
+    std::string type = info_root.at("type");
+
+    GModel* gmodel = get_gmodel_factory(type)->create(info);
+
+    m_gmodels.push_back(gmodel);
+
+    return gmodel;
+}
+
+const DModelFactory* Core::get_dmodel_factory(const std::string& type) const
+{
+    auto iter = m_dmodel_factories.find(type);
+
+    if (iter == m_dmodel_factories.end()) {
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
+    }
+    return iter->second;
+}
+
+const GModelFactory* Core::get_gmodel_factory(const std::string& type) const
+{
+    auto iter = m_gmodel_factories.find(type);
+    if (iter == m_gmodel_factories.end()) {
+        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
+    }
+    return iter->second;
+}
+
+
 
 } // namespace gbkfit

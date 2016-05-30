@@ -20,6 +20,9 @@ private:
 
 public:
 
+    NDShape(void)
+        : NDShape({}) {}
+
     template<typename Iterator>
     NDShape(Iterator shape_iter_first, Iterator shape_iter_last)
         : m_shape(shape_iter_first, shape_iter_last) {}
@@ -40,7 +43,7 @@ public:
 
     value_type get_dim_length_product(void) const;
 
-    const std::vector<value_type>& get_as_vector(void) const;
+    const std::vector<value_type>& as_vector(void) const;
 
     const value_type& operator[](size_type idx) const;
 

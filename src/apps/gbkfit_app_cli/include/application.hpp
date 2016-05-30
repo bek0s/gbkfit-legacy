@@ -2,38 +2,36 @@
 #ifndef GBKFIT_APP_CLI_APPLICATION_HPP
 #define GBKFIT_APP_CLI_APPLICATION_HPP
 
+#include "gbkfit/prerequisites.hpp"
+
 #include "prerequisites.hpp"
-#include "gbkfit/core.hpp"
 
 namespace gbkfit_app_cli {
 
-//!
-//! \brief The Application class
-//!
 class Application
 {
 
 private:
 
     static const std::string DEFAULT_CONFIG_FILE;
-    static const std::string DEFAULT_GALAXY_NAME;
+    static const std::string DEFAULT_OUTPUT_DIR;
 
 private:
 
     std::string m_config_file;
-    std::string m_galaxy_name;
+    std::string m_output_dir;
 
     gbkfit::Core* m_core;
 
-    std::vector<gbkfit::ModelFactory*> m_model_factories;
+    std::vector<gbkfit::DModelFactory*> m_dmodel_factories;
+    std::vector<gbkfit::GModelFactory*> m_gmodel_factories;
     std::vector<gbkfit::FitterFactory*> m_fitter_factories;
 
-    gbkfit::Model* m_model;
+    gbkfit::DModel* m_dmodel;
+    gbkfit::GModel* m_gmodel;
     gbkfit::Fitter* m_fitter;
     gbkfit::Parameters* m_parameters;
-
-    std::map<std::string, gbkfit::Dataset*> m_datasets;
-
+    std::vector<gbkfit::Dataset*> m_datasets;
     gbkfit::Instrument* m_instrument;
 
 public:
@@ -50,7 +48,7 @@ public:
 
     void run(void);
 
-}; // class Application
+};
 
 } // namespace gbkfit_app_cli
 

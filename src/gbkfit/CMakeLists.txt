@@ -16,6 +16,50 @@ if(${GBKFIT_BUILD_FFTW3})
 endif()
 
 #
+# DModels
+#
+
+if(${GBKFIT_BUILD_DMODEL_SCUBE})
+    add_subdirectory(gbkfit_dmodel_scube)
+endif()
+
+if(${GBKFIT_BUILD_DMODEL_SCUBE_CUDA})
+    add_subdirectory(gbkfit_dmodel_scube_cuda)
+endif()
+
+if(${GBKFIT_BUILD_DMODEL_SCUBE_OMP})
+    add_subdirectory(gbkfit_dmodel_scube_omp)
+endif()
+
+if(${GBKFIT_BUILD_DMODEL_MMAPS})
+    add_subdirectory(gbkfit_dmodel_mmaps)
+endif()
+
+if(${GBKFIT_BUILD_DMODEL_MMAPS_CUDA})
+    add_subdirectory(gbkfit_dmodel_mmaps_cuda)
+endif()
+
+if(${GBKFIT_BUILD_DMODEL_MMAPS_OMP})
+    add_subdirectory(gbkfit_dmodel_mmaps_omp)
+endif()
+
+#
+# GModels
+#
+
+if(${GBKFIT_BUILD_GMODEL_GMODEL01})
+    add_subdirectory(gbkfit_gmodel_gmodel01)
+endif()
+
+if(${GBKFIT_BUILD_GMODEL_GMODEL01_CUDA})
+    add_subdirectory(gbkfit_gmodel_gmodel01_cuda)
+endif()
+
+if(${GBKFIT_BUILD_GMODEL_GMODEL01_OMP})
+    add_subdirectory(gbkfit_gmodel_gmodel01_omp)
+endif()
+
+#
 # Fitters
 #
 
@@ -27,18 +71,3 @@ if(${GBKFIT_BUILD_FITTER_MULTINEST})
     add_subdirectory(gbkfit_fitter_multinest)
 endif()
 
-#
-# Models
-#
-
-if(${GBKFIT_BUILD_MODEL_MODEL01})
-    add_subdirectory(gbkfit_model_model01)
-endif()
-
-if(${GBKFIT_BUILD_MODEL_MODEL01_CUDA})
-    add_subdirectory(gbkfit_model_model01_cuda)
-endif()
-
-if(${GBKFIT_BUILD_MODEL_MODEL01_OMP})
-    add_subdirectory(gbkfit_model_model01_omp)
-endif()

@@ -8,22 +8,15 @@
 namespace gbkfit
 {
 
-//!
-//! \brief The Dataset class
-//!
 class Dataset
 {
 
 private:
 
     std::string m_name;
-
-    std::map<std::string, Data*> m_data_map;
-
     NDArray* m_data;
     NDArray* m_errors;
     NDArray* m_mask;
-
 
 public:
 

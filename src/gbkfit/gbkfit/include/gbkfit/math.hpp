@@ -3,6 +3,7 @@
 #define GBKFIT_MATH_HPP
 
 #include <cmath>
+#include <numeric>
 
 namespace gbkfit {
 namespace math {

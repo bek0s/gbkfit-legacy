@@ -1,8 +1,11 @@
 
-#include "gbkfit/fitters/mpfit/fitter_mpfit.hpp"
-#include "gbkfit/fitters/mpfit/fitter_factory_mpfit.hpp"
+#include "gbkfit/fitter/mpfit/fitter_mpfit.hpp"
+#include "gbkfit/fitter/mpfit/fitter_mpfit_factory.hpp"
 
 #include "gbkfit/dataset.hpp"
+#include "gbkfit/dmodel.hpp"
+#include "gbkfit/fitter_result.hpp"
+#include "gbkfit/gmodel.hpp"
 #include "gbkfit/model.hpp"
 #include "gbkfit/ndarray_host.hpp"
 #include "gbkfit/parameters.hpp"
@@ -13,7 +16,7 @@
 #include <mpfit.h>
 
 namespace gbkfit {
-namespace fitters {
+namespace fitter {
 namespace mpfit {
 
 std::string get_error_string(int code)
@@ -110,7 +113,7 @@ std::string get_error_string(int code)
 
 struct mpfit_user_data
 {
-    gbkfit::Model* model;
+    const gbkfit::DModel* dmodel;
     std::vector<std::string> param_names;
     std::vector<std::string> dataset_names;
     std::map<std::string,NDArrayHost*> data_map_dat;
@@ -155,7 +158,7 @@ int mpfit_callback(int num_measurements, int num_parameters, double* parameters,
     // Evaluate model with the current set of parameter values.
     //
 
-    std::map<std::string,NDArray*> model_data = udata->model->evaluate(param_map);
+    std::map<std::string, NDArrayHost*> model_data = udata->dmodel->evaluate(param_map);
 
     //
     // Calculate residuals between the model and the (available) data.
@@ -229,12 +232,14 @@ FitterMpfit::~FitterMpfit()
 {
 }
 
-const std::string& FitterMpfit::get_type_name(void) const
+const std::string& FitterMpfit::get_type(void) const
 {
-    return FitterFactoryMpfit::FACTORY_TYPE_NAME;
+    return FitterMpfitFactory::FACTORY_TYPE;
 }
 
-void FitterMpfit::fit(Model* model, const std::map<std::string,Dataset*>& datasets, Parameters& params_info) const
+FitterResult* FitterMpfit::fit(const DModel* dmodel,
+                               const Parameters* params,
+                               const std::vector<Dataset*>& datasets) const
 {
     //
     // Perform the necessary memory allocations and copy the datasets on the host.
@@ -242,22 +247,22 @@ void FitterMpfit::fit(Model* model, const std::map<std::string,Dataset*>& datase
 
     int measurement_count = 0;
     std::vector<std::string> dataset_names;
-    std::map<std::string,NDArrayHost*> data_map_dat;
-    std::map<std::string,NDArrayHost*> data_map_msk;
-    std::map<std::string,NDArrayHost*> data_map_err;
-    std::map<std::string,NDArrayHost*> data_map_mdl;
+    std::map<std::string, NDArrayHost*> data_map_dat;
+    std::map<std::string, NDArrayHost*> data_map_msk;
+    std::map<std::string, NDArrayHost*> data_map_err;
+    std::map<std::string, NDArrayHost*> data_map_mdl;
 
     // Iterate over the input datasets.
     for(auto& dataset : datasets)
     {
         // Get the dataset name and store it in a vector, we will use it later for convenience.
-        std::string dataset_name = std::get<0>(dataset);
+        std::string dataset_name = dataset->get_name();
         dataset_names.push_back(dataset_name);
 
         // Get input data pointer shortcuts for convenience.
-        const NDArray* input_data_dat = std::get<1>(dataset)->get_data();
-        const NDArray* input_data_msk = std::get<1>(dataset)->get_mask();
-        const NDArray* input_data_err = std::get<1>(dataset)->get_errors();
+        const NDArray* input_data_dat = dataset->get_data();
+        const NDArray* input_data_msk = dataset->get_mask();
+        const NDArray* input_data_err = dataset->get_errors();
 
         // Allocate host memory for the input data and the model.
         data_map_dat[dataset_name] = new NDArrayHost(input_data_dat->get_shape());
@@ -278,7 +283,7 @@ void FitterMpfit::fit(Model* model, const std::map<std::string,Dataset*>& datase
     // Get model parameters. Always use this order for the parameters!
     //
 
-    std::vector<std::string> param_names = model->get_parameter_names();
+    std::vector<std::string> param_names = dmodel->get_galaxy_model()->get_param_names();
 
     //
     // Allocate an array for model parameters and give initial values.
@@ -286,7 +291,7 @@ void FitterMpfit::fit(Model* model, const std::map<std::string,Dataset*>& datase
 
     std::vector<double> param_values;
     for(auto& param_name : param_names)
-        param_values.push_back(params_info.get_parameter(param_name).get<float>("value"));
+        param_values.push_back(params->get(param_name).get<float>("value"));
 
     //
     // Setup mpfit's per-parameter configuration.
@@ -297,13 +302,13 @@ void FitterMpfit::fit(Model* model, const std::map<std::string,Dataset*>& datase
     {
         mp_par mpfit_param_info;
         std::memset(&mpfit_param_info,0,sizeof(mpfit_param_info));
-        mpfit_param_info.step = params_info.get_parameter(param_name).get<float>("step",0);
-        mpfit_param_info.side = params_info.get_parameter(param_name).get<int>("side",0);
-        mpfit_param_info.fixed = params_info.get_parameter(param_name).get<bool>("fixed",0);
-        mpfit_param_info.limited[0] = params_info.get_parameter(param_name).has("min");
-        mpfit_param_info.limited[1] = params_info.get_parameter(param_name).has("max");
-        mpfit_param_info.limits[0] = params_info.get_parameter(param_name).get<float>("min",-std::numeric_limits<float>::max());
-        mpfit_param_info.limits[1] = params_info.get_parameter(param_name).get<float>("max",+std::numeric_limits<float>::max());
+        mpfit_param_info.step = params->get(param_name).get<float>("step",0);
+        mpfit_param_info.side = params->get(param_name).get<int>("side",0);
+        mpfit_param_info.fixed = params->get(param_name).get<bool>("fixed",0);
+        mpfit_param_info.limited[0] = params->get(param_name).has("min");
+        mpfit_param_info.limited[1] = params->get(param_name).has("max");
+        mpfit_param_info.limits[0] = params->get(param_name).get<float>("min",-std::numeric_limits<float>::max());
+        mpfit_param_info.limits[1] = params->get(param_name).get<float>("max",+std::numeric_limits<float>::max());
         mpfit_param_info.parname = new char[param_name.size()+1];
         std::strcpy(mpfit_param_info.parname,param_name.c_str());
         mpfit_params_info.push_back(mpfit_param_info);
@@ -340,14 +345,14 @@ void FitterMpfit::fit(Model* model, const std::map<std::string,Dataset*>& datase
     // Create and populate user data.
     //
 
-    mpfit_user_data mpfit_udata;
-    mpfit_udata.model = model;
-    mpfit_udata.param_names = param_names;
-    mpfit_udata.dataset_names = dataset_names;
-    mpfit_udata.data_map_dat = data_map_dat;
-    mpfit_udata.data_map_msk = data_map_msk;
-    mpfit_udata.data_map_err = data_map_err;
-    mpfit_udata.data_map_mdl = data_map_mdl;
+    mpfit_user_data udata;
+    udata.dmodel = dmodel;
+    udata.param_names = param_names;
+    udata.dataset_names = dataset_names;
+    udata.data_map_dat = data_map_dat;
+    udata.data_map_msk = data_map_msk;
+    udata.data_map_err = data_map_err;
+    udata.data_map_mdl = data_map_mdl;
 
     //
     // Time to fit! Woohoo!
@@ -359,39 +364,50 @@ void FitterMpfit::fit(Model* model, const std::map<std::string,Dataset*>& datase
                                param_values.data(),
                                mpfit_params_info.data(),
                                &mpfit_config_info,
-                               &mpfit_udata,
+                               &udata,
                                &mpfit_result_info);
 
     std::cout << "Optimization completed [mpfit code: " << get_error_string(mpfit_result) << "]." << std::endl;
     std::cout << "Initial chi-square: " << mpfit_result_info.orignorm << std::endl;
     std::cout << "Final chi-square: " << mpfit_result_info.bestnorm << std::endl;
 
-    //
-    // Extract fitted model parameters.
-    //
 
-    std::cout << "Fitting results:" << std::endl;
-    for (std::size_t i = 0; i < param_names.size(); ++i)
+    std::vector<bool> param_fixed_flags;
+    std::vector<std::vector<float>> param_values_list;
+    std::vector<std::vector<float>> param_errors_list;
+
+
+
+
+    std::vector<float> param_errors(mpfit_result_info.xerror, mpfit_result_info.xerror+param_values.size());
+    for(std::size_t i = 0; i < mpfit_params_info.size(); ++i)
     {
-        std::string param_name = param_names[i];
-        float param_best = param_values[i];
-        float param_stddev = mpfit_result_info.xerror[i];
-
-        std::cout << std::fixed
-                  << std::setprecision(2)
-                  << "Fitted param:"
-                  << " name="   << std::setw(4) << param_name   << ","
-                  << " fixed="  << std::setw(2) << mpfit_params_info[i].fixed   << ","
-                  << " best="   << std::setw(8) << param_best   << ","
-                  << " stddev=" << std::setw(8) << param_stddev << std::endl;
-
-        if (mpfit_params_info[i].fixed) {
-            params_info.get_parameter(param_name).add("best", param_best);
-        } else {
-            params_info.get_parameter(param_name).add("best", param_best);
-            params_info.get_parameter(param_name).add("stddev", param_stddev);
-        }
+        param_fixed_flags.push_back(mpfit_params_info[i].fixed);
     }
+
+    param_values_list.push_back(std::vector<float>(param_values.begin(), param_values.end()));
+    param_errors_list.push_back(param_errors);
+
+
+    std::vector<NDArray*> dataset_data;
+    std::vector<NDArray*> dataset_errors;
+    std::vector<NDArray*> dataset_masks;
+
+    for(auto& dataset : datasets)
+    {
+        dataset_data.push_back(dataset->get_data());
+        dataset_errors.push_back(dataset->get_errors());
+        dataset_masks.push_back(dataset->get_mask());
+    }
+
+    FitterResult* result = new FitterResult(dmodel,
+                                            dataset_names,
+                                            dataset_data,
+                                            dataset_errors,
+                                            dataset_masks,
+                                            param_fixed_flags,
+                                            param_values_list,
+                                            param_errors_list);
 
     //
     // Perform clean up
@@ -407,6 +423,8 @@ void FitterMpfit::fit(Model* model, const std::map<std::string,Dataset*>& datase
     for(auto& data : data_map_dat) delete std::get<1>(data);
     for(auto& data : data_map_msk) delete std::get<1>(data);
     for(auto& data : data_map_err) delete std::get<1>(data);
+
+    return result;
 }
 
 } // namepsece mpfit

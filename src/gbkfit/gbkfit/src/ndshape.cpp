@@ -15,10 +15,10 @@ NDShape::value_type NDShape::get_dim_length(size_type idx) const
 
 NDShape::value_type NDShape::get_dim_length_product(void) const
 {
-    return std::accumulate(m_shape.begin(),m_shape.end(),static_cast<size_type>(1),std::multiplies<size_type>());
+    return m_shape.size() ? std::accumulate(m_shape.begin(),m_shape.end(),static_cast<size_type>(1),std::multiplies<size_type>()) : 0;
 }
 
-const std::vector<NDShape::value_type>& NDShape::get_as_vector(void) const
+const std::vector<NDShape::value_type>& NDShape::as_vector(void) const
 {
     return m_shape;
 }

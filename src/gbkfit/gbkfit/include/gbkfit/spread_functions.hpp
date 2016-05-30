@@ -7,39 +7,41 @@
 
 namespace gbkfit {
 
-//!
-//! \brief The LineSpreadFunction class
-//!
 class LineSpreadFunction
 {
 public:
     LineSpreadFunction(void);
+    LineSpreadFunction(const LineSpreadFunction&) = delete;
+    LineSpreadFunction& operator=(const LineSpreadFunction&) = delete;
     virtual ~LineSpreadFunction();
-    NDArrayHost* as_array(float step) const;
-    NDArrayHost* as_array(int size, float step) const;
-    virtual NDShape get_recommended_size(float step) const = 0;
-    virtual void as_array(int size, float step, float* data) const = 0;
-}; // class LineSpreadFunction
+    std::unique_ptr<NDArrayHost> as_array(float step) const;
+    std::unique_ptr<NDArrayHost> as_array(float step, int size) const;
+    virtual NDShape get_size(float step) const = 0;
+    virtual void as_array(float step, int size, float* data) const = 0;
+};
 
-//!
-//! \brief The LineSpreadFunctionArray class
-//!
+class LineSpreadFunctionNone : public LineSpreadFunction
+{
+public:
+    LineSpreadFunctionNone(void);
+    ~LineSpreadFunctionNone();
+    NDShape get_size(float step) const override final;
+    void as_array(float step, int size, float* data) const override final;
+};
+
 class LineSpreadFunctionArray : public LineSpreadFunction
 {
 private:
     float* m_data;
-    int m_size;
     float m_step;
+    int m_size;
 public:
-    LineSpreadFunctionArray(float* data, int size, float step);
+    LineSpreadFunctionArray(const float* data, float step, int size);
     ~LineSpreadFunctionArray();
-    NDShape get_recommended_size(float step) const final;
-    void as_array(int size, float step, float* data) const final;
-}; // class LineSpreadFunctionArray
+    NDShape get_size(float step) const override final;
+    void as_array(float step, int size, float* data) const override final;
+};
 
-//!
-//! \brief The LineSpreadFunctionGaussian class
-//!
 class LineSpreadFunctionGaussian : public LineSpreadFunction
 {
 private:
@@ -47,13 +49,10 @@ private:
 public:
     LineSpreadFunctionGaussian(float fwhm);
     ~LineSpreadFunctionGaussian();
-    NDShape get_recommended_size(float step) const final;
-    void as_array(int size, float step, float* data) const final;
-}; // class LineSpreadFunctionGaussian
+    NDShape get_size(float step) const override final;
+    void as_array(float step, int size, float* data) const override final;
+};
 
-//!
-//! \brief The LineSpreadFunctionLorentzian class
-//!
 class LineSpreadFunctionLorentzian : public LineSpreadFunction
 {
 private:
@@ -61,13 +60,10 @@ private:
 public:
     LineSpreadFunctionLorentzian(float fwhm);
     ~LineSpreadFunctionLorentzian();
-    NDShape get_recommended_size(float step) const final;
-    void as_array(int size, float step, float* data) const final;
-}; // class LineSpreadFunctionLorentzian
+    NDShape get_size(float step) const override final;
+    void as_array(float step, int size, float* data) const override final;
+};
 
-//!
-//! \brief The LineSpreadFunctionMoffat class
-//!
 class LineSpreadFunctionMoffat : public LineSpreadFunction
 {
 private:
@@ -76,45 +72,47 @@ private:
 public:
     LineSpreadFunctionMoffat(float fwhm, float beta = 4.765f);
     ~LineSpreadFunctionMoffat();
-    NDShape get_recommended_size(float step) const final;
-    void as_array(int size, float step, float* data) const final;
-}; // class LineSpreadFunctionMoffat
+    NDShape get_size(float step) const override final;
+    void as_array(float step, int size, float* data) const override final;
+};
 
-//!
-//! \brief The PointSpreadFunction class
-//!
 class PointSpreadFunction
 {
 public:
     PointSpreadFunction(void);
+    PointSpreadFunction(const PointSpreadFunction&) = delete;
+    PointSpreadFunction& operator=(const PointSpreadFunction&) = delete;
     virtual ~PointSpreadFunction();
-    NDArrayHost* as_image(float step_x, float step_y) const;
-    NDArrayHost* as_image(int size_x, int size_y, float step_x, float step_y) const;
-    virtual NDShape get_recommended_size(float step_x, float step_y) const = 0;
-    virtual void as_image(int size_x, int size_y, float step_x, float step_y, float* data) const = 0;
-}; // class PointSpreadFunction
+    std::unique_ptr<NDArrayHost> as_image(float step_x, float step_y) const;
+    std::unique_ptr<NDArrayHost> as_image(float step_x, float step_y, int size_x, int size_y) const;
+    virtual NDShape get_size(float step_x, float step_y) const = 0;
+    virtual void as_image(float step_x, float step_y, int size_x, int size_y, float* data) const = 0;
+};
 
-//!
-//! \brief The PointSpreadFunctionImage class
-//!
+class PointSpreadFunctionNone : public PointSpreadFunction
+{
+public:
+    PointSpreadFunctionNone(void);
+    ~PointSpreadFunctionNone();
+    NDShape get_size(float step_x, float step_y) const override final;
+    void as_image(float step_x, float step_y, int size_x, int size_y, float* data) const override final;
+};
+
 class PointSpreadFunctionImage : public PointSpreadFunction
 {
 private:
     float* m_data;
-    int m_size_x;
-    int m_size_y;
     float m_step_x;
     float m_step_y;
+    int m_size_x;
+    int m_size_y;
 public:
-    PointSpreadFunctionImage(float* data, int size_x, int size_y, float step_x, float step_y);
+    PointSpreadFunctionImage(const float* data, float step_x, float step_y, int size_x, int size_y);
     ~PointSpreadFunctionImage();
-    NDShape get_recommended_size(float step_x, float step_y) const final;
-    void as_image(int size_x, int size_y, float step_x, float step_y, float* data) const final;
-}; // class PointSpreadFunctionImage
+    NDShape get_size(float step_x, float step_y) const override final;
+    void as_image(float step_x, float step_y, int size_x, int size_y, float* data) const override final;
+};
 
-//!
-//! \brief The PointSpreadFunctionGaussian class
-//!
 class PointSpreadFunctionGaussian : public PointSpreadFunction
 {
 private:
@@ -125,13 +123,10 @@ public:
     PointSpreadFunctionGaussian(float fwhm);
     PointSpreadFunctionGaussian(float fwhm_x, float fwhm_y, float pa);
     ~PointSpreadFunctionGaussian();
-    NDShape get_recommended_size(float step_x, float step_y) const final;
-    void as_image(int size_x, int size_y, float step_x, float step_y, float* data) const final;
-}; // class PointSpreadFunctionGaussian
+    NDShape get_size(float step_x, float step_y) const override final;
+    void as_image(float step_x, float step_y, int size_x, int size_y, float* data) const override final;
+};
 
-//!
-//! \brief The PointSpreadFunctionLorentzian class
-//!
 class PointSpreadFunctionLorentzian : public PointSpreadFunction
 {
 private:
@@ -142,13 +137,10 @@ public:
     PointSpreadFunctionLorentzian(float fwhm);
     PointSpreadFunctionLorentzian(float fwhm_x, float fwhm_y, float pa);
     ~PointSpreadFunctionLorentzian();
-    NDShape get_recommended_size(float step_x, float step_y) const final;
-    void as_image(int size_x, int size_y, float step_x, float step_y, float* data) const final;
-}; // class PointSpreadFunctionLorentzian
+    NDShape get_size(float step_x, float step_y) const override final;
+    void as_image(float step_x, float step_y, int size_x, int size_y, float* data) const override final;
+};
 
-//!
-//! \brief The PointSpreadFunctionMoffat class
-//!
 class PointSpreadFunctionMoffat : public PointSpreadFunction
 {
 private:
@@ -160,9 +152,9 @@ public:
     PointSpreadFunctionMoffat(float fwhm, float beta = 4.765f);
     PointSpreadFunctionMoffat(float fwhm_x, float fwhm_y, float pa, float beta = 4.765f);
     ~PointSpreadFunctionMoffat();
-    NDShape get_recommended_size(float step_x, float step_y) const final;
-    void as_image(int size_x, int size_y, float step_x, float step_y, float* data) const final;
-}; // class PointSpreadFunctionMoffat
+    NDShape get_size(float step_x, float step_y) const override final;
+    void as_image(float step_x, float step_y, int size_x, int size_y, float* data) const override final;
+};
 
 } // namespace gbkfit
 

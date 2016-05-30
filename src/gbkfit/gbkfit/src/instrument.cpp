@@ -4,11 +4,14 @@
 #include "gbkfit/ndarray_host.hpp"
 #include "gbkfit/spread_functions.hpp"
 
-
 namespace gbkfit
 {
 
-Instrument::Instrument(float step_x, float step_y, float step_z, PointSpreadFunction* psf, LineSpreadFunction* lsf)
+Instrument::Instrument(float step_x,
+                       float step_y,
+                       float step_z,
+                       PointSpreadFunction* psf,
+                       LineSpreadFunction* lsf)
     : m_step_x(step_x)
     , m_step_y(step_y)
     , m_step_z(step_z)
@@ -19,8 +22,6 @@ Instrument::Instrument(float step_x, float step_y, float step_z, PointSpreadFunc
 
 Instrument::~Instrument()
 {
-    delete m_psf;
-    delete m_lsf;
 }
 
 float Instrument::get_step_x(void) const
@@ -38,119 +39,105 @@ float Instrument::get_step_z(void) const
     return m_step_z;
 }
 
-NDShape Instrument::get_recommended_psf_size_spec(void) const
+NDShape Instrument::get_psf_size_spat(void) const
 {
-    return get_recommended_psf_size_spec(m_step_z);
+    return m_psf->get_size(m_step_x, m_step_y);
 }
 
-NDShape Instrument::get_recommended_psf_size_spat(void) const
+NDShape Instrument::get_psf_size_spec(void) const
 {
-    return get_recommended_psf_size_spat(m_step_x, m_step_y);
+    return m_lsf->get_size(m_step_z);
 }
 
-NDShape Instrument::get_recommended_psf_size_cube(void) const
+NDShape Instrument::get_psf_size_cube(void) const
 {
-    return get_recommended_psf_size_cube(m_step_x, m_step_y, m_step_z);
+    NDShape psf_shape = get_psf_size_spat();
+    NDShape lsf_shape = get_psf_size_spec();
+    return NDShape({psf_shape[0], psf_shape[1], lsf_shape[0]});
 }
 
-NDShape Instrument::get_recommended_psf_size_spec(float step) const
+NDShape Instrument::get_psf_size_spat(float step_x, float step_y) const
 {
-    return m_lsf->get_recommended_size(step);
+    return m_psf->get_size(step_x, step_y);
 }
 
-NDShape Instrument::get_recommended_psf_size_spat(float step_x, float step_y) const
+NDShape Instrument::get_psf_size_spec(float step_z) const
 {
-    return m_psf->get_recommended_size(step_x, step_y);
+    return m_lsf->get_size(step_z);
 }
 
-NDShape Instrument::get_recommended_psf_size_cube(float step_x, float step_y, float step_z) const
+NDShape Instrument::get_psf_size_cube(float step_x, float step_y, float step_z) const
 {
-    NDShape size_lsf = get_recommended_psf_size_spec(step_z);
-    NDShape size_psf = get_recommended_psf_size_spat(step_x, step_y);
-
-    return NDShape({size_psf[0], size_psf[1], size_lsf[0]});
+    NDShape psf_shape = get_psf_size_spat(step_x, step_y);
+    NDShape lsf_shape = get_psf_size_spec(step_z);
+    return NDShape({psf_shape[0], psf_shape[1], lsf_shape[0]});
 }
 
-NDArrayHost* Instrument::create_psf_spec_data(void) const
-{
-    return m_lsf->as_array(m_step_z);
-}
-
-NDArrayHost* Instrument::create_psf_spat_data(void) const
+std::unique_ptr<NDArrayHost> Instrument::create_psf_data_spat(void) const
 {
     return m_psf->as_image(m_step_x, m_step_y);
 }
 
-NDArrayHost* Instrument::create_psf_cube_data(void) const
+std::unique_ptr<NDArrayHost> Instrument::create_psf_data_spec(void) const
 {
-    NDArrayHost* spec_data = create_psf_spec_data();
-    NDArrayHost* spat_data = create_psf_spat_data();
-    NDArrayHost* cube_data = create_psf_cube_data(spec_data, spat_data);
-    delete spec_data;
-    delete spat_data;
+    return m_lsf->as_array(m_step_z);
+}
+
+std::unique_ptr<NDArrayHost> Instrument::create_psf_data_cube(void) const
+{
+    std::unique_ptr<NDArrayHost> spat_data = create_psf_data_spat();
+    std::unique_ptr<NDArrayHost> spec_data = create_psf_data_spec();
+    std::unique_ptr<NDArrayHost> cube_data = create_psf_data_cube(spat_data, spec_data);
     return cube_data;
 }
 
-NDArrayHost* Instrument::create_psf_spec_data(int size) const
+std::unique_ptr<NDArrayHost> Instrument::create_psf_data_spat(float step_x, float step_y) const
 {
-    return m_lsf->as_array(size, m_step_z);
+    return m_psf->as_image(step_x, step_y);
 }
 
-NDArrayHost* Instrument::create_psf_spat_data(int size_x, int size_y) const
+std::unique_ptr<NDArrayHost> Instrument::create_psf_data_spec(float step_z) const
 {
-    return m_psf->as_image(size_x, size_y, m_step_x, m_step_y);
+    return m_lsf->as_array(step_z);
 }
 
-NDArrayHost* Instrument::create_psf_cube_data(int size_x, int size_y, int size_z) const
+std::unique_ptr<NDArrayHost> Instrument::create_psf_data_cube(float step_x, float step_y, float step_z) const
 {
-    NDArrayHost* spec_data = create_psf_spec_data(size_z);
-    NDArrayHost* spat_data = create_psf_spat_data(size_x, size_y);
-    NDArrayHost* cube_data = create_psf_cube_data(spec_data, spat_data);
-    delete spec_data;
-    delete spat_data;
+    std::unique_ptr<NDArrayHost> spat_data = create_psf_data_spat(step_x, step_y);
+    std::unique_ptr<NDArrayHost> spec_data = create_psf_data_spec(step_z);
+    std::unique_ptr<NDArrayHost> cube_data = create_psf_data_cube(spat_data, spec_data);
     return cube_data;
 }
 
-NDArrayHost* Instrument::create_psf_cube_data(float step_x, float step_y, float step_z) const
+std::unique_ptr<NDArrayHost> Instrument::create_psf_data_spat(float step_x, float step_y, int size_x, int size_y) const
 {
-    NDArrayHost* spec_data = m_lsf->as_array(step_z);
-    NDArrayHost* spat_data = m_psf->as_image(step_x, step_y);
-    NDArrayHost* cube_data = create_psf_cube_data(spec_data, spat_data);
-    delete spec_data;
-    delete spat_data;
+    return m_psf->as_image(step_x, step_y, size_x, size_y);
+}
+
+std::unique_ptr<NDArrayHost> Instrument::create_psf_data_spec(float step_z, int size_z) const
+{
+    return m_lsf->as_array(step_z, size_z);
+}
+
+std::unique_ptr<NDArrayHost> Instrument::create_psf_data_cube(float step_x, float step_y, float step_z, int size_x, int size_y, int size_z) const
+{
+    std::unique_ptr<NDArrayHost> spat_data = create_psf_data_spat(step_x, step_y, size_x, size_y);
+    std::unique_ptr<NDArrayHost> spec_data = create_psf_data_spec(step_z, size_z);
+    std::unique_ptr<NDArrayHost> cube_data = create_psf_data_cube(spat_data, spec_data);
     return cube_data;
 }
 
-NDArrayHost* Instrument::create_psf_spec_data(int size, float step) const
+std::unique_ptr<NDArrayHost> Instrument::create_psf_data_cube(const std::unique_ptr<NDArrayHost>& data_spat,
+                                                              const std::unique_ptr<NDArrayHost>& data_spec) const
 {
-    return m_lsf->as_array(size, step);
-}
+    int size_x = data_spat->get_shape()[0];
+    int size_y = data_spat->get_shape()[1];
+    int size_z = data_spec->get_shape()[0];
 
-NDArrayHost* Instrument::create_psf_spat_data(int size_x, int size_y, float step_x, float step_y) const
-{
-    return m_psf->as_image(size_x, size_y, step_x, step_y);
-}
+    std::unique_ptr<NDArrayHost> cube_data = std::make_unique<NDArrayHost>(NDShape({size_x, size_y, size_z}));
 
-NDArrayHost* Instrument::create_psf_cube_data(int size_x, int size_y, int size_z, float step_x, float step_y, float step_z) const
-{
-    NDArrayHost* spec_data = create_psf_spec_data(size_z, step_z);
-    NDArrayHost* spat_data = create_psf_spat_data(size_x, size_y, step_x, step_y);
-    NDArrayHost* cube_data = create_psf_cube_data(spec_data, spat_data);
-    delete spec_data;
-    delete spat_data;
-    return cube_data;
-}
-
-NDArrayHost* Instrument::create_psf_cube_data(const NDArrayHost* spec_data, const NDArrayHost* spat_data) const
-{
-    int size_x = spat_data->get_shape()[0];
-    int size_y = spat_data->get_shape()[1];
-    int size_z = spec_data->get_shape()[0];
-
-    NDArrayHost* cube_data = new NDArrayHost({size_x, size_y, size_z});
-
-    const float* spec_data_raw = spec_data->get_host_ptr();
-    const float* spat_data_raw = spat_data->get_host_ptr();
+    const float* spec_data_raw = data_spec->get_host_ptr();
+    const float* spat_data_raw = data_spat->get_host_ptr();
     float* cube_data_raw = cube_data->get_host_ptr();
 
     for(int z = 0; z < size_z; ++z)
@@ -171,7 +158,5 @@ NDArrayHost* Instrument::create_psf_cube_data(const NDArrayHost* spec_data, cons
 
     return cube_data;
 }
-
-
 
 } // namespace gbkfit

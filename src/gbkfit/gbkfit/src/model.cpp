@@ -10,6 +10,13 @@ Model::Model(void)
 Model::~Model()
 {
 }
+/*
+const std::vector<int>& Model::get_shape(void) const
+{
+    return m_shape;
+}
+*/
+
 
 ModelFactory::ModelFactory(void)
 {

@@ -2,10 +2,9 @@
 #ifndef GBKFIT_STRING_UTIL_HPP
 #define GBKFIT_STRING_UTIL_HPP
 
-#include "gbkfit/prerequisites.hpp"
-
 #include <boost/lexical_cast.hpp>
 
+#include "gbkfit/prerequisites.hpp"
 
 namespace gbkfit {
 namespace string_util {
@@ -29,6 +28,12 @@ std::string to_string(const std::map<Tkey, Tvalue>& map)
     }
     stream << "]";
     return stream.str();
+}
+
+template<typename Target, typename Source>
+Target lexical_cast(const Source& value)
+{
+    return boost::lexical_cast<Target>(value);
 }
 
 } // namespace string_util

@@ -220,7 +220,7 @@ void write_to(const std::string& filename, const NDArray& data)
     long long nelem = shape.get_dim_length_product();
 
     // Get image dimension length.
-    std::copy(shape.get_as_vector().begin(),shape.get_as_vector().end(),naxes);
+    std::copy(shape.as_vector().begin(),shape.as_vector().end(),naxes);
 
     // Set the first pixel for each dimension (indices start from 1).
     std::fill_n(firstpix,naxis,1);

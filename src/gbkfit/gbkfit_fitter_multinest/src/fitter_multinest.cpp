@@ -1,8 +1,10 @@
 
-#include "gbkfit/fitters/multinest/fitter_factory_multinest.hpp"
-#include "gbkfit/fitters/multinest/fitter_multinest.hpp"
+#include "gbkfit/fitter/multinest/fitter_multinest.hpp"
+#include "gbkfit/fitter/multinest/fitter_multinest_factory.hpp"
 
 #include "gbkfit/dataset.hpp"
+#include "gbkfit/dmodel.hpp"
+#include "gbkfit/gmodel.hpp"
 #include "gbkfit/model.hpp"
 #include "gbkfit/ndarray_host.hpp"
 #include "gbkfit/parameters.hpp"
@@ -12,13 +14,15 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <multinest.h>
 
+#include "gbkfit/fitter_result.hpp"
+
 namespace gbkfit {
-namespace fitters {
+namespace fitter {
 namespace multinest {
 
 struct multinest_user_data
 {
-    gbkfit::Model* model;
+    const gbkfit::DModel* dmodel;
     std::vector<std::string> param_name;
     std::vector<bool> param_fixed;
     std::vector<float> param_value;
@@ -76,7 +80,7 @@ void multinest_callback_likelihood(double* cube, int& ndim, int& npars, double& 
     // Evaluate model with the current set of parameter values.
     //
 
-    std::map<std::string,NDArray*> model_data = udata->model->evaluate(param_map);
+    std::map<std::string,NDArrayHost*> model_data = udata->dmodel->evaluate(param_map);
 
     //
     // Calculate likelihood between the model and the (available) data.
@@ -179,12 +183,12 @@ FitterMultinest::~FitterMultinest()
 {
 }
 
-const std::string& FitterMultinest::get_type_name(void) const
+const std::string& FitterMultinest::get_type(void) const
 {
-    return FitterFactoryMultinest::FACTORY_TYPE_NAME;
+    return FitterMultinestFactory::FACTORY_TYPE;
 }
 
-void FitterMultinest::fit(Model* model, const std::map<std::string,Dataset*>& datasets, Parameters& params_info) const
+FitterResult* FitterMultinest::fit(const DModel* dmodel, const Parameters* params, const std::vector<Dataset*>& datasets) const
 {
     //
     // Perform the necessary memory allocations and copy the datasets on the host.
@@ -200,13 +204,13 @@ void FitterMultinest::fit(Model* model, const std::map<std::string,Dataset*>& da
     for(auto& dataset : datasets)
     {
         // Get the dataset name and store it in a vector, we will use it later for convenience.
-        std::string dataset_name = std::get<0>(dataset);
+        std::string dataset_name = dataset->get_name();
         dataset_names.push_back(dataset_name);
 
         // Get input data pointer shortcuts for convenience.
-        const NDArray* input_data_dat = std::get<1>(dataset)->get_data();
-        const NDArray* input_data_msk = std::get<1>(dataset)->get_mask();
-        const NDArray* input_data_err = std::get<1>(dataset)->get_errors();
+        const NDArray* input_data_dat = dataset->get_data();
+        const NDArray* input_data_msk = dataset->get_mask();
+        const NDArray* input_data_err = dataset->get_errors();
 
         // Allocate host memory for the input data and the model.
         data_map_dat[dataset_name] = new NDArrayHost(input_data_dat->get_shape());
@@ -224,7 +228,7 @@ void FitterMultinest::fit(Model* model, const std::map<std::string,Dataset*>& da
     // Get model parameters. Always use this order for the parameters!
     //
 
-    std::vector<std::string> param_names = model->get_parameter_names();
+    std::vector<std::string> param_names = dmodel->get_galaxy_model()->get_param_names();
 
     //
     //  build arrays with the free parameters only
@@ -247,17 +251,17 @@ void FitterMultinest::fit(Model* model, const std::map<std::string,Dataset*>& da
     {
         std::string param_name = param_names[i];
 
-        udata.param_fixed[i] = params_info.get_parameter(param_name).get<bool>("fixed",0);
+        udata.param_fixed[i] = params->get(param_name).get<bool>("fixed",0);
 
         if(!udata.param_fixed[i])
         {
-            udata.param_min[i] = params_info.get_parameter(param_name).get<float>("min");
-            udata.param_max[i] = params_info.get_parameter(param_name).get<float>("max");
+            udata.param_min[i] = params->get(param_name).get<float>("min");
+            udata.param_max[i] = params->get(param_name).get<float>("max");
             free_param_counter++;
         }
         else
         {
-            udata.param_value[i] = params_info.get_parameter(param_name).get<float>("value");
+            udata.param_value[i] = params->get(param_name).get<float>("value");
             udata.param_mean[i] = udata.param_value[i];
             udata.param_stddev[i] = 0.0;
             udata.param_best[i] = udata.param_value[i];
@@ -265,7 +269,7 @@ void FitterMultinest::fit(Model* model, const std::map<std::string,Dataset*>& da
         }
     }
 
-    udata.model = model;
+    udata.dmodel = dmodel;
     udata.param_name = param_names;
     udata.dataset_names = dataset_names;
     udata.data_map_dat = data_map_dat;
@@ -292,11 +296,11 @@ void FitterMultinest::fit(Model* model, const std::map<std::string,Dataset*>& da
     int* pWrap = new int[ndims];        // which parameters to have periodic boundary conditions?
     for(int i = 0; i < ndims; i++)
         pWrap[i] = 0;
-    char root[100] = "out";             // root for output files
+    char root[100] = "multinest_";             // root for output files
     int seed = -1;                      // random no. generator seed, if < 0 then take the seed from system clock
     int fb = 0;                         // need feedback on standard output?
     int resume = 0;                     // resume from a previous job?
-    int outfile = 0;                    // write output files?
+    int outfile = 1;                    // write output files?
     int initMPI = 0;                    // initialize MPI routines?, relevant only if compiling with MPI
                                         // set it to F if you want your main program to handle MPI initialization
     double logZero = -3.40282e+37;             // points with loglike < logZero will be ignored by MultiNest
@@ -332,34 +336,55 @@ void FitterMultinest::fit(Model* model, const std::map<std::string,Dataset*>& da
     // Extract fitted model parameters.
     //
 
-    std::cout << "Fitting results:" << std::endl;
-    for (std::size_t i = 0; i < param_names.size(); ++i)
+    std::vector<bool> param_fixed_flags;
+    std::vector<std::vector<float>> param_values_list;
+    std::vector<std::vector<float>> param_errors_list;
+
+    for(std::size_t i = 0; i < param_names.size(); ++i)
     {
-        std::string param_name = udata.param_name[i];
-        float param_mean   = udata.param_mean[i];
-        float param_stddev = udata.param_stddev[i];
-        float param_best   = udata.param_best[i];
-        float param_map    = udata.param_map[i];
-
-        std::cout << std::fixed
-                  << std::setprecision(2)
-                  << "Fitted param:"
-                  << " name="   << std::setw(4) << param_name   << ","
-                  << " fixed="  << std::setw(2) << udata.param_fixed[i] << ","
-                  << " mean="   << std::setw(8) << param_mean   << ","
-                  << " stddev=" << std::setw(8) << param_stddev << ","
-                  << " best="   << std::setw(8) << param_best   << ","
-                  << " map="    << std::setw(8) << param_map    << std::endl;
-
-        if (udata.param_fixed[i]) {
-            params_info.get_parameter(param_name).add("best", param_best);
-        } else {
-            params_info.get_parameter(param_name).add("best", param_best);
-            params_info.get_parameter(param_name).add("mean", param_mean);
-            params_info.get_parameter(param_name).add("stddev", param_stddev);
-            params_info.get_parameter(param_name).add("map", param_map);
-        }
+        param_fixed_flags.push_back(udata.param_fixed[i]);
     }
+
+    for(std::size_t i = 0; i < 1; ++i)
+    {
+        std::vector<float> param_values;
+        std::vector<float> param_errors;
+
+        for(std::size_t j = 0; j < param_names.size(); ++j)
+        {
+            param_values.push_back(udata.param_best[j]);
+            param_errors.push_back(udata.param_stddev[j]);
+        }
+
+        param_values_list.push_back(param_values);
+        param_errors_list.push_back(param_errors);
+    }
+
+
+
+
+    std::vector<NDArray*> dataset_data;
+    std::vector<NDArray*> dataset_errors;
+    std::vector<NDArray*> dataset_masks;
+
+    for(auto& dataset : datasets)
+    {
+        dataset_data.push_back(dataset->get_data());
+        dataset_errors.push_back(dataset->get_errors());
+        dataset_masks.push_back(dataset->get_mask());
+    }
+
+    FitterResult* result = new FitterResult(dmodel,
+                                            dataset_names,
+                                            dataset_data,
+                                            dataset_errors,
+                                            dataset_masks,
+                                            param_fixed_flags,
+                                            param_values_list,
+                                            param_errors_list);
+
+
+
 
     //
     // Perform clean up
@@ -370,6 +395,16 @@ void FitterMultinest::fit(Model* model, const std::map<std::string,Dataset*>& da
     for(auto& data : data_map_dat) delete std::get<1>(data);
     for(auto& data : data_map_msk) delete std::get<1>(data);
     for(auto& data : data_map_err) delete std::get<1>(data);
+
+    //FitterResult* result = new FitterResult(fitter, model, data);
+
+    //result->add_mode(parameters, model, residual);
+
+
+
+
+
+    return result;
 }
 
 } // namespace multinest

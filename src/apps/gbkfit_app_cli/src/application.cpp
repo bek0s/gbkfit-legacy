@@ -1,46 +1,72 @@
 
 #include "application.hpp"
 
+#include <boost/program_options.hpp>
+
 #include "gbkfit/core.hpp"
 #include "gbkfit/dataset.hpp"
+#include "gbkfit/dmodel.hpp"
+#include "gbkfit/fitter.hpp"
 #include "gbkfit/fits.hpp"
-#include "gbkfit/instrument.hpp"
+#include "gbkfit/fitter_result.hpp"
+#include "gbkfit/gmodel.hpp"
+#include "gbkfit/json.hpp"
 #include "gbkfit/ndarray_host.hpp"
-#include "gbkfit/parameters.hpp"
-#include "gbkfit/utility.hpp"
 
-#ifdef GBKFIT_BUILD_MODEL_MODEL01_OMP
-#include "gbkfit/models/model01/model_model01_omp.hpp"
+#ifdef GBKFIT_BUILD_DMODEL_MMAPS_CUDA
+#include "gbkfit/dmodel/mmaps/mmaps_cuda.hpp"
+#include "gbkfit/dmodel/mmaps/mmaps_cuda_factory.hpp"
 #endif
 
-#ifdef GBKFIT_BUILD_MODEL_MODEL01_CUDA
-#include "gbkfit/models/model01/model_model01_cuda.hpp"
+#ifdef GBKFIT_BUILD_DMODEL_MMAPS_OMP
+#include "gbkfit/dmodel/mmaps/mmaps_omp.hpp"
+#include "gbkfit/dmodel/mmaps/mmaps_omp_factory.hpp"
+#endif
+
+#ifdef GBKFIT_BUILD_DMODEL_SCUBE_CUDA
+#include "gbkfit/dmodel/scube/scube_cuda.hpp"
+#include "gbkfit/dmodel/scube/scube_cuda_factory.hpp"
+#endif
+
+#ifdef GBKFIT_BUILD_GMODEL_GMODEL01_CUDA
+#include "gbkfit/gmodel/gmodel01/gmodel01_cuda.hpp"
+#include "gbkfit/gmodel/gmodel01/gmodel01_cuda_factory.hpp"
+#endif
+
+#ifdef GBKFIT_BUILD_GMODEL_GMODEL01_OMP
+#include "gbkfit/gmodel/gmodel01/gmodel01_omp.hpp"
+#include "gbkfit/gmodel/gmodel01/gmodel01_omp_factory.hpp"
+#endif
+
+#ifdef GBKFIT_BUILD_DMODEL_SCUBE_OMP
+#include "gbkfit/dmodel/scube/scube_omp.hpp"
+#include "gbkfit/dmodel/scube/scube_omp_factory.hpp"
 #endif
 
 #ifdef GBKFIT_BUILD_FITTER_MPFIT
-#include "gbkfit/fitters/mpfit/fitter_mpfit.hpp"
-#include "gbkfit/fitters/mpfit/fitter_factory_mpfit.hpp"
+#include "gbkfit/fitter/mpfit/fitter_mpfit.hpp"
+#include "gbkfit/fitter/mpfit/fitter_mpfit_factory.hpp"
 #endif
 
 #ifdef GBKFIT_BUILD_FITTER_MULTINEST
-#include "gbkfit/fitters/multinest/fitter_multinest.hpp"
-#include "gbkfit/fitters/multinest/fitter_factory_multinest.hpp"
+#include "gbkfit/fitter/multinest/fitter_multinest.hpp"
+#include "gbkfit/fitter/multinest/fitter_multinest_factory.hpp"
 #endif
 
-#include <boost/program_options.hpp>
-#include <boost/property_tree/xml_parser.hpp>
-#include <boost/property_tree/json_parser.hpp>
-
+#include "gbkfit/instrument.hpp"
+#include "gbkfit/spread_functions.hpp"
 
 namespace gbkfit_app_cli {
 
-const std::string Application::DEFAULT_CONFIG_FILE = "../../data/configs/gbkfit_config.xml";
-const std::string Application::DEFAULT_GALAXY_NAME = "unnamed_galaxy";
+const std::string Application::DEFAULT_CONFIG_FILE = "../../data/configs/gbkfit_config.json";
+const std::string Application::DEFAULT_OUTPUT_DIR = "output";
 
 Application::Application(void)
     : m_config_file(DEFAULT_CONFIG_FILE)
+    , m_output_dir(DEFAULT_OUTPUT_DIR)
     , m_core(nullptr)
-    , m_model(nullptr)
+    , m_dmodel(nullptr)
+    , m_gmodel(nullptr)
     , m_fitter(nullptr)
     , m_parameters(nullptr)
     , m_instrument(nullptr)
@@ -56,6 +82,7 @@ bool Application::process_program_options(int argc, char** argv)
     boost::program_options::options_description po_desc("options");
     po_desc.add_options()
             ("config", boost::program_options::value<std::string>(&m_config_file), "")
+            ("output", boost::program_options::value<std::string>(&m_output_dir),  "")
             ("help",                                                               "");
 
     boost::program_options::variables_map po_vm;
@@ -77,13 +104,6 @@ bool Application::process_program_options(int argc, char** argv)
     return true;
 }
 
-
-void set_key(const std::string* str)
-{
-
-}
-
-
 bool Application::initialize(void)
 {
     std::cout << "initialization started" << std::endl;
@@ -98,35 +118,55 @@ bool Application::initialize(void)
     // Create factories.
     //
 
-    std::cout << "creating model factories..." << std::endl;
-    #ifdef GBKFIT_BUILD_MODEL_MODEL01_OMP
-    m_model_factories.push_back(new gbkfit::models::model01::model_factory_model01_omp());
+    std::cout << "creating dmodel factories..." << std::endl;
+    #ifdef GBKFIT_BUILD_DMODEL_MMAPS_CUDA
+    m_dmodel_factories.push_back(new gbkfit::dmodel::mmaps::MMapsCudaFactory());
     #endif
-    #ifdef GBKFIT_BUILD_MODEL_MODEL01_CUDA
-    m_model_factories.push_back(new gbkfit::models::model01::model_factory_model01_cuda());
+    #ifdef GBKFIT_BUILD_DMODEL_MMAPS_OMP
+    m_dmodel_factories.push_back(new gbkfit::dmodel::mmaps::MMapsOmpFactory());
+    #endif
+    #ifdef GBKFIT_BUILD_DMODEL_SCUBE_CUDA
+    m_dmodel_factories.push_back(new gbkfit::dmodel::scube::SCubeCudaFactory());
+    #endif
+    #ifdef GBKFIT_BUILD_DMODEL_SCUBE_OMP
+    m_dmodel_factories.push_back(new gbkfit::dmodel::scube::SCubeOmpFactory());
+    #endif
+
+    std::cout << "creating gmodel factories..." << std::endl;
+    #ifdef GBKFIT_BUILD_GMODEL_GMODEL01_CUDA
+    m_gmodel_factories.push_back(new gbkfit::gmodel::gmodel01::GModel01CudaFactory());
+    #endif
+    #ifdef GBKFIT_BUILD_GMODEL_GMODEL01_OMP
+    m_gmodel_factories.push_back(new gbkfit::gmodel::gmodel01::GModel01OmpFactory());
     #endif
 
     std::cout << "creating fitter factories..." << std::endl;
     #ifdef GBKFIT_BUILD_FITTER_MPFIT
-    m_fitter_factories.push_back(new gbkfit::fitters::mpfit::FitterFactoryMpfit());
+    m_fitter_factories.push_back(new gbkfit::fitter::mpfit::FitterMpfitFactory());
     #endif
     #ifdef GBKFIT_BUILD_FITTER_MULTINEST
-    m_fitter_factories.push_back(new gbkfit::fitters::multinest::FitterFactoryMultinest());
+    m_fitter_factories.push_back(new gbkfit::fitter::multinest::FitterMultinestFactory());
     #endif
 
     //
     //  Add factories to the gbkfit core.
     //
 
-    std::cout << "registering model factories..." << std::endl;
-    for(std::size_t i = 0; i < m_model_factories.size(); ++i) {
-        std::cout << "registering model factory '" << m_model_factories[i]->get_type_name() << "'..." << std::endl;
-        m_core->add_model_factory(m_model_factories[i]);
+    std::cout << "registering dmodel factories..." << std::endl;
+    for(std::size_t i = 0; i < m_dmodel_factories.size(); ++i) {
+        std::cout << "registering dmodel factory '" << m_dmodel_factories[i]->get_type() << "'..." << std::endl;
+        m_core->add_dmodel_factory(m_dmodel_factories[i]);
+    }
+
+    std::cout << "registering gmodel factories..." << std::endl;
+    for(std::size_t i = 0; i < m_gmodel_factories.size(); ++i) {
+        std::cout << "registering gmodel factory '" << m_gmodel_factories[i]->get_type() << "'..." << std::endl;
+        m_core->add_gmodel_factory(m_gmodel_factories[i]);
     }
 
     std::cout << "registering fitter factories..." << std::endl;
     for(std::size_t i = 0; i < m_fitter_factories.size(); ++i) {
-        std::cout << "registering fitter factory '" << m_fitter_factories[i]->get_type_name() << "'..." << std::endl;
+        std::cout << "registering fitter factory '" << m_fitter_factories[i]->get_type() << "'..." << std::endl;
         m_core->add_fitter_factory(m_fitter_factories[i]);
     }
 
@@ -135,43 +175,49 @@ bool Application::initialize(void)
     //
 
     std::cout << "reading configuration..." << std::endl;
-    boost::property_tree::ptree ptree_config;
-    boost::property_tree::read_xml(m_config_file, ptree_config, boost::property_tree::xml_parser::trim_whitespace);
+
+    std::ifstream config_stream(m_config_file);
+    nlohmann::json config_root = nlohmann::json::parse(config_stream);
 
     //
     // Create subconfiguations.
     //
 
     std::cout << "creating subconfigurations..." << std::endl;
-    std::stringstream datasets_info;
-    boost::property_tree::write_xml(datasets_info,ptree_config.get_child("gbkfit.datasets"));
-    std::stringstream instrument_info;
-    boost::property_tree::write_xml(instrument_info, ptree_config.get_child("gbkfit.instrument"));
-    std::stringstream model_config_info;
-    boost::property_tree::write_xml(model_config_info, ptree_config.get_child("gbkfit.model_config"));
-    std::stringstream fitter_config_info;
-    boost::property_tree::write_xml(fitter_config_info, ptree_config.get_child("gbkfit.fitter_config"));
-    std::stringstream params_config_info;
-    boost::property_tree::write_xml(params_config_info, ptree_config.get_child("gbkfit.params_config"));
+
+    std::string config_datasets   = config_root.at("datasets").dump();
+    std::string config_instrument = config_root.at("instrument").dump();
+
+    std::string config_dmodel = config_root.at("dmodel").dump();
+    std::string config_gmodel = config_root.at("gmodel").dump();
+    std::string config_fitter = config_root.at("fitter").dump();
+    std::string config_parameters = config_root.at("parameters").dump();
 
     //
     // Create the components.
     //
 
     std::cout << "setting up datasets..." << std::endl;
-    m_datasets = m_core->create_datasets(datasets_info.str());
+    m_datasets = m_core->create_datasets(config_datasets);
 
     std::cout << "setting up instrument..." << std::endl;
-    m_instrument = m_core->create_instrument(instrument_info.str());
-
-    std::cout << "setting up model..." << std::endl;
-    m_model = m_core->create_model(model_config_info.str());
+    m_instrument = m_core->create_instrument(config_instrument);
 
     std::cout << "setting up fitter..." << std::endl;
-    m_fitter = m_core->create_fitter(fitter_config_info.str());
+    m_fitter = m_core->create_fitter(config_fitter);
 
     std::cout << "setting up parameters..." << std::endl;
-    m_parameters = m_core->create_parameters(params_config_info.str());
+    m_parameters = m_core->create_parameters(config_parameters);
+
+    std::cout << "setting up dmodel..." << std::endl;
+    std::vector<int> shape = m_datasets[0]->get_data()->get_shape().as_vector();
+    m_dmodel = m_core->create_dmodel(config_dmodel, shape, m_instrument);
+
+    std::cout << "setting up gmodel..." << std::endl;
+    m_gmodel = m_core->create_gmodel(config_gmodel);
+
+    m_dmodel->set_galaxy_model(m_gmodel);
+
 
     //
     // All done!
@@ -188,157 +234,110 @@ void Application::shutdown(void)
 
     delete m_core;
 
-    for(std::size_t i = 0; i < m_model_factories.size(); ++i) {
-        delete m_model_factories[i];
-    }
+    for(auto& factory : m_fitter_factories)
+        delete factory;
 
-    for(std::size_t i = 0; i < m_fitter_factories.size(); ++i) {
-        delete m_fitter_factories[i];
-    }
+    for(auto& factory : m_dmodel_factories)
+        delete factory;
 
-    delete m_model;
-    delete m_fitter;
-    delete m_parameters;
-    delete m_instrument;
+    for(auto& factory : m_gmodel_factories)
+        delete factory;
 
     std::cout << "shutdown completed" << std::endl;
 }
 
+void test_models(int hardware_mode, const std::string& output_prefix)
+{
+    gbkfit::PointSpreadFunction* psf = nullptr;
+    gbkfit::LineSpreadFunction* lsf = nullptr;
+    psf = new gbkfit::PointSpreadFunctionGaussian(2.5);
+    lsf = new gbkfit::LineSpreadFunctionGaussian(30);
+    gbkfit::Instrument* instrument = new gbkfit::Instrument(1, 1, 20, psf, lsf);
+
+    std::map<std::string, float> params = {
+        {"i0", 1},
+        {"r0", 10},
+        {"xo", 24.5},
+        {"yo", 24.5},
+        {"pa", 45},
+        {"incl", 45},
+        {"rt", 4},
+        {"vt", 200},
+        {"vsys", 0},
+        {"vsig", 50},
+        {"a", 1},
+        {"b", 1}
+    };
+
+    gbkfit::GModel* gmodel = nullptr;
+    gbkfit::DModel* dmodel_scube = nullptr;
+    gbkfit::DModel* dmodel_mmaps = nullptr;
+
+    if      (hardware_mode == 0)
+    {
+        gmodel = new gbkfit::gmodel::gmodel01::GModel01Omp(
+                gbkfit::gmodel::gmodel01::FlxProfileType::exponential,
+                gbkfit::gmodel::gmodel01::VelProfileType::arctan);
+
+        dmodel_scube = new gbkfit::dmodel::scube::SCubeOmp(
+                49, 49, 41, 1, 1, 1, instrument);
+
+        dmodel_mmaps = new gbkfit::dmodel::mmaps::MMapsOmp(
+                49, 49, 1, 1, instrument);
+    }
+    else if (hardware_mode == 1)
+    {
+        gmodel = new gbkfit::gmodel::gmodel01::GModel01Cuda(
+                gbkfit::gmodel::gmodel01::FlxProfileType::exponential,
+                gbkfit::gmodel::gmodel01::VelProfileType::arctan);
+
+        dmodel_scube = new gbkfit::dmodel::scube::SCubeCuda(
+                49, 49, 41, 1, 1, 1, instrument);
+
+        dmodel_mmaps = new gbkfit::dmodel::mmaps::MMapsCuda(
+                49, 49, 1, 1, instrument);
+    }
+
+    dmodel_scube->set_galaxy_model(gmodel);
+    dmodel_mmaps->set_galaxy_model(gmodel);
+
+    std::map<std::string, gbkfit::NDArrayHost*> scube_data = dmodel_scube->evaluate(params);
+    gbkfit::fits::write_to("!"+output_prefix+"_flxcube.fits", *scube_data.at("flxcube"));
+
+    std::map<std::string, gbkfit::NDArrayHost*> mmaps_data = dmodel_mmaps->evaluate(params);
+    gbkfit::fits::write_to("!"+output_prefix+"_flxmap.fits", *mmaps_data.at("flxmap"));
+    gbkfit::fits::write_to("!"+output_prefix+"_sigmap.fits", *mmaps_data.at("sigmap"));
+    gbkfit::fits::write_to("!"+output_prefix+"_velmap.fits", *mmaps_data.at("velmap"));
+
+    delete gmodel;
+    delete dmodel_scube;
+    delete dmodel_mmaps;
+    delete instrument;
+    delete psf;
+    delete lsf;
+}
+
 void Application::run(void)
 {
-    std::cout << "main execution path started" << std::endl;
 
-    // Initialize model.
-    int model_size_x = m_datasets.begin()->second->get_data()->get_shape()[0];
-    int model_size_y = m_datasets.begin()->second->get_data()->get_shape()[1];
-    int model_size_z = 201;
-    m_model->initialize(model_size_x,model_size_y,model_size_z,m_instrument);
+#if 0
+    test_models(0, "omp");
+    test_models(1, "cuda");
+#endif
+
+    std::cout << "main execution path started" << std::endl;
 
     //
     // Fit!
     //
 
     std::cout << "fitting started" << std::endl;
-    m_fitter->fit(m_model,m_datasets,*m_parameters);
+    gbkfit::FitterResult* result = m_fitter->fit(m_dmodel,m_parameters,m_datasets);
     std::cout << "fitting complete" << std::endl;
 
-    //
-    // Evaluate model with best fit parameters.
-    //
 
-    std::map<std::string, float> params;
-    for(auto& param_name : m_model->get_parameter_names()) {
-        params.emplace(param_name, m_parameters->get_parameter(param_name).get<float>("best"));
-    }
-
-    std::map<std::string, gbkfit::NDArray*> model_data = m_model->evaluate(params);
-
-    float* velmap_mdl = model_data["velmap"]->map();
-    float* sigmap_mdl = model_data["sigmap"]->map();
-
-    float* velmap_data_d = m_datasets["velmap"]->get_data()->map();
-    float* velmap_data_e = m_datasets["velmap"]->get_errors()->map();
-    float* velmap_data_m = m_datasets["velmap"]->get_mask()->map();
-
-    float* sigmap_data_d = m_datasets["sigmap"]->get_data()->map();
-    float* sigmap_data_e = m_datasets["sigmap"]->get_errors()->map();
-    float* sigmap_data_m = m_datasets["sigmap"]->get_mask()->map();
-
-
-    int dof = 0;
-    float chi2 = 0;
-    float chi2_red = 0;
-    for(int i = 0; i < model_size_x*model_size_y; ++i)
-    {
-        float vel_m = velmap_data_m[i];
-        float sig_m = sigmap_data_m[i];
-
-        if (vel_m > 0) {
-            float residual = (velmap_data_d[i] - velmap_mdl[i]) / velmap_data_e[i];
-            chi2 += (residual*residual);
-            dof++;
-        }
-
-        if (sig_m > 0) {
-            float residual = (sigmap_data_d[i] - sigmap_mdl[i]) / sigmap_data_e[i];
-            chi2 += (residual*residual);
-            dof++;
-        }
-    }
-
-    chi2_red = chi2 / dof;
-
-    std::cout << "chi2: " << chi2 << std::endl
-              << "chi2_red: " << chi2_red << std::endl;
-    /*
-    model_data["velmap"]->unmap();
-    model_data["sigmap"]->unmap();
-    m_datasets["velmap"]->get_data()->unmap();
-    m_datasets["sigmap"]->get_data()->unmap();
-    */
-
-    //
-    // Output results
-    //
-
-    boost::property_tree::ptree ptree_results;
-
-    std::vector<std::string> param_options = { "name", "best", "mean", "stddev", "map" };
-
-#if 0
-    for(auto& param_name : m_model->get_parameter_names()) {
-        boost::property_tree::ptree ptree_parameter;
-        for(auto& option_name : param_options) {
-            if (m_parameters->get_parameter(param_name).has(option_name)) {
-                ptree_parameter.add("<xmlattr>." + option_name, m_parameters->get_parameter(param_name).get<std::string>(option_name));
-            }
-        }
-        ptree_results.add_child("gbkfit.results.parameters.parameter", ptree_parameter);
-    }
-    boost::property_tree::xml_writer_settings<std::string> settings(' ', 2);
-    boost::property_tree::write_xml("gbkfit_results.xml", ptree_results, std::locale(), settings);
-
-#else
-
-    boost::property_tree::ptree ptree_array;
-    for(auto& param_name : m_model->get_parameter_names())
-    {
-        boost::property_tree::ptree ptree_parameter;
-        for(auto& option_name : param_options)
-        {
-            if (m_parameters->get_parameter(param_name).has(option_name))
-            {
-                ptree_parameter.put(option_name, m_parameters->get_parameter(param_name).get<std::string>(option_name));
-            }
-
-        }
-        ptree_array.push_back(std::make_pair("", ptree_parameter));
-    }
-
-    ptree_results.add_child("parameters", ptree_array);
-
-    boost::property_tree::write_json("gbkfit_results.json", ptree_results, std::locale(), true);
-
-#endif
-
-    // Write data products to disk.
-    #if 1
-//  gbkfit::fits::write_to("!flxcube_up.fits",*model_data["flxcube_up"]);
-//  gbkfit::fits::write_to("!psfcube_up.fits",*model_data["psfcube_up"]);
-//  gbkfit::fits::write_to("!psfcube_u.fits",*model_data["psfcube_u"]);
-    gbkfit::fits::write_to("!psfcube.fits",*model_data["psfcube"]);
-    gbkfit::fits::write_to("!flxcube_mdl.fits",*model_data["flxcube"]);
-    gbkfit::fits::write_to("!flxmap_mdl.fits",*model_data["flxmap"]);
-    gbkfit::fits::write_to("!velmap_mdl.fits",*model_data["velmap"]);
-    gbkfit::fits::write_to("!sigmap_mdl.fits",*model_data["sigmap"]);
-
-    /*
-    gbkfit::fits::write_to("!" + m_galaxy_id + "_velmap_res.fits",*resid_data_velmap);
-    gbkfit::fits::write_to("!" + m_galaxy_id + "_sigmap_res.fits",*resid_data_sigmap);
-    gbkfit::fits::write_to("!" + m_galaxy_id + "_velmap_res_w.fits",*resid_data_velmap_err);
-    gbkfit::fits::write_to("!" + m_galaxy_id + "_sigmap_res_w.fits",*resid_data_sigmap_err);
-    */
-    #endif
+    std::cout << result->to_string() << std::endl;
+    result->save("results.json");
 
     //
     //  Done!

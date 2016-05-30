@@ -47,23 +47,45 @@ LineSpreadFunction::~LineSpreadFunction()
 {
 }
 
-NDArrayHost* LineSpreadFunction::as_array(float step) const
+std::unique_ptr<NDArrayHost> LineSpreadFunction::as_array(float step) const
 {
-    NDShape size = get_recommended_size(step);
-    return as_array(size[0],step);
+    NDShape size = get_size(step);
+    return as_array(step, size[0]);
 }
 
-NDArrayHost* LineSpreadFunction::as_array(int size, float step) const
+std::unique_ptr<NDArrayHost> LineSpreadFunction::as_array(float step, int size) const
 {
-    NDArrayHost* data = new NDArrayHost({size});
-    as_array(size, step, data->get_host_ptr());
+    std::unique_ptr<NDArrayHost> data = std::make_unique<NDArrayHost>(NDShape({size}));
+    as_array(step, size, data->get_host_ptr());
     return data;
 }
 
-LineSpreadFunctionArray::LineSpreadFunctionArray(float* data, int size, float step)
+LineSpreadFunctionNone::LineSpreadFunctionNone(void)
+{
+}
+
+LineSpreadFunctionNone::~LineSpreadFunctionNone()
+{
+}
+
+NDShape LineSpreadFunctionNone::get_size(float step) const
+{
+    (void)step;
+    return NDShape({1});
+}
+
+void LineSpreadFunctionNone::as_array(float step, int size, float* data) const
+{
+    (void)step;
+    std::fill_n(data, size, 0);
+    int idx = size/2;
+    data[idx] = 1;
+}
+
+LineSpreadFunctionArray::LineSpreadFunctionArray(const float* data, float step, int size)
     : m_data(nullptr)
-    , m_size(size)
     , m_step(step)
+    , m_size(size)
 {
     m_data = new float[m_size];
     std::copy(data, data+size, m_data);
@@ -74,7 +96,7 @@ LineSpreadFunctionArray::~LineSpreadFunctionArray()
     delete [] m_data;
 }
 
-NDShape LineSpreadFunctionArray::get_recommended_size(float step) const
+NDShape LineSpreadFunctionArray::get_size(float step) const
 {
     if (step != m_step) {
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
@@ -82,7 +104,7 @@ NDShape LineSpreadFunctionArray::get_recommended_size(float step) const
     return NDShape({m_size});
 }
 
-void LineSpreadFunctionArray::as_array(int size, float step, float* data) const
+void LineSpreadFunctionArray::as_array(float step, int size, float* data) const
 {
     if (size != m_size) {
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
@@ -102,7 +124,7 @@ LineSpreadFunctionGaussian::~LineSpreadFunctionGaussian()
 {
 }
 
-void LineSpreadFunctionGaussian::as_array(int size, float step, float* data) const
+void LineSpreadFunctionGaussian::as_array(float step, int size, float* data) const
 {
     float sigma = math::gaussian_sigma_from_fwhm(m_fwhm);
 
@@ -115,7 +137,7 @@ void LineSpreadFunctionGaussian::as_array(int size, float step, float* data) con
     evaluate_data_1d(data, size, step, eval_func);
 }
 
-NDShape LineSpreadFunctionGaussian::get_recommended_size(float step) const
+NDShape LineSpreadFunctionGaussian::get_size(float step) const
 {
     return NDShape({util_num::roundu_odd(5*m_fwhm/step)});
 }
@@ -129,12 +151,12 @@ LineSpreadFunctionLorentzian::~LineSpreadFunctionLorentzian()
 {
 }
 
-NDShape LineSpreadFunctionLorentzian::get_recommended_size(float step) const
+NDShape LineSpreadFunctionLorentzian::get_size(float step) const
 {
     return NDShape({util_num::roundu_odd(5*m_fwhm/step)});
 }
 
-void LineSpreadFunctionLorentzian::as_array(int size, float step, float* data) const
+void LineSpreadFunctionLorentzian::as_array(float step, int size, float* data) const
 {
     float gamma = math::lorentzian_gamma_from_fwhm(m_fwhm);
 
@@ -157,12 +179,12 @@ LineSpreadFunctionMoffat::~LineSpreadFunctionMoffat()
 {
 }
 
-NDShape LineSpreadFunctionMoffat::get_recommended_size(float step) const
+NDShape LineSpreadFunctionMoffat::get_size(float step) const
 {
     return NDShape({util_num::roundu_odd(5*m_fwhm/step)});
 }
 
-void LineSpreadFunctionMoffat::as_array(int size, float step, float *data) const
+void LineSpreadFunctionMoffat::as_array(float step, int size, float *data) const
 {
     float alpha = math::moffat_alpha_from_beta_and_fwhm(m_beta, m_fwhm);
 
@@ -184,25 +206,49 @@ PointSpreadFunction::~PointSpreadFunction()
 {
 }
 
-NDArrayHost* PointSpreadFunction::as_image(float step_x, float step_y) const
+std::unique_ptr<NDArrayHost> PointSpreadFunction::as_image(float step_x, float step_y) const
 {
-    NDShape shape = get_recommended_size(step_x, step_y);
-    return as_image(shape[0], shape[1], step_x, step_y);
+    NDShape shape = get_size(step_x, step_y);
+    return as_image(step_x, step_y, shape[0], shape[1]);
 }
 
-NDArrayHost* PointSpreadFunction::as_image(int size_x, int size_y, float step_x, float step_y) const
+std::unique_ptr<NDArrayHost> PointSpreadFunction::as_image(float step_x, float step_y, int size_x, int size_y) const
 {
-    NDArrayHost* data = new NDArrayHost({size_x, size_y});
-    as_image(size_x, size_y, step_x, step_y, data->get_host_ptr());
+    std::unique_ptr<NDArrayHost> data = std::make_unique<NDArrayHost>(NDShape({size_x, size_y}));
+    as_image(step_x, step_y, size_x, size_y, data->get_host_ptr());
     return data;
 }
 
-PointSpreadFunctionImage::PointSpreadFunctionImage(float* data, int size_x, int size_y, float step_x, float step_y)
+PointSpreadFunctionNone::PointSpreadFunctionNone(void)
+{
+}
+
+PointSpreadFunctionNone::~PointSpreadFunctionNone()
+{
+}
+
+NDShape PointSpreadFunctionNone::get_size(float step_x, float step_y) const
+{
+    (void)step_x;
+    (void)step_y;
+    return NDShape({1, 1});
+}
+
+void PointSpreadFunctionNone::as_image(float step_x, float step_y, int size_x, int size_y, float* data) const
+{
+    (void)step_x;
+    (void)step_y;
+    std::fill_n(data, size_x*size_y, 0);
+    int idx = size_y/2*size_x + size_x/2;
+    data[idx] = 1;
+}
+
+PointSpreadFunctionImage::PointSpreadFunctionImage(const float* data, float step_x, float step_y, int size_x, int size_y)
     : m_data(nullptr)
-    , m_size_x(size_x)
-    , m_size_y(size_y)
     , m_step_x(step_x)
     , m_step_y(step_y)
+    , m_size_x(size_x)
+    , m_size_y(size_y)
 {
     m_data = new float[m_size_x*m_size_y];
     std::copy(data, data+size_x*size_y, m_data);
@@ -213,7 +259,7 @@ PointSpreadFunctionImage::~PointSpreadFunctionImage()
     delete [] m_data;
 }
 
-NDShape PointSpreadFunctionImage::get_recommended_size(float step_x, float step_y) const
+NDShape PointSpreadFunctionImage::get_size(float step_x, float step_y) const
 {
     if (step_x != m_step_x || step_y != m_step_y) {
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
@@ -222,7 +268,7 @@ NDShape PointSpreadFunctionImage::get_recommended_size(float step_x, float step_
     return NDShape({m_size_x, m_size_y});
 }
 
-void PointSpreadFunctionImage::as_image(int size_x, int size_y, float step_x, float step_y, float* data) const
+void PointSpreadFunctionImage::as_image(float step_x, float step_y, int size_x, int size_y, float* data) const
 {
     if (size_x != m_size_x || size_y != m_size_y) {
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
@@ -250,7 +296,7 @@ PointSpreadFunctionGaussian::~PointSpreadFunctionGaussian()
 {
 }
 
-NDShape PointSpreadFunctionGaussian::get_recommended_size(float step_x, float step_y) const
+NDShape PointSpreadFunctionGaussian::get_size(float step_x, float step_y) const
 {
     // FIXME
 
@@ -258,7 +304,7 @@ NDShape PointSpreadFunctionGaussian::get_recommended_size(float step_x, float st
                     util_num::roundu_odd(5*m_fwhm_y/step_y)});
 }
 
-void PointSpreadFunctionGaussian::as_image(int size_x, int size_y, float step_x, float step_y, float* data) const
+void PointSpreadFunctionGaussian::as_image(float step_x, float step_y, int size_x, int size_y, float* data) const
 {
     float sigma_x = math::gaussian_sigma_from_fwhm(m_fwhm_x);
     float sigma_y = math::gaussian_sigma_from_fwhm(m_fwhm_y);
@@ -290,13 +336,13 @@ PointSpreadFunctionLorentzian::~PointSpreadFunctionLorentzian()
 {
 }
 
-NDShape PointSpreadFunctionLorentzian::get_recommended_size(float step_x, float step_y) const
+NDShape PointSpreadFunctionLorentzian::get_size(float step_x, float step_y) const
 {
     return NDShape({util_num::roundu_odd(5*m_fwhm_x/step_x),
                     util_num::roundu_odd(5*m_fwhm_y/step_y)});
 }
 
-void PointSpreadFunctionLorentzian::as_image(int size_x, int size_y, float step_x, float step_y, float* data) const
+void PointSpreadFunctionLorentzian::as_image(float step_x, float step_y, int size_x, int size_y, float* data) const
 {
     float gamma_x = math::lorentzian_gamma_from_fwhm(m_fwhm_x);
     float gamma_y = math::lorentzian_gamma_from_fwhm(m_fwhm_y);
@@ -329,13 +375,13 @@ PointSpreadFunctionMoffat::~PointSpreadFunctionMoffat()
 {
 }
 
-NDShape PointSpreadFunctionMoffat::get_recommended_size(float step_x, float step_y) const
+NDShape PointSpreadFunctionMoffat::get_size(float step_x, float step_y) const
 {
     return NDShape({util_num::roundu_odd(5*m_fwhm_x/step_x),
                     util_num::roundu_odd(5*m_fwhm_y/step_y)});
 }
 
-void PointSpreadFunctionMoffat::as_image(int size_x, int size_y, float step_x, float step_y, float* data) const
+void PointSpreadFunctionMoffat::as_image(float step_x, float step_y, int size_x, int size_y, float* data) const
 {
     float alpha_x = math::moffat_alpha_from_beta_and_fwhm(m_beta, m_fwhm_x);
     float alpha_y = math::moffat_alpha_from_beta_and_fwhm(m_beta, m_fwhm_y);
