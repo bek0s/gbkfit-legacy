@@ -158,7 +158,6 @@ void evaluate_model(int flx_profile,
 
             // Calculate radial velocity
             vel_spat = vsys + (rd > 0 ? vel_spat * sini * xd / rd : vel_spat);
-        //  vel_spat = 0;
 
             // Calculate velocity dispersion
             sig_spat = vsig;

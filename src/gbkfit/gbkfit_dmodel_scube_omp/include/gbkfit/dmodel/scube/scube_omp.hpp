@@ -19,24 +19,21 @@ private:
 
     std::vector<int> m_upsampling;
 
-    std::vector<int> m_size;
-    std::vector<int> m_size_u;
-    std::vector<int> m_size_up;
-
+    std::vector<int> m_flxcube_size;
+    std::vector<int> m_flxcube_size_u;
     std::vector<int> m_psfcube_size;
     std::vector<int> m_psfcube_size_u;
+    std::vector<int> m_size_up;
 
     std::vector<float> m_step;
     std::vector<float> m_step_u;
-
-
-
 
     NDArrayHost* m_flxcube;
     NDArrayHost* m_flxcube_up;
     NDArrayHost* m_flxcube_up_fft;
 
     NDArrayHost* m_psfcube;
+    NDArrayHost* m_psfcube_u;
     NDArrayHost* m_psfcube_up;
     NDArrayHost* m_psfcube_up_fft;
 

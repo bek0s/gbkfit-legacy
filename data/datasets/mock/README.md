@@ -1,8 +1,7 @@
 
-Mock observations information
-=============================
+# Mock observations information
 
-This file provides information about the simulated data that accompany gbkfit.
+This text provides information about the simulated data that accompany gbkfit.
 
 -------------------------------------------------------------------------------
 
@@ -12,12 +11,11 @@ The model used to create the three simulated observations is a combination of
 a thin disk, a photometric profile, a rotation curve, and a intrinsic velocity
 dispersion.
 
-
 ### The surface brightness profile
 
 I(r) = i0 \* exp(-r/r0)
 
-where i0 is the brightness at the center of the galaxy, and r0 the scale length.
+where i0 is the brightness at the galactic center, and r0 the scale length.
 
 ### The arctan rotation curve
 
@@ -31,7 +29,7 @@ velocity.
 - xo: RA of the galactic center.
 - yo: DEC of the galactic center.
 - pa: The position angle of the projected galactic disc.
-- incl: The inclination of the galactic disc with respect to the line of sigh.
+- incl: The inclination of the galactic disc with respect to the line of sight.
 - vsys: The systemic velocity of the galaxy.
 - vsig: The intrinsic velocity dispersion which assumed to be constant across
         the galactic disc.
@@ -74,6 +72,29 @@ All mock observations have the same dimensions, PSF, LSF and sampling:
 
 -------------------------------------------------------------------------------
 
+## Data files
+
+For each mock observation the following are available:
+
+- Flux cube (flxcube). Gbkfit uses spectral cubes (aka flux cubes) to perform 
+3D fitting. However, 3D fitting support is experimental. Please use 2D fitting 
+for now.
+- Flux map (flxmap). Gbkfit can make use of flux maps for both 2D and 3D 
+fitting. However, their support is experimental. Please ignore them for now.
+- Velocity map (velmap).
+- Velocity dispersion map (sigmap).
+
+The files "lsf.fits" and "psf.fits" correspond to the LSF and PSF respectively, 
+as described in the Instrument Section.
+
+The following naming convention is used for all FITS files:
+
+- Files ending with "_d.fits": measurements
+- Files ending with "_e.fits": measurement errors
+- Files ending with "_m.fits": mask
+
+-------------------------------------------------------------------------------
+
 ## Noise
 
 All mock observations include Gaussian noise:
@@ -84,23 +105,3 @@ All mock observations include Gaussian noise:
 There is a version of the data with no noise under the directory "clean". This 
 data were created using gbkfit, and it is used by the script "create_data.py" 
 in order to generate the noisy data.
-
--------------------------------------------------------------------------------
-
-## Data files
-
-For each mock observation the following are available:
-
-- Velocity map (velmap).
-- Velocity dispersion map (sigmap).
-- Flux map (flxmap). The support for flux maps in gbkfit is experimental. Do 
-not use them. Just ignore them.
-
-The files "lsf.fits" and "psf.fits" correspond to the LSF and PSF respectively, 
-as described in the Instrument Section.
-
-The following naming convention is used for all FITS files:
-
-- Files ending with "_d.fits": measurements
-- Files ending with "_e.fits": measurement errors
-- Files ending with "_m.fits": mask

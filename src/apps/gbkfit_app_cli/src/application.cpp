@@ -218,7 +218,6 @@ bool Application::initialize(void)
 
     m_dmodel->set_galaxy_model(m_gmodel);
 
-
     //
     // All done!
     //
@@ -248,19 +247,26 @@ void Application::shutdown(void)
 
 void test_models(int hardware_mode, const std::string& output_prefix)
 {
-    gbkfit::PointSpreadFunction* psf = nullptr;
-    gbkfit::LineSpreadFunction* lsf = nullptr;
-    psf = new gbkfit::PointSpreadFunctionGaussian(2.5);
-    lsf = new gbkfit::LineSpreadFunctionGaussian(30);
-    gbkfit::Instrument* instrument = new gbkfit::Instrument(1, 1, 20, psf, lsf);
+    // Instrument configuration
+    float psf_fwhm = 2.5f;
+    float lsf_fwhm = 30.0f;
+    float sampling_x = 1.0f;
+    float sampling_y = 1.0f;
+    float sampling_z = 10.0f;
 
+    // Data model configuration
+    int size_x = 49;
+    int size_y = 49;
+    int size_z = 81;
+
+    // Galaxy model configuration
     std::map<std::string, float> params = {
         {"i0", 1},
         {"r0", 10},
         {"xo", 24.5},
         {"yo", 24.5},
         {"pa", 45},
-        {"incl", 45},
+        {"incl", 70},
         {"rt", 4},
         {"vt", 200},
         {"vsys", 0},
@@ -268,6 +274,27 @@ void test_models(int hardware_mode, const std::string& output_prefix)
         {"a", 1},
         {"b", 1}
     };
+
+    //
+    // Create instrument
+    //
+
+    gbkfit::PointSpreadFunction* psf = nullptr;
+    gbkfit::LineSpreadFunction* lsf = nullptr;
+//  psf = new gbkfit::PointSpreadFunctionNone();
+//  lsf = new gbkfit::LineSpreadFunctionNone();
+    psf = new gbkfit::PointSpreadFunctionGaussian(psf_fwhm);
+    lsf = new gbkfit::LineSpreadFunctionGaussian(lsf_fwhm);
+
+    gbkfit::Instrument* instrument = new gbkfit::Instrument(sampling_x,
+                                                            sampling_y,
+                                                            sampling_z,
+                                                            psf,
+                                                            lsf);
+
+    //
+    // Create data and galaxy models
+    //
 
     gbkfit::GModel* gmodel = nullptr;
     gbkfit::DModel* dmodel_scube = nullptr;
@@ -280,10 +307,10 @@ void test_models(int hardware_mode, const std::string& output_prefix)
                 gbkfit::gmodel::gmodel01::VelProfileType::arctan);
 
         dmodel_scube = new gbkfit::dmodel::scube::SCubeOmp(
-                49, 49, 41, 1, 1, 1, instrument);
+                size_x, size_y, size_z, 1, 1, 1, instrument);
 
         dmodel_mmaps = new gbkfit::dmodel::mmaps::MMapsOmp(
-                49, 49, 1, 1, instrument);
+                size_x, size_y, 1, 1, instrument);
     }
     else if (hardware_mode == 1)
     {
@@ -292,14 +319,18 @@ void test_models(int hardware_mode, const std::string& output_prefix)
                 gbkfit::gmodel::gmodel01::VelProfileType::arctan);
 
         dmodel_scube = new gbkfit::dmodel::scube::SCubeCuda(
-                49, 49, 41, 1, 1, 1, instrument);
+                size_x, size_y, size_z, 1, 1, 1, instrument);
 
         dmodel_mmaps = new gbkfit::dmodel::mmaps::MMapsCuda(
-                49, 49, 1, 1, instrument);
+                size_x, size_y, 1, 1, instrument);
     }
 
     dmodel_scube->set_galaxy_model(gmodel);
     dmodel_mmaps->set_galaxy_model(gmodel);
+
+    //
+    // Evaluate models and dump results to the filesystem
+    //
 
     std::map<std::string, gbkfit::NDArrayHost*> scube_data = dmodel_scube->evaluate(params);
     gbkfit::fits::write_to("!"+output_prefix+"_flxcube.fits", *scube_data.at("flxcube"));
@@ -323,6 +354,7 @@ void Application::run(void)
 #if 0
     test_models(0, "omp");
     test_models(1, "cuda");
+    return;
 #endif
 
     std::cout << "main execution path started" << std::endl;
@@ -332,7 +364,7 @@ void Application::run(void)
     //
 
     std::cout << "fitting started" << std::endl;
-    gbkfit::FitterResult* result = m_fitter->fit(m_dmodel,m_parameters,m_datasets);
+    gbkfit::FitterResult* result = m_fitter->fit(m_dmodel, m_parameters, m_datasets);
     std::cout << "fitting complete" << std::endl;
 
 

@@ -9,7 +9,6 @@
 namespace gbkfit {
 namespace cuda {
 
-class NDArray;
 class NDArrayDevice;
 class NDArrayManaged;
 
@@ -29,12 +28,11 @@ private:
 
     std::vector<int> m_upsampling;
 
-    std::vector<int> m_size;
-    std::vector<int> m_size_u;
-    std::vector<int> m_size_up;
-
+    std::vector<int> m_flxcube_size;
+    std::vector<int> m_flxcube_size_u;
     std::vector<int> m_psfcube_size;
     std::vector<int> m_psfcube_size_u;
+    std::vector<int> m_size_up;
 
     std::vector<float> m_step;
     std::vector<float> m_step_u;
@@ -43,6 +41,7 @@ private:
     NDArrayHost* m_h_flxcube_up;
 
     NDArrayHost* m_h_psfcube;
+    NDArrayHost* m_h_psfcube_u;
     NDArrayHost* m_h_psfcube_up;
 
     cuda::NDArrayManaged* m_d_flxcube;
@@ -50,6 +49,7 @@ private:
     cuda::NDArrayManaged* m_d_flxcube_up_fft;
 
     cuda::NDArrayManaged* m_d_psfcube;
+    cuda::NDArrayManaged* m_d_psfcube_u;
     cuda::NDArrayManaged* m_d_psfcube_up;
     cuda::NDArrayManaged* m_d_psfcube_up_fft;
 
