@@ -93,4 +93,99 @@ GBKFIT supports the following Line Spread Function (LSF) models:
 
 ## User Guide
 
-Coming soon!
+To execute GBKFIT use the following command:
+
+```bash
+gbkfit_app_cli --config="your_configuration_file.json"
+```
+
+### GBKFIT input configuration
+
+GBKFIT input configuration is in JSON format. The JSON format was chosen
+because it is very simple and supported by a wide range of software tools.
+
+#### The Datasets (`datasets`)
+
+The data of the fitting procedure are defined under the `datasets` key in the
+form of an array. Each element of the array has to include the following keys:
+- `type`: The type of the data. This can be:
+  - `flxmap`: for flux maps
+  - `velmap`: for velocity maps
+  - `sigmap`: for velocity dispersion maps
+  - `flxcube`: for spectral cubes
+- `data`: The path to the data measurements.
+- `error`: The path to the 1-sigma uncertainties in the data measurements.
+- `mask`: The path to a mask image.
+
+Here is an example:
+```json
+{
+  "datasets": [
+    {
+      "type": "velmap",
+      "data": "data/velmap_d.fits",
+      "error": "data/velmap_e.fits",
+      "mask": "data/velmap_m.fits"
+    },
+    {
+      "type": "sigmap",
+      "data": "data/sigmap_d.fits",
+      "error": "data/sigmap_e.fits",
+      "mask": "data/sigmap_m.fits"
+    }
+  ]
+}
+```
+
+#### The Data Model (`dmodel`)
+
+Here is an example:
+```json
+{
+  "dmodel": {
+    "type": "gbkfit_dmodel_mmaps_cuda"
+  }
+}
+```
+
+#### The Galaxy Model (`gmodel`)
+
+Here is an example:
+```json
+{
+  "gmodel": {
+    "type": "gbkfit_gmodel_mmodel01_cuda",
+    "flx_profile": "exponential",
+    "vel_profile": "arctan"
+  }
+}
+```
+
+#### The Fitter (`fitter`)
+
+The fitter of the fitting procedure is defined under the `fitter` key in the
+form of a map. The elements of this map depend on the selected fitter which is
+defined by the `type` key.
+- `gbkfit.fitter.mpfit`: Uses the `gbkfit_fitter_mpfit` fitter module which
+enables the following options: `ftol`, `xtol`, `gtol`, `epsfcn`, `stepfactor`,
+`covtol`, `maxiter`, `maxfev`, `nprint`, `douserscale`, `nofinitecheck`.
+- `gbkfit.fitter.multinest`: Uses the `gbkfit_fitter_multinest` fitter module
+which enables the following options: `is`, `mmodal`, `ceff`, `nlive`, `efr`,
+`tol`, `ztol`, `logzero`, `maxiter`.
+
+For more details as to what each option does see MPFIT's and MultiNest's
+documentation. For the parameters that are not present in the configuration
+GBKFIT will use default values.
+
+Here is an example:
+```json
+{
+  "fitter": {
+    "type": "gbkfit.fitter.multinest",
+    "mmodal": 1,
+    "nlive": 50,
+    "efr": 1.0,
+    "tol": 0.5
+  }
+}
+```
