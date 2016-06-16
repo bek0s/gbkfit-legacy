@@ -26,9 +26,9 @@ etc), galaxy models, and optimization techniques. It also provides a clean
 object-oriented interface which enables programmers to create and add their
 own custom models and optimization techniques into the software.
 
-GBKFIT models observations with a combination of two models: a Data Model (or
-DModel), and a Galaxy Model (or GModel). The former is used to describe the
-data structure of the observation, while the latter is used to describe the
+GBKFIT models observations with a combination of two models: a Data Model
+(DModel), and a Galaxy Model (GModel). The former is used to describe the data
+structure of the observation, while the latter is used to describe the
 observed galaxy. Data and galaxy models come in the form of modules, and by
 convention their names start with `gbkfit_dmodel_` and `gbkfit_gmodel_`
 respectively.
@@ -72,7 +72,7 @@ through the [MPFIT](https://www.physics.wisc.edu/~craigm/idl/cmpfit.html)
 library.
 - `gbkfit_fitter_multinest`: This fitter employs the Clustered and Importance
 Nested Sampling techniques through the
-[MultiNest](https://ccpforge.cse.rl.ac.uk/gf/project/multinest/)library.
+[MultiNest](https://ccpforge.cse.rl.ac.uk/gf/project/multinest/) library.
 
 
 ### Point Spread Functions
