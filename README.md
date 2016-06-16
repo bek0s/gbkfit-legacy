@@ -165,7 +165,7 @@ Here is an example:
 
 The fitter of the fitting procedure is defined under the `fitter` key in the
 form of a map. The elements of this map depend on the selected fitter which is
-defined by the `type` key.
+defined by the `type` key:
 - `gbkfit.fitter.mpfit`: Uses the `gbkfit_fitter_mpfit` fitter module which
 enables the following options: `ftol`, `xtol`, `gtol`, `epsfcn`, `stepfactor`,
 `covtol`, `maxiter`, `maxfev`, `nprint`, `douserscale`, `nofinitecheck`.
@@ -174,8 +174,9 @@ which enables the following options: `is`, `mmodal`, `ceff`, `nlive`, `efr`,
 `tol`, `ztol`, `logzero`, `maxiter`.
 
 For more details as to what each option does see MPFIT's and MultiNest's
-documentation. For the parameters that are not present in the configuration
-GBKFIT will use default values.
+documentation. For the parameters that are not present in the configuration,
+GBKFIT will use default values. If any of the supplied options do not belong
+to the selected fitter, they will be ignored.
 
 Here is an example:
 ```json
