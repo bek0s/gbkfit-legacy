@@ -91,6 +91,10 @@ GBKFIT supports the following Line Spread Function (LSF) models:
 - 1D Moffat
 - 1D image
 
+## Installation
+
+TODO
+
 ## User Guide
 
 To execute GBKFIT use the following command:
@@ -117,7 +121,7 @@ form of an array. Each element of the array has to include the following keys:
 - `error`: The path to the 1-sigma uncertainties in the data measurements.
 - `mask`: The path to a mask image.
 
-Here is an example:
+Example:
 ```json
 {
   "datasets": [
@@ -137,9 +141,38 @@ Here is an example:
 }
 ```
 
+#### Instrument
+
+TODO
+
+Example:
+```json
+{
+  "instrument": {
+    "sampling": {
+      "x": 1.0,
+      "y": 1.0,
+      "z": 30.0
+    },
+    "psf": {
+      "type": "gaussian",
+      "fwhm_x": 2.5,
+      "fwhm_y": 2.5,
+      "pa": 0
+    },
+    "lsf": {
+      "type": "gaussian",
+      "fwhm": 30
+    }
+  }
+}
+```
+
 #### The Data Model (`dmodel`)
 
-Here is an example:
+TODO
+
+Example:
 ```json
 {
   "dmodel": {
@@ -150,7 +183,9 @@ Here is an example:
 
 #### The Galaxy Model (`gmodel`)
 
-Here is an example:
+TODO
+
+Example:
 ```json
 {
   "gmodel": {
@@ -178,15 +213,34 @@ documentation. For the parameters that are not present in the configuration,
 GBKFIT will use default values. If any of the supplied options do not belong
 to the selected fitter, they will be ignored.
 
-Here is an example:
+Example:
 ```json
 {
   "fitter": {
-    "type": "gbkfit.fitter.multinest",
-    "mmodal": 1,
-    "nlive": 50,
-    "efr": 1.0,
-    "tol": 0.5
+    "type": "gbkfit.fitter.mpfit",
+    "maxiter": 2000
   }
+}
+```
+
+#### Parameter Priors (`parameters`)
+
+TODO
+
+Example:
+```json
+{
+  "parameters": [
+    {"name":   "i0", "fixed": 1, "value":   1},
+    {"name":   "r0", "fixed": 1, "value":  10},
+    {"name":   "xo", "fixed": 0, "value":  25, "min":  0.0, "max":  50},
+    {"name":   "yo", "fixed": 0, "value":  25, "min":  0.0, "max":  50},
+    {"name":   "pa", "fixed": 0, "value":  45, "min":  0.0, "max":  90},
+    {"name": "incl", "fixed": 0, "value":  45, "min":  5.0, "max":  85},
+    {"name":   "rt", "fixed": 0, "value":   1, "min":  0.1, "max":  10},
+    {"name":   "vt", "fixed": 0, "value": 150, "min":  100, "max": 350},
+    {"name": "vsys", "fixed": 0, "value":   0, "min": -100, "max": 100},
+    {"name": "vsig", "fixed": 0, "value":  50, "min":    5, "max": 120}
+  ]
 }
 ```
