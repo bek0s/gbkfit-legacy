@@ -27,43 +27,46 @@ set(SOURCE_FILES
 
 # ==============================================================================
 
-add_executable(target_gbkfit_app_cli ${HEADER_FILES} ${SOURCE_FILES})
+add_executable(gbkfit_app_cli ${HEADER_FILES} ${SOURCE_FILES})
 
-target_include_directories(target_gbkfit_app_cli
+target_include_directories(gbkfit_app_cli
     PRIVATE
     "include"
-    ${GBKFIT_INCLUDE_DIRS}
-    ${GBKFIT_CUDA_INCLUDE_DIRS}
+    ${GBKFIT_INCLUDE_DIR}
+    ${GBKFIT_CUDA_INCLUDE_DIR}
     ${GBKFIT_FITTER_MPFIT_INCLUDE_DIR}
     ${GBKFIT_FITTER_MULTINEST_INCLUDE_DIR}
-    ${Boost_INCLUDE_DIRS}
+    ${GBKFIT_DMODEL_MMAPS_INCLUDE_DIR}
     ${GBKFIT_DMODEL_MMAPS_CUDA_INCLUDE_DIR}
     ${GBKFIT_DMODEL_MMAPS_OMP_INCLUDE_DIR}
+    ${GBKFIT_DMODEL_SCUBE_INCLUDE_DIR}
     ${GBKFIT_DMODEL_SCUBE_CUDA_INCLUDE_DIR}
     ${GBKFIT_DMODEL_SCUBE_OMP_INCLUDE_DIR}
     ${GBKFIT_GMODEL_GMODEL01_INCLUDE_DIR}
     ${GBKFIT_GMODEL_GMODEL01_CUDA_INCLUDE_DIR}
     ${GBKFIT_GMODEL_GMODEL01_OMP_INCLUDE_DIR}
+    ${Boost_INCLUDE_DIRS}
 )
 
-target_link_libraries(target_gbkfit_app_cli
+target_link_libraries(gbkfit_app_cli
     PRIVATE
     ${GBKFIT_LIBRARY_SHARED}
     ${GBKFIT_CUDA_LIBRARY_SHARED}
     ${GBKFIT_FITTER_MPFIT_LIBRARY_SHARED}
     ${GBKFIT_FITTER_MULTINEST_LIBRARY_SHARED}
-    ${Boost_LIBRARIES}
-    fftw3f
+    ${GBKFIT_DMODEL_MMAPS_LIBRARY_SHARED}
     ${GBKFIT_DMODEL_MMAPS_CUDA_LIBRARY_SHARED}
     ${GBKFIT_DMODEL_MMAPS_OMP_LIBRARY_SHARED}
+    ${GBKFIT_DMODEL_SCUBE_LIBRARY_SHARED}
     ${GBKFIT_DMODEL_SCUBE_CUDA_LIBRARY_SHARED}
     ${GBKFIT_DMODEL_SCUBE_OMP_LIBRARY_SHARED}
     ${GBKFIT_GMODEL_GMODEL01_LIBRARY_SHARED}
     ${GBKFIT_GMODEL_GMODEL01_CUDA_LIBRARY_SHARED}
     ${GBKFIT_GMODEL_GMODEL01_OMP_LIBRARY_SHARED}
+    ${Boost_LIBRARIES}
 )
 
-target_compile_options(target_gbkfit_app_cli
+target_compile_options(gbkfit_app_cli
     PRIVATE
     "-Wall"
     "-Wextra"
@@ -71,7 +74,7 @@ target_compile_options(target_gbkfit_app_cli
     "-Wsign-conversion"
 )
 
-set_target_properties(target_gbkfit_app_cli
+set_target_properties(gbkfit_app_cli
     PROPERTIES
     CXX_EXTENSIONS        OFF
     CXX_STANDARD          14
@@ -82,9 +85,8 @@ set_target_properties(target_gbkfit_app_cli
 
 # ==============================================================================
 
-install(
-    TARGETS
-    target_gbkfit_app_cli
+install(TARGETS
+    gbkfit_app_cli
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib

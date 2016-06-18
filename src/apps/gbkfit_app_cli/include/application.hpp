@@ -21,6 +21,8 @@ private:
     std::string m_config_file;
     std::string m_output_dir;
 
+    std::string m_task;
+
     gbkfit::Core* m_core;
 
     std::vector<gbkfit::DModelFactory*> m_dmodel_factories;

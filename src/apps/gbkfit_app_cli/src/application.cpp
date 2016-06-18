@@ -58,7 +58,7 @@
 
 namespace gbkfit_app_cli {
 
-const std::string Application::DEFAULT_CONFIG_FILE = "../../data/configs/gbkfit_config.json";
+const std::string Application::DEFAULT_CONFIG_FILE = "../../data/configs/gbkfit_config_2d.json";
 const std::string Application::DEFAULT_OUTPUT_DIR = "output";
 
 Application::Application(void)
@@ -178,6 +178,10 @@ bool Application::initialize(void)
 
     std::ifstream config_stream(m_config_file);
     nlohmann::json config_root = nlohmann::json::parse(config_stream);
+
+//  std::cout << "reading task type..." << std::endl;
+
+//  m_task = config_root.at("task");
 
     //
     // Create subconfiguations.

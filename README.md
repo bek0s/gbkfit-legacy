@@ -1,7 +1,7 @@
 
 # GBKFIT
 
-GBKFIT is a collection of libraries and executables for modelling galaxy
+GBKFIT is a high-performance open-source software for modelling galaxy
 kinematics from 3D spectroscopic observations.
 
 ## Credits
@@ -13,12 +13,9 @@ If you use GBKFIT in a publication please cite:
 
 ## A brief introduction
 
-Galaxy kinematic modelling is a computationally intensive process and it can
-result very long run times. GBKFIT tackles this problem by utilizing the
-many-core architectures of modern computers. By default, GBKFIT will
-accelerate the likelihood evaluation step of the fitting procedure on the
-Graphics Processing Unit (GPU). If there is no GPU available on the system, it
-will use all the cores of the Central Processing Unit (CPU).
+GBKFIT is a high-performance open-source software for modelling galaxy
+kinematics from 3D spectroscopic observations. It is written in C++, and uses
+the CMake build system.
 
 GBKFIT features a modular architecture which allows it to use a variety of
 data models (e.g., spectral cubes for 3D fitting, moment maps for 2D fitting,
@@ -37,21 +34,33 @@ Similarly to data and galaxy models, optimization techniques come in the form
 of modules which are called Fitters, and by convention their names start with
 `gbkfit_fitter_`.
 
+### Performance
+
+Galaxy kinematic modelling is a computationally intensive process and it can
+result very long run times. GBKFIT tackles this problem by utilizing the
+many-core architectures of modern computers. GBKFIT can accelerate the
+likelihood evaluation step of the fitting procedure on the Graphics Processing
+Unit (GPU) using CUDA. If there is no GPU available on the system, it can use
+all the cores available on the Central Processing Unit (CPU) through OpenMP.
+
 ### Data models
 
 GBKFIT comes with the following data models:
-- `gbkfit_dmodel_mmaps`: This model is used to describe moment maps extracted
+- `gbkfit_dmodel_mmaps_<device_api>`: This model is used to describe moment maps extracted
 from a spectral data cube. Thus, this model should be used to perform 2D fits
 to velocity and velocity dispersion maps. Flux maps are also supported but
 they are currently experimental and should not be used.
-- `gbkfit_dmodel_scube`: This model is used to describe spectral data cubes.
+- `gbkfit_dmodel_scube_<device_api>`: This model is used to describe spectral data cubes.
 Thus, this model should be used to perform 3D fits to spectral data cubes.
 Support for 3D fitting is experimental and should be avoided.
+
+`device_api` can be either `omp` (for multi-threaded CPU acceleration) or
+`cuda` (for GPU acceleration).
 
 ### Galaxy models
 
 GBKFIT comes with the following galaxy models:
-- `gbkfit_gmodel_gmodel01`: This model is a combination of a thin and flat
+- `gbkfit_gmodel_gmodel01_<device_api>`: This model is a combination of a thin and flat
 disk, a surface brightness profile, a rotation curve, and an intrinsic
 velocity dispersion which is assumed to be constant across the galactic disk.
 
@@ -63,6 +72,9 @@ velocity dispersion which is assumed to be constant across the galactic disk.
   - Arctan
   - Boissier
   - Epinat
+
+`device_api` can be either `omp` (for multi-threaded CPU acceleration) or
+`cuda` (for GPU acceleration).
 
 ### Fitters
 

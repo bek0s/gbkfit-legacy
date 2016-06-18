@@ -49,18 +49,16 @@
   },
 
   "parameters": [
-    {"name":   "i0", "fixed": 1, "value":   1},
-    {"name":   "r0", "fixed": 1, "value":  10},
-    {"name": "vsig", "fixed": 0, "value":  50, "min":   1, "max": 100, "step": 0.01},
-    {"name": "vsys", "fixed": 0, "value":   0, "min": -50, "max":  50, "step": 0.01},
+    {"name":   "i0", "fixed": 1, "value":   1.0},
+    {"name":   "r0", "fixed": 1, "value":  10.0},
     {"name":   "xo", "fixed": 0, "value":  24.5, "min":   5, "max":  45, "step": 0.01},
     {"name":   "yo", "fixed": 0, "value":  24.5, "min":   5, "max":  45, "step": 0.01},
-    {"name":   "pa", "fixed": 0, "value":  45, "min":   0, "max":  90, "step": 0.01},
-    {"name": "incl", "fixed": 0, "value":  20, "min":   5, "max":  85, "step": 0.01},
-    {"name":   "rt", "fixed": 0, "value":   4, "min": 0.1, "max":  10, "step": 0.01},
-    {"name":   "vt", "fixed": 0, "value": 200, "min":  50, "max": 350, "step": 0.01},
-    {"name":    "a", "fixed": 0, "value": 1.0, "min": 0.5, "max": 1.5, "step": 0.01},
-    {"name":    "b", "fixed": 0, "value": 1.0, "min": 0.5, "max": 1.5, "step": 0.01}
+    {"name":   "pa", "fixed": 0, "value":  45.0, "min":   0, "max":  90, "step": 0.01},
+    {"name": "incl", "fixed": 0, "value":  20.0, "min":   5, "max":  85, "step": 0.01},
+    {"name":   "rt", "fixed": 0, "value":   4.0, "min": 0.1, "max":  10, "step": 0.01},
+    {"name":   "vt", "fixed": 0, "value": 200.0, "min":  50, "max": 350, "step": 0.01},
+    {"name": "vsys", "fixed": 0, "value":   0.0, "min": -50, "max":  50, "step": 0.01},
+    {"name": "vsig", "fixed": 0, "value":  50.0, "min":   1, "max": 100, "step": 0.01}
   ]
 
 }

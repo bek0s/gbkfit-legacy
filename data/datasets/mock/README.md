@@ -48,8 +48,8 @@ parameters:
 - pa = 45
 - rt = 4
 - vt = 200
-- vsig = 50
 - vsys = 0
+- vsig = 50
 
 Each mock observation has a different inclination:
 
