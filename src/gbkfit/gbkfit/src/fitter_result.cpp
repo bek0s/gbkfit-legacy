@@ -1,12 +1,12 @@
 
 #include "gbkfit/fitter_result.hpp"
+
 #include "gbkfit/dmodel.hpp"
-#include "gbkfit/gmodel.hpp"
-#include "gbkfit/model.hpp"
-#include "gbkfit/ndarray_host.hpp"
 #include "gbkfit/fits.hpp"
-#include <fstream>
-#include "jsoncpp/json/json.h"
+#include "gbkfit/gmodel.hpp"
+#include "gbkfit/json.hpp"
+#include "gbkfit/ndarray_host.hpp"
+
 
 namespace gbkfit {
 
@@ -313,7 +313,7 @@ void FitterResult::save(const std::string& filename) const
     std::size_t param_count = get_param_count();
     std::size_t mode_count = get_mode_count();
 
-    Json::Value root;
+    nlohmann::json root;
 
     //
     // Global results
@@ -325,10 +325,11 @@ void FitterResult::save(const std::string& filename) const
     //
     // Datasets
     //
-    Json::Value datasets;
+
+    nlohmann::json datasets = nlohmann::json::array();
     for(std::size_t i = 0; i < dataset_count; ++i)
     {
-        datasets.append(m_dataset_names[i]);
+        datasets.push_back(m_dataset_names[i]);
 
         std::string dataset_name = m_dataset_names[i];
         std::ostringstream file_dat;
@@ -348,39 +349,39 @@ void FitterResult::save(const std::string& filename) const
     //
     // Parameters
     //
-    Json::Value parameters;
+    nlohmann::json parameters = nlohmann::json::array();
     for(std::size_t i = 0; i < param_count; ++i) {
-        Json::Value parameter;
+        nlohmann::json parameter;
         parameter["name"] = m_param_names[i];
         parameter["fixed"] = m_param_fixed_flags[i];
-        parameters.append(parameter);
+        parameters.push_back(parameter);
     }
     root["parameters"] = parameters;
 
     //
     // Modes
     //
-    Json::Value json_modes;
+    nlohmann::json json_modes;
     for(std::size_t i = 0; i < mode_count; ++i)
     {
         const FitterResultMode& mode = get_mode(i);
-        Json::Value json_mode;
-        Json::Value json_mode_parameters;
+        nlohmann::json json_mode;
+        nlohmann::json json_mode_parameters;
 
         json_mode["chisqr"] = mode.get_chisqr();
         json_mode["rchisqr"] = mode.get_reduced_chisqr();
 
         for(std::size_t j = 0; j < param_count; ++j)
         {
-            Json::Value json_mode_parameter;
+            nlohmann::json json_mode_parameter;
             json_mode_parameter["name"] = m_param_names[j];
             json_mode_parameter["value"] = mode.get_param_values()[j];
             json_mode_parameter["error"] = mode.get_param_errors()[j];
-            json_mode_parameters.append(json_mode_parameter);
+            json_mode_parameters.push_back(json_mode_parameter);
         }
 
         json_mode["parameters"] = json_mode_parameters;
-        json_modes.append(json_mode);
+        json_modes.push_back(json_mode);
 
         for(std::size_t j = 0; j < dataset_count; ++j)
         {
@@ -396,10 +397,8 @@ void FitterResult::save(const std::string& filename) const
     }
     root["modes"] = json_modes;
 
-
-    Json::StyledWriter writer;
     std::ofstream ofstream(filename.c_str(), std::ios::out);
-    ofstream << writer.write(root);
+    ofstream << root.dump(2);
     ofstream.close();
 }
 
