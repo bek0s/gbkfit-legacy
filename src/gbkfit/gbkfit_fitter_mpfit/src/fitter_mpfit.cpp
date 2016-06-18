@@ -6,7 +6,6 @@
 #include "gbkfit/dmodel.hpp"
 #include "gbkfit/fitter_result.hpp"
 #include "gbkfit/gmodel.hpp"
-#include "gbkfit/model.hpp"
 #include "gbkfit/ndarray_host.hpp"
 #include "gbkfit/parameters.hpp"
 #include "gbkfit/string_util.hpp"

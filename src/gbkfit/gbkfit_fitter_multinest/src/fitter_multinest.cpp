@@ -5,7 +5,6 @@
 #include "gbkfit/dataset.hpp"
 #include "gbkfit/dmodel.hpp"
 #include "gbkfit/gmodel.hpp"
-#include "gbkfit/model.hpp"
 #include "gbkfit/ndarray_host.hpp"
 #include "gbkfit/parameters.hpp"
 #include "gbkfit/utility.hpp"

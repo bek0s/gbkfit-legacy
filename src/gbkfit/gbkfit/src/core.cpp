@@ -7,7 +7,6 @@
 #include "gbkfit/gmodel.hpp"
 #include "gbkfit/instrument.hpp"
 #include "gbkfit/json.hpp"
-#include "gbkfit/model.hpp"
 #include "gbkfit/ndarray_host.hpp"
 #include "gbkfit/parameters.hpp"
 #include "gbkfit/spread_functions.hpp"
@@ -31,9 +30,6 @@ Core::~Core()
 
     for(auto& lsf : m_lsfs)
         delete lsf;
-
-    for(auto& model : m_models)
-        get_model_factory(model->get_type())->destroy(model);
 
     for(auto& dmodel : m_dmodels)
         get_dmodel_factory(dmodel->get_type())->destroy(dmodel);
@@ -64,27 +60,9 @@ void Core::add_gmodel_factory(const GModelFactory* factory)
     m_gmodel_factories[factory->get_type()] = factory;
 }
 
-void Core::add_model_factory(const ModelFactory* factory)
-{
-    m_model_factories[factory->get_type()] = factory;
-}
-
 void Core::add_fitter_factory(const FitterFactory* factory)
 {
     m_fitter_factories[factory->get_type()] = factory;
-}
-
-Model* Core::create_model(const std::string& info)
-{
-    nlohmann::json info_root = nlohmann::json::parse(info);
-
-    std::string type = info_root.at("type");
-
-    Model* model = get_model_factory(type)->create(info);
-
-    m_models.push_back(model);
-
-    return model;
 }
 
 Fitter* Core::create_fitter(const std::string& info)
@@ -275,15 +253,6 @@ Instrument* Core::create_instrument(const std::string& info)
 
     return new_instrument;
 
-}
-
-const ModelFactory* Core::get_model_factory(const std::string& type) const
-{
-    auto iter = m_model_factories.find(type);
-    if (iter == m_model_factories.end()) {
-        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
-    }
-    return iter->second;
 }
 
 const FitterFactory* Core::get_fitter_factory(const std::string& type) const

@@ -9,7 +9,6 @@ project(gbkfit_app_cli-project)
 
 # ==============================================================================
 
-find_package(cfitsio)
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost COMPONENTS program_options system REQUIRED)
 
@@ -27,7 +26,10 @@ set(SOURCE_FILES
 
 # ==============================================================================
 
-add_executable(gbkfit_app_cli ${HEADER_FILES} ${SOURCE_FILES})
+add_executable(gbkfit_app_cli
+    ${HEADER_FILES}
+    ${SOURCE_FILES}
+)
 
 target_include_directories(gbkfit_app_cli
     PRIVATE

@@ -11,7 +11,6 @@ class Core final
 
 private:
 
-    std::map<std::string, const ModelFactory*> m_model_factories;
     std::map<std::string, const FitterFactory*> m_fitter_factories;
 
     std::map<std::string, const DModelFactory*> m_dmodel_factories;
@@ -21,7 +20,6 @@ private:
     std::vector<Instrument*> m_instruments;
     std::vector<PointSpreadFunction*> m_psfs;
     std::vector<LineSpreadFunction*> m_lsfs;
-    std::vector<Model*> m_models;
     std::vector<Fitter*> m_fitters;
     std::vector<Parameters*> m_parameters;
 
@@ -33,8 +31,6 @@ public:
     Core(void);
 
     ~Core();
-
-    void add_model_factory(const ModelFactory* factory);
 
     void add_dmodel_factory(const DModelFactory* factory);
 
@@ -48,8 +44,6 @@ public:
 
     Instrument* create_instrument(const std::string& info);
 
-    Model* create_model(const std::string& info);
-
     Fitter* create_fitter(const std::string& info);
 
     Parameters* create_parameters(const std::string& info);
@@ -61,8 +55,6 @@ public:
     GModel* create_gmodel(const std::string& info);
 
 private:
-
-    const ModelFactory* get_model_factory(const std::string& type) const;
 
     const FitterFactory* get_fitter_factory(const std::string& type) const;
 

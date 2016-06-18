@@ -31,13 +31,13 @@
   },
 
   "gmodel": {
-    "type": "gbkfit.gmodel.gmodel01_cuda",
+    "type": "gbkfit.gmodel.gmodel01_omp",
     "flx_profile": "exponential",
     "vel_profile": "arctan"
   },
 
   "dmodel": {
-    "type": "gbkfit.dmodel.mmaps_cuda",
+    "type": "gbkfit.dmodel.mmaps_omp",
     "size_x": 49,
     "size_y": 49,
     "size_z": 101

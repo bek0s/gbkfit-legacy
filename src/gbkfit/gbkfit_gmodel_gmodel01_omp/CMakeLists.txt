@@ -63,12 +63,14 @@ target_link_libraries(gbkfit_gmodel_gmodel01_omp_static
     PRIVATE
     ${GBKFIT_LIBRARY_STATIC}
     ${GBKFIT_GMODEL_GMODEL01_LIBRARY_STATIC}
+    ${OpenMP_CXX_FLAGS}
 )
 
 target_link_libraries(gbkfit_gmodel_gmodel01_omp_shared
     PRIVATE
     ${GBKFIT_LIBRARY_SHARED}
     ${GBKFIT_GMODEL_GMODEL01_LIBRARY_SHARED}
+    ${OpenMP_CXX_FLAGS}
 )
 
 target_compile_definitions(gbkfit_gmodel_gmodel01_omp_object

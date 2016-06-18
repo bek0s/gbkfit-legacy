@@ -10,7 +10,7 @@ project(gbkfit_dmodel_scube_omp-project)
 # ==============================================================================
 
 find_package(OpenMP)
-find_package(fftw3)
+find_package(fftw3 COMPONENTS SINGLE)
 
 # ==============================================================================
 
@@ -65,14 +65,16 @@ target_link_libraries(gbkfit_dmodel_scube_omp_static
     PRIVATE
     ${GBKFIT_LIBRARY_STATIC}
     ${GBKFIT_DMODEL_SCUBE_LIBRARY_STATIC}
-    ${FFTW3_LIBRARIES}
+    ${FFTW3_SINGLE_THREADS_LIBRARY}
+    ${OpenMP_CXX_FLAGS}
 )
 
 target_link_libraries(gbkfit_dmodel_scube_omp_shared
     PRIVATE
     ${GBKFIT_LIBRARY_SHARED}
     ${GBKFIT_DMODEL_SCUBE_LIBRARY_SHARED}
-    ${FFTW3_LIBRARIES}
+    ${FFTW3_SINGLE_THREADS_LIBRARY}
+    ${OpenMP_CXX_FLAGS}
 )
 
 target_compile_definitions(gbkfit_dmodel_scube_omp_object
@@ -82,11 +84,11 @@ target_compile_definitions(gbkfit_dmodel_scube_omp_object
 
 target_compile_options(gbkfit_dmodel_scube_omp_object
     PRIVATE
-    ${OpenMP_CXX_FLAGS}
     "-Wall"
     "-Wextra"
     "-Wpedantic"
     "-Wsign-conversion"
+    ${OpenMP_CXX_FLAGS}
 )
 
 set_target_properties(gbkfit_dmodel_scube_omp_object

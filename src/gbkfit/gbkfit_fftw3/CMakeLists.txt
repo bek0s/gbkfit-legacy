@@ -60,13 +60,13 @@ target_include_directories(gbkfit_fftw3_object
 target_link_libraries(gbkfit_fftw3_static
     PRIVATE
     ${GBKFIT_LIBRARY_STATIC}
-    ${FFTW3_LIBRARIES}
+    ${FFTW3_SINGLE_THREADS_LIBRARY}
 )
 
 target_link_libraries(gbkfit_fftw3_shared
     PRIVATE
     ${GBKFIT_LIBRARY_SHARED}
-    ${FFTW3_LIBRARIES}
+    ${FFTW3_SINGLE_THREADS_LIBRARY}
 )
 
 target_compile_definitions(gbkfit_fftw3_object

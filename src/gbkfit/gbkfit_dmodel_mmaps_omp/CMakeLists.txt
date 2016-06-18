@@ -67,7 +67,7 @@ target_link_libraries(gbkfit_dmodel_mmaps_omp_static
     ${GBKFIT_DMODEL_SCUBE_LIBRARY_STATIC}
     ${GBKFIT_DMODEL_SCUBE_OMP_LIBRARY_STATIC}
     ${GBKFIT_DMODEL_MMAPS_LIBRARY_STATIC}
-
+    ${OpenMP_CXX_FLAGS}
 )
 
 target_link_libraries(gbkfit_dmodel_mmaps_omp_shared
@@ -76,7 +76,7 @@ target_link_libraries(gbkfit_dmodel_mmaps_omp_shared
     ${GBKFIT_DMODEL_SCUBE_LIBRARY_SHARED}
     ${GBKFIT_DMODEL_SCUBE_OMP_LIBRARY_SHARED}
     ${GBKFIT_DMODEL_MMAPS_LIBRARY_SHARED}
-
+    ${OpenMP_CXX_FLAGS}
 )
 
 target_compile_definitions(gbkfit_dmodel_mmaps_omp_object
