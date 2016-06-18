@@ -53,9 +53,9 @@ option(GBKFIT_BUILD_DMODEL_MMAPS "Build gbkfit_dmodel_mmaps" TRUE)
 option(GBKFIT_BUILD_DMODEL_MMAPS_CUDA "Build gbkfit_dmodel_mmaps_cuda" TRUE)
 option(GBKFIT_BUILD_DMODEL_MMAPS_OMP "Build gbkfit_dmodel_mmaps_omp" TRUE)
 
-option(GBKFIT_BUILD_GMODEL_GMODEL01 "Build gbkfit_gmodel_gmodel01" TRUE)
-option(GBKFIT_BUILD_GMODEL_GMODEL01_CUDA "Build gbkfit_gmodel_gmodel01_cuda" TRUE)
-option(GBKFIT_BUILD_GMODEL_GMODEL01_OMP "Build gbkfit_gmodel_gmodel01_omp" TRUE)
+option(GBKFIT_BUILD_GMODEL_GMODEL1 "Build gbkfit_gmodel_gmodel1" TRUE)
+option(GBKFIT_BUILD_GMODEL_GMODEL1_CUDA "Build gbkfit_gmodel_gmodel1_cuda" TRUE)
+option(GBKFIT_BUILD_GMODEL_GMODEL1_OMP "Build gbkfit_gmodel_gmodel1_omp" TRUE)
 
 option(GBKFIT_BUILD_FITTER_MPFIT "Build gbkfit_fitter_mpfit" TRUE)
 option(GBKFIT_BUILD_FITTER_MULTINEST "Build gbkfit_fitter_multinest" TRUE)

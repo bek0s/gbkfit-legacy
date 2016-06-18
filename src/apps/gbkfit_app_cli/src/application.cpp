@@ -28,14 +28,14 @@
 #include "gbkfit/dmodel/scube/scube_cuda_factory.hpp"
 #endif
 
-#ifdef GBKFIT_BUILD_GMODEL_GMODEL01_CUDA
-#include "gbkfit/gmodel/gmodel01/gmodel01_cuda.hpp"
-#include "gbkfit/gmodel/gmodel01/gmodel01_cuda_factory.hpp"
+#ifdef GBKFIT_BUILD_GMODEL_GMODEL1_CUDA
+#include "gbkfit/gmodel/gmodel1/gmodel1_cuda.hpp"
+#include "gbkfit/gmodel/gmodel1/gmodel1_cuda_factory.hpp"
 #endif
 
-#ifdef GBKFIT_BUILD_GMODEL_GMODEL01_OMP
-#include "gbkfit/gmodel/gmodel01/gmodel01_omp.hpp"
-#include "gbkfit/gmodel/gmodel01/gmodel01_omp_factory.hpp"
+#ifdef GBKFIT_BUILD_GMODEL_GMODEL1_OMP
+#include "gbkfit/gmodel/gmodel1/gmodel1_omp.hpp"
+#include "gbkfit/gmodel/gmodel1/gmodel1_omp_factory.hpp"
 #endif
 
 #ifdef GBKFIT_BUILD_DMODEL_SCUBE_OMP
@@ -133,11 +133,11 @@ bool Application::initialize(void)
     #endif
 
     std::cout << "creating gmodel factories..." << std::endl;
-    #ifdef GBKFIT_BUILD_GMODEL_GMODEL01_CUDA
-    m_gmodel_factories.push_back(new gbkfit::gmodel::gmodel01::GModel01CudaFactory());
+    #ifdef GBKFIT_BUILD_GMODEL_GMODEL1_CUDA
+    m_gmodel_factories.push_back(new gbkfit::gmodel::gmodel1::GModel1CudaFactory());
     #endif
-    #ifdef GBKFIT_BUILD_GMODEL_GMODEL01_OMP
-    m_gmodel_factories.push_back(new gbkfit::gmodel::gmodel01::GModel01OmpFactory());
+    #ifdef GBKFIT_BUILD_GMODEL_GMODEL1_OMP
+    m_gmodel_factories.push_back(new gbkfit::gmodel::gmodel1::GModel1OmpFactory());
     #endif
 
     std::cout << "creating fitter factories..." << std::endl;
@@ -306,9 +306,9 @@ void test_models(int hardware_mode, const std::string& output_prefix)
 
     if      (hardware_mode == 0)
     {
-        gmodel = new gbkfit::gmodel::gmodel01::GModel01Omp(
-                gbkfit::gmodel::gmodel01::FlxProfileType::exponential,
-                gbkfit::gmodel::gmodel01::VelProfileType::arctan);
+        gmodel = new gbkfit::gmodel::gmodel1::GModel1Omp(
+                gbkfit::gmodel::gmodel1::FlxProfileType::exponential,
+                gbkfit::gmodel::gmodel1::VelProfileType::arctan);
 
         dmodel_scube = new gbkfit::dmodel::scube::SCubeOmp(
                 size_x, size_y, size_z, 1, 1, 1, instrument);
@@ -318,9 +318,9 @@ void test_models(int hardware_mode, const std::string& output_prefix)
     }
     else if (hardware_mode == 1)
     {
-        gmodel = new gbkfit::gmodel::gmodel01::GModel01Cuda(
-                gbkfit::gmodel::gmodel01::FlxProfileType::exponential,
-                gbkfit::gmodel::gmodel01::VelProfileType::arctan);
+        gmodel = new gbkfit::gmodel::gmodel1::GModel1Cuda(
+                gbkfit::gmodel::gmodel1::FlxProfileType::exponential,
+                gbkfit::gmodel::gmodel1::VelProfileType::arctan);
 
         dmodel_scube = new gbkfit::dmodel::scube::SCubeCuda(
                 size_x, size_y, size_z, 1, 1, 1, instrument);

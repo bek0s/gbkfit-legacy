@@ -47,16 +47,16 @@ endif()
 # GModels
 #
 
-if(${GBKFIT_BUILD_GMODEL_GMODEL01})
-    add_subdirectory(gbkfit_gmodel_gmodel01)
+if(${GBKFIT_BUILD_GMODEL_GMODEL1})
+    add_subdirectory(gbkfit_gmodel_gmodel1)
 endif()
 
-if(${GBKFIT_BUILD_GMODEL_GMODEL01_CUDA})
-    add_subdirectory(gbkfit_gmodel_gmodel01_cuda)
+if(${GBKFIT_BUILD_GMODEL_GMODEL1_CUDA})
+    add_subdirectory(gbkfit_gmodel_gmodel1_cuda)
 endif()
 
-if(${GBKFIT_BUILD_GMODEL_GMODEL01_OMP})
-    add_subdirectory(gbkfit_gmodel_gmodel01_omp)
+if(${GBKFIT_BUILD_GMODEL_GMODEL1_OMP})
+    add_subdirectory(gbkfit_gmodel_gmodel1_omp)
 endif()
 
 #

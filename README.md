@@ -60,7 +60,7 @@ Support for 3D fitting is experimental and should be avoided.
 ### Galaxy models
 
 GBKFIT comes with the following galaxy models:
-- `gbkfit_gmodel_gmodel01_<device_api>`: This model is a combination of a thin and flat
+- `gbkfit_gmodel_gmodel1_<device_api>`: This model is a combination of a thin and flat
 disk, a surface brightness profile, a rotation curve, and an intrinsic
 velocity dispersion which is assumed to be constant across the galactic disk.
 
@@ -105,7 +105,49 @@ GBKFIT supports the following Line Spread Function (LSF) models:
 
 ## Installation
 
-TODO
+GBKFIT uses the CMake build system.
+
+- Install CMake. For convenience it is also recommended to install at least
+one of its GUI front-ends
+  - Linux
+    - apt-get: `apt-get install cmake cmake-ncurses-gui cmake-qt-gui`
+  - Mac OS
+    - MacPorts: `port install cmake +gui`
+    - Homebrew: `brew install cmake`. If CMake is already installed without
+      a GUI frontend you might need to run `port uninstall cmake` first
+  - Windows
+    - Download the latest version from [here](https://www.cmake.org/) and
+    install it
+- Boost C++ library.
+  - Linux
+    - apt-get: `apt-get install libboost-program-options libboost-system-dev`
+  - Mac OS
+    - MacPorts: `port install boost`
+    - Homebrew: `brew install boost`
+  - Windows
+    - Download the latest version from [here](http://www.boost.org/) and
+    install it
+- FFTW3 library. This is required when compiling any of the following modules:
+`gbkfit_fftw3`, `gbkfit_dmodel_mmaps_omp`, `gbkfit_dmodel_scube_omp`.
+  - Linux
+    - apt-get: `apt-get install libfftw3-dev`
+  - Mac OS
+    - MacPorts: `port install fftw-3-single`
+    - Homebrew: `brew install fftw --with-openmp`
+  - Windows
+    - Download the latest version from [here](http://www.fftw.org/) and
+    install it
+- Nvidia CUDA toolkit. This is required when compiling any of the following
+modules: `gbkfit_cuda`, `gbkfit_dmodel_mmaps_cuda`, `gbkfit_dmodel_scube_cuda`,
+`gbkfit_gmodel_gmodel1_cuda`.
+  - Linux
+    - apt-get: `apt-get install nvidia-cuda-toolkit`
+  - Mac OS
+    - Download the latest version from
+    [here](https://developer.nvidia.com/cuda-toolkit) and install it
+  - Windows
+    - Download the latest version from
+    [here](https://developer.nvidia.com/cuda-toolkit) and install it
 
 ## User Guide
 
@@ -201,7 +243,7 @@ Example:
 ```json
 {
   "gmodel": {
-    "type": "gbkfit_gmodel_mmodel01_cuda",
+    "type": "gbkfit_gmodel_mmodel1_cuda",
     "flx_profile": "exponential",
     "vel_profile": "arctan"
   }
