@@ -31,7 +31,7 @@
   },
 
   "gmodel": {
-    "type": "gbkfit.gmodel.gmodel01_omp",
+    "type": "gbkfit.gmodel.gmodel1_omp",
     "flx_profile": "exponential",
     "vel_profile": "arctan"
   },

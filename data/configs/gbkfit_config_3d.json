@@ -25,7 +25,7 @@
   },
 
   "gmodel": {
-    "type": "gbkfit.gmodel.gmodel01_cuda",
+    "type": "gbkfit.gmodel.gmodel1_cuda",
     "flx_profile": "exponential",
     "vel_profile": "arctan"
   },

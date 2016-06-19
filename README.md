@@ -105,7 +105,10 @@ GBKFIT supports the following Line Spread Function (LSF) models:
 
 ## Installation
 
-GBKFIT uses the CMake build system.
+GBKFIT is a modern software and it tries to make use of latest software
+technologies and coding standards. As a result, it expects that its
+dependencies and the software used for its compilation and installation
+procedure is relatively up-to-date.
 
 - Install CMake. For convenience it is also recommended to install at least
 one of its GUI front-ends
