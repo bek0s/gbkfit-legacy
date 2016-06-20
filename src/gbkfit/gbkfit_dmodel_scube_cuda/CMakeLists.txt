@@ -91,9 +91,9 @@ add_library(gbkfit_dmodel_scube_cuda_shared
 target_include_directories(gbkfit_dmodel_scube_cuda_object
     PUBLIC
     "include"
+    ${GBKFIT_CUDA_INCLUDE_DIR}
     PRIVATE
     ${GBKFIT_INCLUDE_DIR}
-    ${GBKFIT_CUDA_INCLUDE_DIR}
     ${GBKFIT_DMODEL_SCUBE_INCLUDE_DIR}
 )
 
