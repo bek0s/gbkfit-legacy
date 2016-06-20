@@ -152,6 +152,17 @@ modules: `gbkfit_cuda`, `gbkfit_dmodel_mmaps_cuda`, `gbkfit_dmodel_scube_cuda`,
   - Windows
     - Download the latest version from
     [here](https://developer.nvidia.com/cuda-toolkit) and install it
+- MPFIT library.
+  - Download the library form
+  [here](https://www.physics.wisc.edu/~craigm/idl/cmpfit.html)
+  - Edit Makefile and add the flag `-fPIC` at the C compiler flags, so the line
+  will become: `$(CC) -c -o $@ $< $(CFLAGS) -fPIC`
+  - Run make and install the libraries and header file to a location of your
+  choice.
+- MultiNest library.
+  - Download the library from
+  [here](`https://ccpforge.cse.rl.ac.uk/gf/project/multinest/`) and install it
+  using the instructions provided.
 
 ## User Guide
 
