@@ -1,7 +1,7 @@
 
 #include "gbkfit/dmodel/scube/scube_omp.hpp"
 
-#include <omp.h>
+#include <thread>
 
 #include "gbkfit/dmodel/scube/scube_omp_factory.hpp"
 #include "gbkfit/dmodel/scube/scube_omp_kernels.hpp"
@@ -166,7 +166,7 @@ SCubeOmp::SCubeOmp(int size_x,
 
     fftwf_init_threads();
 
-    fftwf_plan_with_nthreads(omp_get_max_threads());
+    fftwf_plan_with_nthreads((int)std::thread::hardware_concurrency());
 
     m_fft_plan_flxcube_r2c = fftwf_plan_dft_r2c_3d(
             m_size_up[2],
