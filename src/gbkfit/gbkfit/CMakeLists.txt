@@ -16,8 +16,8 @@ find_package(cfitsio REQUIRED)
 # ==============================================================================
 
 set(HEADER_FILES
+    ${gbkfit-workspace_BINARY_DIR}/include/gbkfit/build_settings.hpp
     include/gbkfit/array_util.hpp
-    include/gbkfit/build_settings.hpp
     include/gbkfit/config.hpp
     include/gbkfit/core.hpp
     include/gbkfit/dataset.hpp

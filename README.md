@@ -18,10 +18,9 @@ kinematics from 3D spectroscopic observations. It is written in C++, and uses
 the CMake build system.
 
 GBKFIT features a modular architecture which allows it to use a variety of
-data models (e.g., spectral cubes for 3D fitting, moment maps for 2D fitting,
-etc), galaxy models, and optimization techniques. It also provides a clean
-object-oriented interface which enables programmers to create and add their
-own custom models and optimization techniques into the software.
+data models, galaxy models, and optimization techniques. It also provides a
+clean object-oriented interface which enables programmers to create and add
+their own custom models and optimization techniques into the software.
 
 GBKFIT models observations with a combination of two models: a Data Model
 (DModel), and a Galaxy Model (GModel). The former is used to describe the data
@@ -70,9 +69,13 @@ velocity dispersion which is assumed to be constant across the galactic disk.
 
   The following rotation curve profiles are supported:
   - Linear ramp
+  ([Wright et al. 2007](http://adsabs.harvard.edu/abs/2007ApJ...658...78W))
   - Arctan
+  ([Courteau 1997](http://adsabs.harvard.edu/abs/1997AJ....114.2402C))
   - Boissier
+  ([Boissier et al. 2003](http://adsabs.harvard.edu/abs/2003MNRAS.346.1215B))
   - Epinat
+  ([Epinat et al. 2008](http://adsabs.harvard.edu/abs/2008MNRAS.388..500E))
 
 `device_api` can be either `omp` (for multi-threaded CPU acceleration) or
 `cuda` (for GPU acceleration).
@@ -232,11 +235,9 @@ Example:
 ```json
 {
   "instrument": {
-    "sampling": {
-      "x": 1.0,
-      "y": 1.0,
-      "z": 30.0
-    },
+    "sampling_x": 1.0,
+    "sampling_y": 1.0,
+    "sampling_z": 30.0,
     "psf": {
       "type": "gaussian",
       "fwhm_x": 2.5,
@@ -272,7 +273,7 @@ Example:
 ```json
 {
   "gmodel": {
-    "type": "gbkfit_gmodel_mmodel1_cuda",
+    "type": "gbkfit_gmodel_gmodel1_cuda",
     "flx_profile": "exponential",
     "vel_profile": "arctan"
   }
@@ -306,14 +307,14 @@ Example:
 }
 ```
 
-#### Parameter Priors (`parameters`)
+#### Parameter Priors (`params`)
 
 TODO
 
 Example:
 ```json
 {
-  "parameters": [
+  "params": [
     {"name":   "i0", "fixed": 1, "value":   1},
     {"name":   "r0", "fixed": 1, "value":  10},
     {"name":   "xo", "fixed": 0, "value":  25, "min":  0.0, "max":  50},
