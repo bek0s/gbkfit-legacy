@@ -19,7 +19,7 @@ public:
 
     ~MMapsCudaFactory() {}
 
-    const std::string& get_type(void) const;
+    const std::string& get_type(void) const override final;
 
     DModel* create(const std::string& info,
                    const std::vector<int>& shape,

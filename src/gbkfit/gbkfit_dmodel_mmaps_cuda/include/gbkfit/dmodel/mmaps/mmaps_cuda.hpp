@@ -41,7 +41,7 @@ public:
 
     ~MMapsCuda();
 
-    const std::string& get_type(void) const;
+    const std::string& get_type(void) const override final;
 
     const Instrument* get_instrument(void) const override final;
 
