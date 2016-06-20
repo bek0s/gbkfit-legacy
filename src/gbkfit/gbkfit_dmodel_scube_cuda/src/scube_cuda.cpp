@@ -227,13 +227,13 @@ SCubeCuda::SCubeCuda(int size_x,
     // Add output data to the output data map
     //
 
-    m_h_output_map["psfcube"] = m_h_psfcube;
+//  m_h_output_map["psfcube"] = m_h_psfcube;
     m_h_output_map["flxcube"] = m_h_flxcube;
-    m_h_output_map["flxcube_up"] = m_h_flxcube_up;
+//  m_h_output_map["flxcube_up"] = m_h_flxcube_up;
 
-    m_d_output_map["psfcube"] = m_d_psfcube;
+//  m_d_output_map["psfcube"] = m_d_psfcube;
     m_d_output_map["flxcube"] = m_d_flxcube;
-    m_d_output_map["flxcube_up"] = m_d_flxcube_up;
+//  m_d_output_map["flxcube_up"] = m_d_flxcube_up;
 }
 
 SCubeCuda::~SCubeCuda()

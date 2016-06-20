@@ -41,7 +41,7 @@ DModel* SCubeOmpFactory::create(const std::string& info,
 
 void SCubeOmpFactory::destroy(DModel* dmodel) const
 {
-    if (dmodel->get_type() == get_type()) {
+    if (dmodel->get_type() != get_type()) {
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
     }
 

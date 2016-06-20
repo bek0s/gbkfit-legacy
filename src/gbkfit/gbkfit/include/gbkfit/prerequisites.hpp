@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <complex>
 #include <fstream>
 #include <iomanip>
@@ -42,8 +43,8 @@ class Instrument;
 class NDArray;
 class NDArrayHost;
 class NDShape;
-class Parameter;
-class Parameters;
+class Param;
+class Params;
 
 class LineSpreadFunction;
 class PointSpreadFunction;

@@ -8,7 +8,7 @@
 #include "gbkfit/instrument.hpp"
 #include "gbkfit/json.hpp"
 #include "gbkfit/ndarray_host.hpp"
-#include "gbkfit/parameters.hpp"
+#include "gbkfit/params.hpp"
 #include "gbkfit/spread_functions.hpp"
 
 namespace gbkfit {
@@ -78,16 +78,16 @@ Fitter* Core::create_fitter(const std::string& info)
     return fitter;
 }
 
-Parameters* Core::create_parameters(const std::string& info)
+Params* Core::create_parameters(const std::string& info)
 {
     nlohmann::json info_root = nlohmann::json::parse(info);
 
-    Parameters* params = new Parameters();
+    Params* params = new Params();
 
     // Iterate over parameters
     for(auto& info_param : info_root)
     {
-        Parameter& param = params->add(info_param.at("name"));
+        Param& param = params->add(info_param.at("name"));
 
         // Iterate over parameter options
         for (auto it = info_param.begin(); it != info_param.end(); ++it)

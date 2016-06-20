@@ -43,7 +43,7 @@ public:
 
     const std::string& get_type(void) const final;
 
-    FitterResult* fit(const DModel* dmodel, const Parameters* params, const std::vector<Dataset*>& data) const final;
+    FitterResult* fit(const DModel* dmodel, const Params* params, const std::vector<Dataset*>& data) const final;
 
 };
 

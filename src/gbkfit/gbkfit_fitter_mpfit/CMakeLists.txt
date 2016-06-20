@@ -57,7 +57,6 @@ target_include_directories(gbkfit_fitter_mpfit_object
     ${MPFIT_INCLUDE_DIRS}
 )
 
-
 target_link_libraries(gbkfit_fitter_mpfit_static
     PRIVATE
     ${GBKFIT_LIBRARY_STATIC}

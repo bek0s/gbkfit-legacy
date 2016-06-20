@@ -46,13 +46,14 @@ all the cores available on the Central Processing Unit (CPU) through OpenMP.
 ### Data models
 
 GBKFIT comes with the following data models:
-- `gbkfit_dmodel_mmaps_<device_api>`: This model is used to describe moment maps extracted
-from a spectral data cube. Thus, this model should be used to perform 2D fits
-to velocity and velocity dispersion maps. Flux maps are also supported but
-they are currently experimental and should not be used.
-- `gbkfit_dmodel_scube_<device_api>`: This model is used to describe spectral data cubes.
-Thus, this model should be used to perform 3D fits to spectral data cubes.
-Support for 3D fitting is experimental and should be avoided.
+- `gbkfit_dmodel_mmaps_<device_api>`: This model is used to describe moment
+maps extracted from a spectral data cube. Thus, this model should be used to
+perform 2D fits to velocity and velocity dispersion maps. Flux maps are also
+supported but they are currently experimental and should not be used.
+- `gbkfit_dmodel_scube_<device_api>`: This model is used to describe spectral
+data cubes. Thus, this model should be used to perform 3D fits to spectral
+data cubes. Support for 3D fitting is experimental and should be avoided for
+now.
 
 `device_api` can be either `omp` (for multi-threaded CPU acceleration) or
 `cuda` (for GPU acceleration).
@@ -60,8 +61,8 @@ Support for 3D fitting is experimental and should be avoided.
 ### Galaxy models
 
 GBKFIT comes with the following galaxy models:
-- `gbkfit_gmodel_gmodel1_<device_api>`: This model is a combination of a thin and flat
-disk, a surface brightness profile, a rotation curve, and an intrinsic
+- `gbkfit_gmodel_gmodel1_<device_api>`: This model is a combination of a thin
+and flat disk, a surface brightness profile, a rotation curve, and an intrinsic
 velocity dispersion which is assumed to be constant across the galactic disk.
 
   The following surface brightness profiles are supported:
@@ -115,9 +116,9 @@ one of its GUI front-ends
   - Linux
     - apt-get: `apt-get install cmake cmake-ncurses-gui cmake-qt-gui`
   - Mac OS
-    - MacPorts: `port install cmake +gui`
-    - Homebrew: `brew install cmake`. If CMake is already installed without
-      a GUI frontend you might need to run `port uninstall cmake` first
+    - MacPorts: `port install cmake +gui`. If CMake is already installed
+    without a GUI frontend you might need to run `port uninstall cmake` first
+    - Homebrew: `brew install cmake`.
   - Windows
     - Download the latest version from [here](https://www.cmake.org/) and
     install it
@@ -164,6 +165,13 @@ gbkfit_app_cli --config="your_configuration_file.json"
 
 GBKFIT input configuration is in JSON format. The JSON format was chosen
 because it is very simple and supported by a wide range of software tools.
+
+#### Task (`tast`)
+
+THe user must define what task he/she want to perform. There are two available
+option:
+- `fit`: Perform a fit.
+- `evaluate`: Evaluate a model and save it to disk without performing a fit.
 
 #### The Datasets (`datasets`)
 

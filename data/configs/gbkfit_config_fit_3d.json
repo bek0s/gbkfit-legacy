@@ -1,4 +1,7 @@
 {
+
+  "task": "fit",
+
   "datasets": [
     {
       "type": "flxcube",
@@ -25,13 +28,13 @@
   },
 
   "gmodel": {
-    "type": "gbkfit.gmodel.gmodel1_cuda",
+    "type": "gbkfit.gmodel.gmodel1_omp",
     "flx_profile": "exponential",
     "vel_profile": "arctan"
   },
 
   "dmodel": {
-    "type": "gbkfit.dmodel.scube_cuda",
+    "type": "gbkfit.dmodel.scube_omp",
     "size_x": 49,
     "size_y": 49,
     "size_z": 101
@@ -42,7 +45,7 @@
     "maxiter": 0
   },
 
-  "parameters": [
+  "params": [
     {"name":   "i0", "fixed": 1, "value":   1.0},
     {"name":   "r0", "fixed": 1, "value":  10.0},
     {"name":   "xo", "fixed": 0, "value":  24.5, "min":   5, "max":  45, "step": 0.01},

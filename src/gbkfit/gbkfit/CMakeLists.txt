@@ -32,7 +32,7 @@ set(HEADER_FILES
     include/gbkfit/ndarray.hpp
     include/gbkfit/ndarray_host.hpp
     include/gbkfit/ndshape.hpp
-    include/gbkfit/parameters.hpp
+    include/gbkfit/params.hpp
     include/gbkfit/prerequisites.hpp
     include/gbkfit/spread_functions.hpp
     include/gbkfit/string_util.hpp
@@ -53,7 +53,7 @@ set(SOURCE_FILES
     src/ndarray.cpp
     src/ndarray_host.cpp
     src/ndshape.cpp
-    src/parameters.cpp
+    src/params.cpp
     src/spread_functions.cpp
     src/utility.cpp
 )

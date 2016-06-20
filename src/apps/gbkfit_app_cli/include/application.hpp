@@ -32,7 +32,7 @@ private:
     gbkfit::DModel* m_dmodel;
     gbkfit::GModel* m_gmodel;
     gbkfit::Fitter* m_fitter;
-    gbkfit::Parameters* m_parameters;
+    gbkfit::Params* m_params;
     std::vector<gbkfit::Dataset*> m_datasets;
     gbkfit::Instrument* m_instrument;
 

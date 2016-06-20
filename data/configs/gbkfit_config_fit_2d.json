@@ -1,4 +1,7 @@
 {
+
+  "task": "fit",
+
   "datasets": [
     {
       "type": "velmap",
@@ -48,7 +51,7 @@
     "maxiter": 0
   },
 
-  "parameters": [
+  "params": [
     {"name":   "i0", "fixed": 1, "value":   1.0},
     {"name":   "r0", "fixed": 1, "value":  10.0},
     {"name":   "xo", "fixed": 0, "value":  24.5, "min":   5, "max":  45, "step": 0.01},

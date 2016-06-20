@@ -206,10 +206,10 @@ SCubeOmp::SCubeOmp(int size_x,
     //
 
     m_output_map["flxcube"] = m_flxcube;
-    m_output_map["psfcube"] = m_psfcube;
+//  m_output_map["psfcube"] = m_psfcube;
 
-    m_output_map["flxcube_up"] = m_flxcube_up;
-    m_output_map["psfcube_up"] = m_psfcube_up;
+//  m_output_map["flxcube_up"] = m_flxcube_up;
+//  m_output_map["psfcube_up"] = m_psfcube_up;
 }
 
 SCubeOmp::~SCubeOmp()

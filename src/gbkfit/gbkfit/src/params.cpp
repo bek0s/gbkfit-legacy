@@ -1,37 +1,37 @@
 
-#include "gbkfit/parameters.hpp"
+#include "gbkfit/params.hpp"
 
 namespace gbkfit {
 
-Parameter::Parameter(const std::string& name)
+Param::Param(const std::string& name)
     : m_name(name)
 {
 }
 
-Parameter::~Parameter()
+Param::~Param()
 {
 }
 
-const std::string& Parameter::get_name(void) const
+const std::string& Param::get_name(void) const
 {
     return m_name;
 }
 
-bool Parameters::has(const std::string& name) const
+bool Params::has(const std::string& name) const
 {
     return m_params.find(name) != m_params.end();
 }
 
-Parameter& Parameters::add(const std::string& name)
+Param& Params::add(const std::string& name)
 {
     if (has(name))
         throw std::runtime_error("parameter already exists: '" + name + "'");
 
-    m_params.emplace(name, Parameter(name));
+    m_params.emplace(name, Param(name));
     return m_params.at(name);
 }
 
-void Parameters::del(const std::string& name)
+void Params::del(const std::string& name)
 {
     if (!has(name))
         throw std::runtime_error("parameter does not exist: '" + name + "'");
@@ -39,7 +39,7 @@ void Parameters::del(const std::string& name)
     m_params.erase(name);
 }
 
-Parameter& Parameters::get(const std::string& name)
+Param& Params::get(const std::string& name)
 {
     if (!has(name))
         throw std::runtime_error("parameter does not exist: '" + name + "'");
@@ -47,7 +47,7 @@ Parameter& Parameters::get(const std::string& name)
     return m_params.at(name);
 }
 
-const Parameter& Parameters::get(const std::string& name) const
+const Param& Params::get(const std::string& name) const
 {
     if (!has(name))
         throw std::runtime_error("parameter does not exist: '" + name + "'");
@@ -55,22 +55,22 @@ const Parameter& Parameters::get(const std::string& name) const
     return m_params.at(name);
 }
 
-Parameters::iterator Parameters::begin(void)
+Params::iterator Params::begin(void)
 {
     return m_params.begin();
 }
 
-Parameters::iterator Parameters::end(void)
+Params::iterator Params::end(void)
 {
     return m_params.end();
 }
 
-Parameters::const_iterator Parameters::begin(void) const
+Params::const_iterator Params::begin(void) const
 {
     return m_params.begin();
 }
 
-Parameters::const_iterator Parameters::end(void) const
+Params::const_iterator Params::end(void) const
 {
     return m_params.end();
 }

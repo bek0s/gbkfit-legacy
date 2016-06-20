@@ -48,7 +48,7 @@ public:
     const std::string& get_type(void) const override final;
 
     FitterResult* fit(const DModel* dmodel,
-                      const Parameters* params,
+                      const Params* params,
                       const std::vector<Dataset*>& data) const final;
 
 };

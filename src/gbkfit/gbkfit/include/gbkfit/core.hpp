@@ -21,7 +21,7 @@ private:
     std::vector<PointSpreadFunction*> m_psfs;
     std::vector<LineSpreadFunction*> m_lsfs;
     std::vector<Fitter*> m_fitters;
-    std::vector<Parameters*> m_parameters;
+    std::vector<Params*> m_parameters;
 
     std::vector<DModel*> m_dmodels;
     std::vector<GModel*> m_gmodels;
@@ -46,7 +46,7 @@ public:
 
     Fitter* create_fitter(const std::string& info);
 
-    Parameters* create_parameters(const std::string& info);
+    Params* create_parameters(const std::string& info);
 
     DModel* create_dmodel(const std::string& info,
                           const std::vector<int>& shape,

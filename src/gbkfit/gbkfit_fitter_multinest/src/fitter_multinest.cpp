@@ -6,7 +6,7 @@
 #include "gbkfit/dmodel.hpp"
 #include "gbkfit/gmodel.hpp"
 #include "gbkfit/ndarray_host.hpp"
-#include "gbkfit/parameters.hpp"
+#include "gbkfit/params.hpp"
 #include "gbkfit/utility.hpp"
 
 #include <boost/property_tree/ptree.hpp>
@@ -187,7 +187,7 @@ const std::string& FitterMultinest::get_type(void) const
     return FitterMultinestFactory::FACTORY_TYPE;
 }
 
-FitterResult* FitterMultinest::fit(const DModel* dmodel, const Parameters* params, const std::vector<Dataset*>& datasets) const
+FitterResult* FitterMultinest::fit(const DModel* dmodel, const Params* params, const std::vector<Dataset*>& datasets) const
 {
     //
     // Perform the necessary memory allocations and copy the datasets on the host.

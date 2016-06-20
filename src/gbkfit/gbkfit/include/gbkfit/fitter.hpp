@@ -19,7 +19,7 @@ public:
     virtual const std::string& get_type(void) const = 0;
 
     virtual FitterResult* fit(const DModel* dmodel,
-                              const Parameters* params,
+                              const Params* params,
                               const std::vector<Dataset*>& data) const = 0;
 
 };

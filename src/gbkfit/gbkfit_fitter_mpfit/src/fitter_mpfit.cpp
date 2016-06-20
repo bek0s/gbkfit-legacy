@@ -7,7 +7,7 @@
 #include "gbkfit/fitter_result.hpp"
 #include "gbkfit/gmodel.hpp"
 #include "gbkfit/ndarray_host.hpp"
-#include "gbkfit/parameters.hpp"
+#include "gbkfit/params.hpp"
 #include "gbkfit/string_util.hpp"
 #include "gbkfit/utility.hpp"
 
@@ -237,7 +237,7 @@ const std::string& FitterMpfit::get_type(void) const
 }
 
 FitterResult* FitterMpfit::fit(const DModel* dmodel,
-                               const Parameters* params,
+                               const Params* params,
                                const std::vector<Dataset*>& datasets) const
 {
     //
