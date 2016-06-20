@@ -58,6 +58,7 @@ target_include_directories(gbkfit_dmodel_scube_omp_object
     PRIVATE
     ${GBKFIT_INCLUDE_DIR}
     ${GBKFIT_DMODEL_SCUBE_INCLUDE_DIR}
+    PUBLIC
     ${FFTW3_INCLUDE_DIRS}
 )
 
