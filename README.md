@@ -166,12 +166,19 @@ gbkfit_app_cli --config="your_configuration_file.json"
 GBKFIT input configuration is in JSON format. The JSON format was chosen
 because it is very simple and supported by a wide range of software tools.
 
-#### Task (`tast`)
+#### Task (`task`)
 
 THe user must define what task he/she want to perform. There are two available
 option:
 - `fit`: Perform a fit.
 - `evaluate`: Evaluate a model and save it to disk without performing a fit.
+
+Example:
+```json
+{
+  "task": "fit"
+}
+```
 
 #### The Datasets (`datasets`)
 
