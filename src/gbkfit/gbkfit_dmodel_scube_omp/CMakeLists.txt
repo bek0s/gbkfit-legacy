@@ -65,6 +65,7 @@ target_link_libraries(gbkfit_dmodel_scube_omp_static
     PRIVATE
     ${GBKFIT_LIBRARY_STATIC}
     ${GBKFIT_DMODEL_SCUBE_LIBRARY_STATIC}
+    ${FFTW3_SINGLE_LIBRARY}
     ${FFTW3_SINGLE_THREADS_LIBRARY}
     ${OpenMP_CXX_FLAGS}
 )
@@ -73,6 +74,7 @@ target_link_libraries(gbkfit_dmodel_scube_omp_shared
     PRIVATE
     ${GBKFIT_LIBRARY_SHARED}
     ${GBKFIT_DMODEL_SCUBE_LIBRARY_SHARED}
+    ${FFTW3_SINGLE_LIBRARY}
     ${FFTW3_SINGLE_THREADS_LIBRARY}
     ${OpenMP_CXX_FLAGS}
 )
