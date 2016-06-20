@@ -50,9 +50,9 @@ add_library(gbkfit_cuda_shared
 target_include_directories(gbkfit_cuda_object
     PUBLIC
     "include"
+    ${CUDA_INCLUDE_DIRS}
     PRIVATE
     ${GBKFIT_INCLUDE_DIR}
-    ${CUDA_INCLUDE_DIRS}
 )
 
 target_link_libraries(gbkfit_cuda_static
