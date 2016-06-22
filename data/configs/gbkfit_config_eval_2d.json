@@ -1,6 +1,6 @@
 {
 
-  "task": "evaluate",
+  "mode": "evaluate",
 
   "datasets": [
   ],

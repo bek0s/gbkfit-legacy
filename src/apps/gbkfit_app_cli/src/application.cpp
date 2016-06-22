@@ -64,11 +64,11 @@ Application::Application(void)
     : m_config_file(DEFAULT_CONFIG_FILE)
     , m_output_dir(DEFAULT_OUTPUT_DIR)
     , m_core(nullptr)
+    , m_instrument(nullptr)
     , m_dmodel(nullptr)
     , m_gmodel(nullptr)
     , m_fitter(nullptr)
     , m_params(nullptr)
-    , m_instrument(nullptr)
 {
 }
 
@@ -188,11 +188,11 @@ bool Application::initialize(void)
     }
 
     //
-    // Read task type.
+    // Read mode.
     //
 
-    std::cout << "reading task type..." << std::endl;
-    m_task = config.at("task");
+    std::cout << "reading mode..." << std::endl;
+    m_task = config.at("mode");
 
     if (m_task != "evaluate" && m_task != "fit") {
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);

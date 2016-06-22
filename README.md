@@ -93,79 +93,14 @@ Nested Sampling techniques through the
 
 ### Point Spread Functions
 
-GBKFIT supports the following Point Spread Function (PSF) models:
-- 2D elliptical Gaussian
-- 2D elliptical Lorentzian
-- 2D elliptical Moffat
-- 2D image
+GBKFIT supports the following Point Spread Function (PSF) models: 2D
+elliptical Gaussian, 2D elliptical Lorentzian, and 2D elliptical Moffat.
+Alternatively, the user can supply a 2D image.
 
 ### Line Spread Functions
 
-GBKFIT supports the following Line Spread Function (LSF) models:
-- 1D Gaussian
-- 1D Lorentzian
-- 1D Moffat
-- 1D image
-
-## Installation
-
-GBKFIT is a modern software and it tries to make use of latest software
-technologies and coding standards. As a result, it expects that its
-dependencies and the software used for its compilation and installation
-procedure is relatively up-to-date.
-
-- Install CMake. For convenience it is also recommended to install at least
-one of its GUI front-ends
-  - Linux
-    - apt-get: `apt-get install cmake cmake-ncurses-gui cmake-qt-gui`
-  - Mac OS
-    - MacPorts: `port install cmake +gui`. If CMake is already installed
-    without a GUI frontend you might need to run `port uninstall cmake` first
-    - Homebrew: `brew install cmake`.
-  - Windows
-    - Download the latest version from [here](https://www.cmake.org/) and
-    install it
-- Boost C++ library.
-  - Linux
-    - apt-get: `apt-get install libboost-program-options libboost-system-dev`
-  - Mac OS
-    - MacPorts: `port install boost`
-    - Homebrew: `brew install boost`
-  - Windows
-    - Download the latest version from [here](http://www.boost.org/) and
-    install it
-- FFTW3 library. This is required when compiling any of the following modules:
-`gbkfit_fftw3`, `gbkfit_dmodel_mmaps_omp`, `gbkfit_dmodel_scube_omp`.
-  - Linux
-    - apt-get: `apt-get install libfftw3-dev`
-  - Mac OS
-    - MacPorts: `port install fftw-3-single`
-    - Homebrew: `brew install fftw --with-openmp`
-  - Windows
-    - Download the latest version from [here](http://www.fftw.org/) and
-    install it
-- Nvidia CUDA toolkit. This is required when compiling any of the following
-modules: `gbkfit_cuda`, `gbkfit_dmodel_mmaps_cuda`, `gbkfit_dmodel_scube_cuda`,
-`gbkfit_gmodel_gmodel1_cuda`.
-  - Linux
-    - apt-get: `apt-get install nvidia-cuda-toolkit`
-  - Mac OS
-    - Download the latest version from
-    [here](https://developer.nvidia.com/cuda-toolkit) and install it
-  - Windows
-    - Download the latest version from
-    [here](https://developer.nvidia.com/cuda-toolkit) and install it
-- MPFIT library.
-  - Download the library form
-  [here](https://www.physics.wisc.edu/~craigm/idl/cmpfit.html)
-  - Edit Makefile and add the flag `-fPIC` at the C compiler flags, so the line
-  will become: `$(CC) -c -o $@ $< $(CFLAGS) -fPIC`
-  - Run make and install the libraries and header file to a location of your
-  choice.
-- MultiNest library.
-  - Download the library from
-  [here](`https://ccpforge.cse.rl.ac.uk/gf/project/multinest/`) and install it
-  using the instructions provided.
+GBKFIT supports the following Line Spread Function (LSF) models: 1D Gaussian,
+1D Lorentzian, and 1D Moffat. Alternatively, the user can supply an 1D image.
 
 ## User Guide
 
@@ -178,26 +113,31 @@ gbkfit_app_cli --config="your_configuration_file.json"
 ### GBKFIT input configuration
 
 GBKFIT input configuration is in JSON format. The JSON format was chosen
-because it is very simple and supported by a wide range of software tools.
+because it is very simple, flexible, and supported by a wide range of software
+tools. If you are performing an automated or batch analysis with GBKFIT, it is
+advised to use a JSON library to generate the configuration file. For example,
+if your scripts are in Python, use the `json` module that comes with Python by
+default.
 
-#### Task (`task`)
+#### Running mode (`mode`)
 
-THe user must define what task he/she want to perform. There are two available
-option:
-- `fit`: Perform a fit.
-- `evaluate`: Evaluate a model and save it to disk without performing a fit.
+The running mode of GBKFIT is specified by the `mode` key and it can have the
+following values:
+- `fit`: Perform a fit
+- `evaluate`: Evaluate a model and store it to the disk without performing a
+fit.
 
 Example:
 ```json
 {
-  "task": "fit"
+  "mode": "fit"
 }
 ```
 
 #### The Datasets (`datasets`)
 
-The data of the fitting procedure are defined under the `datasets` key in the
-form of an array. Each element of the array has to include the following keys:
+The data of the fitting procedure are specified under the `datasets` array.
+Each element of the array is a map and can include the following keys:
 - `type`: The type of the data. This can be:
   - `flxmap`: for flux maps
   - `velmap`: for velocity maps
@@ -206,6 +146,10 @@ form of an array. Each element of the array has to include the following keys:
 - `data`: The path to the data measurements.
 - `error`: The path to the 1-sigma uncertainties in the data measurements.
 - `mask`: The path to a mask image.
+
+In case of FITS files, the file names can utilize the [Extended File Name
+Syntax](https://heasarc.gsfc.nasa.gov/docs/software/fitsio/filters.html) of
+the CFITSIO library.
 
 Example:
 ```json
@@ -219,17 +163,57 @@ Example:
     },
     {
       "type": "sigmap",
-      "data": "data/sigmap_d.fits",
-      "error": "data/sigmap_e.fits",
-      "mask": "data/sigmap_m.fits"
+      "data": "data/sigmap.fits[0]",
+      "error": "data/sigmap.fits[1]",
+      "mask": "data/sigmap.fits[2]"
     }
   ]
 }
 ```
 
-#### Instrument
+#### Instrument (`instrument`)
 
-TODO
+The spatial and spectral sampling, the Point Spread Function (PSF), and the
+Line Spread Function are specified under the `instrument` map.
+
+The spatial sampling of the input data (specified under the `datasets` array)
+are defined using the `sampling_x` and `sampling_y` keys, and they can be in
+any units. However, the same units have to be used for any of the model
+parameters that describe spatial position or distance. The spectral sampling
+of the input data (specified under the `datasets` array) is defined using the
+`sampling_z` key and it should be in `km/s`.
+
+The PSF of the observation is specified under the `psf` map. Under this map,
+the key `type` defines the model used for the PSF. Each model comes with its
+own set of parameters:
+
+- `gaussian`
+  - `fhwm_x`
+  - `fhwm_y`
+  - `pa`
+- `lorentzian`
+  - `fhwm_x`
+  - `fhwm_y`
+  - `pa`
+- `moffat`
+  - `fhwm_x`
+  - `fhwm_y`
+  - `pa`
+  - `beta`
+- `image`
+
+The LSF of the observation is specified under the `lsf` map. Under this map,
+the key `type` defines the model used for the LSF. Each model comes with its
+own set of parameters:
+
+- `gaussian`
+  - `fhwm`
+- `lorentzian`
+  - `fhwm`
+- `moffat`
+  - `fhwm`
+  - `beta`
+- `image`
 
 Example:
 ```json
@@ -252,7 +236,7 @@ Example:
 }
 ```
 
-#### The Data Model (`dmodel`)
+#### The data model (`dmodel`)
 
 TODO
 
@@ -265,7 +249,7 @@ Example:
 }
 ```
 
-#### The Galaxy Model (`gmodel`)
+#### The galaxy model (`gmodel`)
 
 TODO
 
@@ -282,20 +266,21 @@ Example:
 
 #### The Fitter (`fitter`)
 
-The fitter of the fitting procedure is defined under the `fitter` key in the
-form of a map. The elements of this map depend on the selected fitter which is
-defined by the `type` key:
-- `gbkfit.fitter.mpfit`: Uses the `gbkfit_fitter_mpfit` fitter module which
-enables the following options: `ftol`, `xtol`, `gtol`, `epsfcn`, `stepfactor`,
-`covtol`, `maxiter`, `maxfev`, `nprint`, `douserscale`, `nofinitecheck`.
-- `gbkfit.fitter.multinest`: Uses the `gbkfit_fitter_multinest` fitter module
-which enables the following options: `is`, `mmodal`, `ceff`, `nlive`, `efr`,
-`tol`, `ztol`, `logzero`, `maxiter`.
+The Fitter of the fitting procedure is defined under the `fitter` map. The
+elements of this map depend on the selected Fitter which is specified by the
+`type` key:
+- `gbkfit.fitter.mpfit`: It is provided by the `gbkfit_fitter_mpfit` module
+and enables the following options: `ftol`, `xtol`, `gtol`, `epsfcn`,
+`stepfactor`, `covtol`, `maxiter`, `maxfev`, `nprint`, `douserscale`,
+`nofinitecheck`.
+- `gbkfit.fitter.multinest`: It is provided by the `gbkfit_fitter_multinest`
+module and enables the following options: `is`, `mmodal`, `ceff`, `nlive`,
+`efr`, `tol`, `ztol`, `logzero`, `maxiter`.
 
-For more details as to what each option does see MPFIT's and MultiNest's
-documentation. For the parameters that are not present in the configuration,
-GBKFIT will use default values. If any of the supplied options do not belong
-to the selected fitter, they will be ignored.
+For more details as to what each option does and what is its default value (in
+case it is optional and not present in the configuration), see the
+corresponding optimizer's documentation. If any of the supplied options is not
+supported by the selected Fitter, it will be ignored.
 
 Example:
 ```json
@@ -307,9 +292,77 @@ Example:
 }
 ```
 
-#### Parameter Priors (`params`)
+#### Parameter priors (`params`)
 
-TODO
+The priors and settings for each of the model parameters are defined under the
+`params` array. Each element of the array is a map and corresponds to a
+different parameter. Each map can contain different items depending on running
+mode or Fitter used:
+
+- Mode: `evaluate`
+  - `name`
+    - Required: yes
+    - Description: The name of the parameter.
+  - `value`
+    - Required: yes
+    - Description: The value of the parameter.
+- Fitter: `gbkfit.fitter.mpfit`
+  - `name`
+    - Required: yes
+    - Description: The name of the parameter.
+  - `value`
+    - Required: yes
+    - Description: The initial guess of the parameter value.
+  - `fixed`
+    - Required: no
+    - Description: Set to `0` to keep the parameter free or `1` to fix the
+    parameter to `value`.
+  - `min`
+    - Required: no
+    - Description: The minimum possible value of the parameter. If not
+  provided, `-std::numeric_limits<float>::max` is used.
+  - `max`
+    - Required: no
+    - Description: The maximum possible value of the parameter. If not
+  provided, `+std::numeric_limits<float>::max` is used.
+  - `side`
+    - Required: no
+    - Description: See `MPFIT` documentation.
+  - `step`
+    - Required: no
+    - Description: See `MPFIT` documentation.
+  - `relstep`
+    - Required: no
+    - Description: See `MPFIT` documentation.
+
+- Fitter: `gbkfit.fitter.multinest`
+  - `name`
+    - Required: yes
+    - Description: The name of the parameter.
+  - `value`
+    - Required: no unless fixed.
+    - Description: The value of the parameter if it is fixed (see `fixed`
+      option bellow).
+  - `fixed`
+    - Required: no
+    - Description: Set to `0` to keep the parameter free or `1` to fix the
+      parameter to `value`.
+  - `min`
+    - Required: yes if not fixed
+    - Description: The minimum possible value of the parameter. If not
+    provided, the value `-std::numeric_limits<float>::max` is used.
+  - `max`
+    - Required: yes if not fixed
+    - Description: The maximum possible value of the parameter. If not
+    provided, the value `+std::numeric_limits<float>::max` is used.
+  - `wrap`
+    - Required: no
+    - Description: See `MultiNest` documentation.
+
+For more details as to what each option does and what is its default value (in
+case it is optional and not present in the configuration), see the
+corresponding optimizer's documentation. If any of the supplied options is not
+supported by the selected Fitter, it will be ignored.
 
 Example:
 ```json

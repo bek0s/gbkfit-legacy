@@ -29,12 +29,12 @@ private:
     std::vector<gbkfit::GModelFactory*> m_gmodel_factories;
     std::vector<gbkfit::FitterFactory*> m_fitter_factories;
 
+    std::vector<gbkfit::Dataset*> m_datasets;
+    gbkfit::Instrument* m_instrument;
     gbkfit::DModel* m_dmodel;
     gbkfit::GModel* m_gmodel;
     gbkfit::Fitter* m_fitter;
     gbkfit::Params* m_params;
-    std::vector<gbkfit::Dataset*> m_datasets;
-    gbkfit::Instrument* m_instrument;
 
 public:
 
