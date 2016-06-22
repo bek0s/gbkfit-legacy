@@ -38,9 +38,11 @@ set(HEADER_FILES
     include/gbkfit/string_util.hpp
     include/gbkfit/utility.hpp
     include/gbkfit/variable_map.hpp
+    include/gbkfit/version.hpp
 )
 
 set(SOURCE_FILES
+    ${gbkfit-workspace_BINARY_DIR}/src/version.cpp
     src/array_util.cpp
     src/core.cpp
     src/dataset.cpp

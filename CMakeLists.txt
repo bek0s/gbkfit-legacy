@@ -69,6 +69,7 @@ option(GBKFIT_BUILD_UNITTESTS_GBKFIT "Build unit tests for gbkfit" FALSE)
 # ==============================================================================
 
 configure_file(cmake/templates/build_settings.hpp.in ${PROJECT_BINARY_DIR}/include/gbkfit/build_settings.hpp)
+configure_file(cmake/templates/version.cpp.in ${PROJECT_BINARY_DIR}/src/version.cpp)
 
 include_directories(${PROJECT_BINARY_DIR}/include)
 

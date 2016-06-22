@@ -14,6 +14,7 @@
 #include "gbkfit/ndarray_host.hpp"
 #include "gbkfit/params.hpp"
 #include "gbkfit/utility.hpp"
+#include "gbkfit/version.hpp"
 
 #ifdef GBKFIT_BUILD_DMODEL_MMAPS_CUDA
 #include "gbkfit/dmodel/mmaps/mmaps_cuda.hpp"
@@ -105,6 +106,7 @@ bool Application::process_program_options(int argc, char** argv)
 
 bool Application::initialize(void)
 {
+    std::cout << gbkfit::VERSION << std::endl;
     std::cout << "initialization started" << std::endl;
 
     //

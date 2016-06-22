@@ -1,0 +1,7 @@
+#include "gbkfit/version.hpp"
+
+namespace gbkfit {
+
+const std::string VERSION = "@VERSION@";
+
+} // namespace gbkfit
