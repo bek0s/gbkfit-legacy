@@ -6,6 +6,9 @@
 
 namespace gbkfit {
 
+extern const std::string VERSION_MAJOR;
+extern const std::string VERSION_MINOR;
+extern const std::string VERSION_PATCH;
 extern const std::string VERSION;
 
 } // namespace gbkfit

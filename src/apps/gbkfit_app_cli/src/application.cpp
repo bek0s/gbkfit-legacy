@@ -106,7 +106,8 @@ bool Application::process_program_options(int argc, char** argv)
 
 bool Application::initialize(void)
 {
-    std::cout << gbkfit::VERSION << std::endl;
+    std::cout << "GBKFIT version: " << gbkfit::VERSION << std::endl;
+
     std::cout << "initialization started" << std::endl;
 
     //
