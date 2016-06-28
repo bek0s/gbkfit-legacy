@@ -115,9 +115,7 @@ target_link_libraries(gbkfit_dmodel_mmaps_cuda_shared
     ${GBKFIT_DMODEL_SCUBE_LIBRARY_SHARED}
     ${GBKFIT_DMODEL_SCUBE_CUDA_LIBRARY_SHARED}
     ${GBKFIT_DMODEL_MMAPS_LIBRARY_SHARED}
-    # I use the static version here because I was too lazy to configure the
-    # RPATH for the nvcc host compiler
-    gbkfit_dmodel_mmaps_cuda_nvcc_static
+    gbkfit_dmodel_mmaps_cuda_nvcc_shared
 )
 
 target_compile_definitions(gbkfit_dmodel_mmaps_cuda_object

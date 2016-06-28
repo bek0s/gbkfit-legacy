@@ -110,9 +110,7 @@ target_link_libraries(gbkfit_gmodel_gmodel1_cuda_shared
     ${GBKFIT_LIBRARY_SHARED}
     ${GBKFIT_CUDA_LIBRARY_SHARED}
     ${GBKFIT_GMODEL_GMODEL1_LIBRARY_SHARED}
-    # I use the static version here because I was too lazy to configure the
-    # RPATH for the nvcc host compiler
-    gbkfit_gmodel_gmodel1_cuda_nvcc_static
+    gbkfit_gmodel_gmodel1_cuda_nvcc_shared
 )
 
 target_compile_definitions(gbkfit_gmodel_gmodel1_cuda_object
@@ -153,6 +151,8 @@ set_target_properties(gbkfit_gmodel_gmodel1_cuda_shared
 install(TARGETS
     gbkfit_gmodel_gmodel1_cuda_static
     gbkfit_gmodel_gmodel1_cuda_shared
+    gbkfit_gmodel_gmodel1_cuda_nvcc_static
+    gbkfit_gmodel_gmodel1_cuda_nvcc_shared
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib

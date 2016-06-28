@@ -102,8 +102,8 @@ target_link_libraries(gbkfit_dmodel_scube_cuda_static
     ${GBKFIT_LIBRARY_STATIC}
     ${GBKFIT_CUDA_LIBRARY_STATIC}
     ${GBKFIT_DMODEL_SCUBE_LIBRARY_STATIC}
-    gbkfit_dmodel_scube_cuda_nvcc_static
     ${CUDA_CUFFT_LIBRARIES}
+    gbkfit_dmodel_scube_cuda_nvcc_static
 )
 
 target_link_libraries(gbkfit_dmodel_scube_cuda_shared
@@ -112,9 +112,7 @@ target_link_libraries(gbkfit_dmodel_scube_cuda_shared
     ${GBKFIT_CUDA_LIBRARY_SHARED}
     ${GBKFIT_DMODEL_SCUBE_LIBRARY_SHARED}
     ${CUDA_CUFFT_LIBRARIES}
-    # I use the static version here because I was too lazy to configure the
-    # RPATH for the nvcc host compiler
-    gbkfit_dmodel_scube_cuda_nvcc_static
+    gbkfit_dmodel_scube_cuda_nvcc_shared
 )
 
 target_compile_definitions(gbkfit_dmodel_scube_cuda_object
@@ -155,6 +153,8 @@ set_target_properties(gbkfit_dmodel_scube_cuda_shared
 install(TARGETS
     gbkfit_dmodel_scube_cuda_static
     gbkfit_dmodel_scube_cuda_shared
+    gbkfit_dmodel_scube_cuda_nvcc_static
+    gbkfit_dmodel_scube_cuda_nvcc_shared
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
