@@ -1,4 +1,4 @@
-# GBKFIT installation instructions
+# GBKFIT Installation Guide
 
 This document provides instructions on how to build and install GBKFIT and its
 dependencies.
