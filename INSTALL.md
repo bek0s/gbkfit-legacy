@@ -115,4 +115,24 @@ operating systems:
 
 ## Building GBKFIT
 
-TODO
+To help CMake find the dependencies that are not located in any of the
+standard search paths of the operating system, the following environment
+variables need to be defined:
+- `CFITSIO_ROOT`: The location of the root directory of the installed CFITSIO
+library.
+- `FFTW3_ROOT`: The location of the root directory of the installed FFTW3
+library.
+- `MULTINEST_ROOT`. The location of the root directory of the installed
+MultiNest library.
+
+It might be useful to mention that the _root directory_ is the directory which
+usually contains the `bin`, `include` and `lib` subdirectories.
+
+Bellow is an example of how to set an environment variable on different
+operating systems:
+- *nix
+  - bash: `export MULTINEST_ROOT=/home/george/usr/local/multinest`
+- Windows
+  - Windows7+: `setx MULTINEST_ROOT "c:\libraries\multinest"`
+
+TODO: CMake instructions

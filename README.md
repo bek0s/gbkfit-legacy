@@ -102,6 +102,10 @@ Alternatively, the user can supply a 2D image.
 GBKFIT supports the following Line Spread Function (LSF) models: 1D Gaussian,
 1D Lorentzian, and 1D Moffat. Alternatively, the user can supply an 1D image.
 
+## Installation guide
+
+For installation instructions read [here](INSTALL.md).
+
 ## User Guide
 
 To execute GBKFIT use the following command:
