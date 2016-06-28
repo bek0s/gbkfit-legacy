@@ -9,16 +9,18 @@ project(gbkfit_fitter_mpfit-project)
 
 # ==============================================================================
 
-find_package(mpfit)
+#find_package(mpfit)
 
 # ==============================================================================
 
 set(HEADER_FILES
+    ${gbkfit-workspace_SOURCE_DIR}/deps/mpfit/mpfit.h
     include/gbkfit/fitter/mpfit/fitter_mpfit.hpp
     include/gbkfit/fitter/mpfit/fitter_mpfit_factory.hpp
 )
 
 set(SOURCE_FILES
+    ${gbkfit-workspace_SOURCE_DIR}/deps/mpfit/mpfit.c
     src/fitter_mpfit.cpp
     src/fitter_mpfit_factory.cpp
 )
@@ -54,19 +56,20 @@ target_include_directories(gbkfit_fitter_mpfit_object
     "include"
     PRIVATE
     ${GBKFIT_INCLUDE_DIR}
-    ${MPFIT_INCLUDE_DIRS}
+    ${gbkfit-workspace_SOURCE_DIR}/deps/mpfit
+#   ${MPFIT_INCLUDE_DIRS}
 )
 
 target_link_libraries(gbkfit_fitter_mpfit_static
     PRIVATE
     ${GBKFIT_LIBRARY_STATIC}
-    ${MPFIT_LIBRARIES}
+#   ${MPFIT_LIBRARIES}
 )
 
 target_link_libraries(gbkfit_fitter_mpfit_shared
     PRIVATE
     ${GBKFIT_LIBRARY_SHARED}
-    ${MPFIT_LIBRARIES}
+#   ${MPFIT_LIBRARIES}
 )
 
 target_compile_definitions(gbkfit_fitter_mpfit_object

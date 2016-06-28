@@ -6,7 +6,7 @@ dependencies.
 GBKFIT is a modern software and it tries to make use of latest software
 technologies and coding standards. As a result, it expects that its
 dependencies and the software used for its compilation and installation
-procedure is relatively up-to-date.
+procedure are relatively up-to-date.
 
 ## Compiler
 
@@ -39,19 +39,22 @@ front-ends. To install CMake follow the steps bellow:
 GBKFIT is a set of libraries. Each library has its own dependencies:
 
 - `gbkfit`
-  - [Boost C++ libraries](http://www.boost.org/)
-  - [CFITSIO](http://heasarc.gsfc.nasa.gov/fitsio/fitsio.html)
+  - [Boost C++ libraries](http://www.boost.org/),
+  [CFITSIO](http://heasarc.gsfc.nasa.gov/fitsio/fitsio.html)
 - `gbkfit_cuda`
   - [CUDA](https://developer.nvidia.com/cuda-toolkit)
 - `gbkfit_fftw3`
   - [FFTW3](http://www.fftw.org/)
+- `gbkfit_dmodel_mmaps`
+  - None
 - `gbkfit_dmodel_mmaps_omp`
   - [OpenMP](http://openmp.org/)
 - `gbkfit_dmodel_mmaps_cuda`
   - [CUDA](https://developer.nvidia.com/cuda-toolkit)
+- `gbkfit_dmodel_scube`
+  - None
 - `gbkfit_dmodel_scube_omp`
-  - [OpenMP](http://openmp.org/)
-  - [FFTW3](http://www.fftw.org/)
+  - [OpenMP](http://openmp.org/), [FFTW3](http://www.fftw.org/)
 - `gbkfit_dmodel_scube_cuda`
   - [CUDA](https://developer.nvidia.com/cuda-toolkit)
 - `gbkfit_gmodel_omp`
@@ -59,7 +62,7 @@ GBKFIT is a set of libraries. Each library has its own dependencies:
 - `gbkfit_gmodel_cuda`
   - [CUDA](https://developer.nvidia.com/cuda-toolkit)
 - `gbkfit_fitter_mpfit`
-  - [MPFIT](https://www.physics.wisc.edu/~craigm/idl/cmpfit.html)
+  - None
 - `gbkfit_fitter_multinest`
   - [MultiNest](https://ccpforge.cse.rl.ac.uk/gf/project/multinest/)
 
@@ -103,16 +106,6 @@ operating systems:
   - Windows
     - Download the latest version from
     [here](https://developer.nvidia.com/cuda-toolkit) and install it
-- MPFIT
-  - Download the source from
-  [here](https://www.physics.wisc.edu/~craigm/idl/cmpfit.html)
-  - Linux and Mac OS
-    - Edit Makefile and add the flag `-fPIC` at the C compiler flags, so the
-    line will become: `$(CC) -c -o $@ $< $(CFLAGS) -fPIC`
-    - Run make and then copy the library and header files to a location of
-    your choice
-  - Windows
-    - Never tried it. If you do please let me know! :)
 - MultiNest
   - Download the source from
   [here](https://ccpforge.cse.rl.ac.uk/gf/project/multinest/)
