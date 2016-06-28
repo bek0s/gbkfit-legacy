@@ -111,8 +111,10 @@ target_link_libraries(gbkfit_dmodel_scube_cuda_shared
     ${GBKFIT_LIBRARY_SHARED}
     ${GBKFIT_CUDA_LIBRARY_SHARED}
     ${GBKFIT_DMODEL_SCUBE_LIBRARY_SHARED}
-    gbkfit_dmodel_scube_cuda_nvcc_shared
     ${CUDA_CUFFT_LIBRARIES}
+    # I use the static version here because I was too lazy to configure the
+    # RPATH for the nvcc host compiler
+    gbkfit_dmodel_scube_cuda_nvcc_static
 )
 
 target_compile_definitions(gbkfit_dmodel_scube_cuda_object

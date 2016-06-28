@@ -68,6 +68,12 @@ option(GBKFIT_BUILD_UNITTESTS_GBKFIT "Build unit tests for gbkfit" FALSE)
 #
 # ==============================================================================
 
+# Build the correct RPATHs for both the build and installation trees
+SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
 set(GBKFIT_VERSION_MAJOR 0)
 set(GBKFIT_VERSION_MINOR 0)
 set(GBKFIT_VERSION_PATCH 1)

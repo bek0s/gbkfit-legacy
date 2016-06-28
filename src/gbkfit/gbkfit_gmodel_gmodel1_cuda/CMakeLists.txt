@@ -110,7 +110,9 @@ target_link_libraries(gbkfit_gmodel_gmodel1_cuda_shared
     ${GBKFIT_LIBRARY_SHARED}
     ${GBKFIT_CUDA_LIBRARY_SHARED}
     ${GBKFIT_GMODEL_GMODEL1_LIBRARY_SHARED}
-    gbkfit_gmodel_gmodel1_cuda_nvcc_shared
+    # I use the static version here because I was too lazy to configure the
+    # RPATH for the nvcc host compiler
+    gbkfit_gmodel_gmodel1_cuda_nvcc_static
 )
 
 target_compile_definitions(gbkfit_gmodel_gmodel1_cuda_object
