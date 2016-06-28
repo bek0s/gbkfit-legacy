@@ -57,9 +57,11 @@ GBKFIT is a set of libraries. Each library has its own dependencies:
   - [OpenMP](http://openmp.org/), [FFTW3](http://www.fftw.org/)
 - `gbkfit_dmodel_scube_cuda`
   - [CUDA](https://developer.nvidia.com/cuda-toolkit)
-- `gbkfit_gmodel_omp`
+- `gbkfit_gmodel_gmodel1`
+  - None
+- `gbkfit_gmodel_gmodel1_omp`
   - [OpenMP](http://openmp.org/)
-- `gbkfit_gmodel_cuda`
+- `gbkfit_gmodel_gmodel1_cuda`
   - [CUDA](https://developer.nvidia.com/cuda-toolkit)
 - `gbkfit_fitter_mpfit`
   - None
