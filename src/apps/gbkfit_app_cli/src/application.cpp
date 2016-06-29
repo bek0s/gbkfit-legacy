@@ -177,7 +177,7 @@ bool Application::initialize(void)
     // Read configuration.
     //
 
-    std::cout << "reading configuration..." << std::endl;
+    std::cout << "reading configuration from '" << m_config_file << "'..." << std::endl;
     std::ifstream config_stream(m_config_file);
     nlohmann::json config = nlohmann::json::parse(config_stream);
 
