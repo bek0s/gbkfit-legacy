@@ -13,7 +13,7 @@ procedure are relatively up-to-date.
 GBKFIT requires a C++ compiler with C++14 support.
 
 GBKFIT has been tested with the following compilers:
-- GCC 5.4 (Debian Linux, stretch repo)
+- GCC 5.4 (Debian Linux, stretch)
 - GCC 5.1 (CentOS 6.7)
 
 ## Build system
@@ -44,7 +44,7 @@ sure you come back and read this entire section.
 
 ### Internal dependencies
 
-GBKFIT libraries have internal dependencies:
+GBKFIT applications and libraries have internal dependencies:
 
 - `gbkfit`
   - none
@@ -54,16 +54,16 @@ GBKFIT libraries have internal dependencies:
   - required: `gbkfit`
 - `gbkfit_dmodel_scube`
   - required: `gbkfit`
-- `gbkfit_dmodel_scube_omp`
-  - required: `gbkfit_dmodel_scube`, `gbkfit_fftw3`
 - `gbkfit_dmodel_scube_cuda`
   - required: `gbkfit_dmodel_scube`, `gbkfit_cuda`
+- `gbkfit_dmodel_scube_omp`
+  - required: `gbkfit_dmodel_scube`, `gbkfit_fftw3`
 - `gbkfit_dmodel_mmaps`
   - required: `gbkfit`
-- `gbkfit_dmodel_mmaps_omp`
-  - required: `gbkfit_dmodel_mmaps`, `gbkfit_dmodel_scube_omp`
 - `gbkfit_dmodel_mmaps_cuda`
   - required: `gbkfit_dmodel_mmaps`, `gbkfit_dmodel_scube_cuda`
+- `gbkfit_dmodel_mmaps_omp`
+  - required: `gbkfit_dmodel_mmaps`, `gbkfit_dmodel_scube_omp`
 - `gbkfit_gmodel_gmodel1`
   - required: `gbkfit`
 - `gbkfit_gmodel_gmodel1_omp`
@@ -74,6 +74,14 @@ GBKFIT libraries have internal dependencies:
   - required: `gbkfit`
 - `gbkfit_fitter_multinest`
   - required: `gbkfit`
+- `gbkfit_app_cli`
+  - required: `gbkfit`
+  - optional: `gbkfit_cuda`, `gbkfit_fftw3`, `gbkfit_dmodel_scube`,
+  `gbkfit_dmodel_scube_cuda`, `gbkfit_dmodel_scube_omp`,
+  `gbkfit_dmodel_mmaps`, `gbkfit_dmodel_mmaps_cuda`,
+  `gbkfit_dmodel_mmaps_omp`, `gbkfit_gmodel_gmodel1`,
+  `gbkfit_gmodel_gmodel1_omp`, `gbkfit_gmodel_gmodel1_cuda`,
+  `gbkfit_fitter_mpfit`, `gbkfit_fitter_multinest`
 
 For example: If we want to build the `gbkfit_dmodel_scube_cuda` library, we
 will have to build the libraries `gbkfit_dmodel_scube` and  `gbkfit_cuda`.
@@ -83,7 +91,7 @@ CMake will automatically calculate the required dependencies for each library.
 
 ### External dependencies
 
-GBKFIT libraries have external dependencies:
+GBKFIT applications and libraries have external dependencies:
 
 - `gbkfit`
   - required: [Boost C++ libraries](http://www.boost.org/),
@@ -94,16 +102,16 @@ GBKFIT libraries have external dependencies:
   - required: [FFTW3](http://www.fftw.org/)
 - `gbkfit_dmodel_mmaps`
   - required: None
-- `gbkfit_dmodel_mmaps_omp`
-  - required: [OpenMP](http://openmp.org/)
 - `gbkfit_dmodel_mmaps_cuda`
   - required: [CUDA](https://developer.nvidia.com/cuda-toolkit)
+- `gbkfit_dmodel_mmaps_omp`
+  - required: [OpenMP](http://openmp.org/)
 - `gbkfit_dmodel_scube`
   - required: None
-- `gbkfit_dmodel_scube_omp`
-  - required: [OpenMP](http://openmp.org/), [FFTW3](http://www.fftw.org/)
 - `gbkfit_dmodel_scube_cuda`
   - required: [CUDA](https://developer.nvidia.com/cuda-toolkit)
+- `gbkfit_dmodel_scube_omp`
+  - required: [OpenMP](http://openmp.org/), [FFTW3](http://www.fftw.org/)
 - `gbkfit_gmodel_gmodel1`
   - required: None
 - `gbkfit_gmodel_gmodel1_omp`
@@ -160,9 +168,6 @@ different operating systems:
 - MultiNest
   - Download the source from
   [here](https://ccpforge.cse.rl.ac.uk/gf/project/multinest/) and install it
-
-
-
 
 ## Building GBKFIT
 
