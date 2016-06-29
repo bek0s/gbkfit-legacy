@@ -77,9 +77,9 @@ GBKFIT libraries have internal dependencies:
 
 For example: If we want to build the `gbkfit_dmodel_scube_cuda` library, we
 will have to build the libraries `gbkfit_dmodel_scube` and  `gbkfit_cuda`.
-Since these libraries depend on other libraries, we will also need to build
-the library `gbkfit`. If this sounds complicated, do not worry. CMake will
-automatically calculate the required dependencies for each library.
+We will also need to build the libraries these two depend on. Thus, we will
+need to build the `gbkfit` library. If this sounds complicated, do not worry.
+CMake will automatically calculate the required dependencies for each library.
 
 ### External dependencies
 
@@ -98,7 +98,7 @@ GBKFIT libraries have external dependencies:
   - required: [OpenMP](http://openmp.org/)
 - `gbkfit_dmodel_mmaps_cuda`
   - required: [CUDA](https://developer.nvidia.com/cuda-toolkit)
-- `gbkfit_dmodel_scube`:
+- `gbkfit_dmodel_scube`
   - required: None
 - `gbkfit_dmodel_scube_omp`
   - required: [OpenMP](http://openmp.org/), [FFTW3](http://www.fftw.org/)
@@ -117,8 +117,8 @@ GBKFIT libraries have external dependencies:
 
 #### Installing external dependencies
 
-Bellow are the installation instructions for all the dependencies on different
-operating systems:
+Bellow are the installation instructions for all the external dependencies on
+different operating systems:
 
 - Boost C++ libraries
   - Linux
