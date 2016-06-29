@@ -38,7 +38,7 @@ front-ends. To install CMake follow the steps bellow:
 
 In this section, all the details regarding GBKFIT's internal and external
 extensions are discussed. You can skip most of the reading and go directly
-[here](#Installing-external-dependencies). However, if you encounter problems
+[here](#installing-external-dependencies). However, if you encounter problems
 during the compilation and installation of GBKFIT and its dependencies, make
 sure you come back and read this entire section.
 
@@ -48,31 +48,31 @@ GBKFIT libraries have internal dependencies:
 
 - `gbkfit`
   - none
-- `gbkfit_cuda`:
+- `gbkfit_cuda`
   - required: `gbkfit`
-- `gbkfit_fftw3`:
+- `gbkfit_fftw3`
   - required: `gbkfit`
-- `gbkfit_dmodel_scube`:
+- `gbkfit_dmodel_scube`
   - required: `gbkfit`
-- `gbkfit_dmodel_scube_omp`:
+- `gbkfit_dmodel_scube_omp`
   - required: `gbkfit_dmodel_scube`, `gbkfit_fftw3`
-- `gbkfit_dmodel_scube_cuda`:
+- `gbkfit_dmodel_scube_cuda`
   - required: `gbkfit_dmodel_scube`, `gbkfit_cuda`
-- `gbkfit_dmodel_mmaps`:
+- `gbkfit_dmodel_mmaps`
   - required: `gbkfit`
-- `gbkfit_dmodel_mmaps_omp`:
+- `gbkfit_dmodel_mmaps_omp`
   - required: `gbkfit_dmodel_mmaps`, `gbkfit_dmodel_scube_omp`
-- `gbkfit_dmodel_mmaps_cuda`:
+- `gbkfit_dmodel_mmaps_cuda`
   - required: `gbkfit_dmodel_mmaps`, `gbkfit_dmodel_scube_cuda`
-- `gbkfit_gmodel_gmodel1`:
+- `gbkfit_gmodel_gmodel1`
   - required: `gbkfit`
-- `gbkfit_gmodel_gmodel1_omp`:
+- `gbkfit_gmodel_gmodel1_omp`
   - required: `gbkfit_gmodel_gmodel1`
-- `gbkfit_gmodel_gmodel1_cuda`:
+- `gbkfit_gmodel_gmodel1_cuda`
   - required: `gbkfit_gmodel_gmodel1`, `gbkfit_cuda`
-- `gbkfit_fitter_mpfit`:
+- `gbkfit_fitter_mpfit`
   - required: `gbkfit`
-- `gbkfit_fitter_multinest`:
+- `gbkfit_fitter_multinest`
   - required: `gbkfit`
 
 For example: If we want to build the `gbkfit_dmodel_scube_cuda` library, we
@@ -85,34 +85,34 @@ automatically calculate the required dependencies for each library.
 
 GBKFIT libraries have external dependencies:
 
-- `gbkfit`:
+- `gbkfit`
   - required: [Boost C++ libraries](http://www.boost.org/),
   [CFITSIO](http://heasarc.gsfc.nasa.gov/fitsio/fitsio.html)
-- `gbkfit_cuda`:
+- `gbkfit_cuda`
   - required: [CUDA](https://developer.nvidia.com/cuda-toolkit)
-- `gbkfit_fftw3`:
+- `gbkfit_fftw3`
   - required: [FFTW3](http://www.fftw.org/)
-- `gbkfit_dmodel_mmaps`:
+- `gbkfit_dmodel_mmaps`
   - required: None
-- `gbkfit_dmodel_mmaps_omp`:
+- `gbkfit_dmodel_mmaps_omp`
   - required: [OpenMP](http://openmp.org/)
-- `gbkfit_dmodel_mmaps_cuda`:
+- `gbkfit_dmodel_mmaps_cuda`
   - required: [CUDA](https://developer.nvidia.com/cuda-toolkit)
 - `gbkfit_dmodel_scube`:
   - required: None
-- `gbkfit_dmodel_scube_omp`:
+- `gbkfit_dmodel_scube_omp`
   - required: [OpenMP](http://openmp.org/), [FFTW3](http://www.fftw.org/)
-- `gbkfit_dmodel_scube_cuda`:
+- `gbkfit_dmodel_scube_cuda`
   - required: [CUDA](https://developer.nvidia.com/cuda-toolkit)
-- `gbkfit_gmodel_gmodel1`:
+- `gbkfit_gmodel_gmodel1`
   - required: None
-- `gbkfit_gmodel_gmodel1_omp`:
+- `gbkfit_gmodel_gmodel1_omp`
   - required: [OpenMP](http://openmp.org/)
-- `gbkfit_gmodel_gmodel1_cuda`:
+- `gbkfit_gmodel_gmodel1_cuda`
   - required: [CUDA](https://developer.nvidia.com/cuda-toolkit)
-- `gbkfit_fitter_mpfit`:
+- `gbkfit_fitter_mpfit`
   - required: None
-- `gbkfit_fitter_multinest`:
+- `gbkfit_fitter_multinest`
   - required: [MultiNest](https://ccpforge.cse.rl.ac.uk/gf/project/multinest/)
 
 #### Installing external dependencies
