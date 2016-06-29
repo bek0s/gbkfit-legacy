@@ -171,6 +171,8 @@ different operating systems:
 
 ## Building GBKFIT
 
+### Configuring environment variables
+
 To help CMake find the dependencies that are not located in any of the
 standard search paths of the operating system, the following environment
 variables need to be defined:
@@ -191,30 +193,45 @@ operating systems:
 - Windows
   - Windows7+: `setx MULTINEST_ROOT "c:\libraries\multinest"`
 
+### Running CMake
 
 To download, build, and install GBKFIT run the following:
 
-- `git clone https://github.com/bek0s/gbkfit.git`
-- `cd gbkfit`
-- `mkdir build`
-- `cd build`
-- `cmake ../ -DCMAKE_INSTALL_PREFIX=~/usr/local/gbkfit`
-  - CMake will now try to configure your project and locate all the
-  dependencies.
-- `make`
-- `make install`
+1. `git clone https://github.com/bek0s/gbkfit.git`
+2. `cd gbkfit`
+3. `mkdir build`
+4. `cd build`
+5. `cmake ../ -DCMAKE_INSTALL_PREFIX=~/usr/local/gbkfit`
+    - CMake will now try to configure your project and locate all the
+      dependencies.
+6. `make`
+7. `make install`
 
 Congratulations! You just compiled and install GBKFIT successfully!
 
 ### Common build configurations
 
-To compile GBKFIT with GPU support run the following:
-```bash
-cmake ../ -DGBKFIT_BUILD_CUDA=FALSE
-```
+Several custom CMake options can be used to configure the build:
 
-To compile GBKFIT with GPU support and with the MultiNest optimizer run
-the following:
+- `GBKFIT_BUILD_MODELS_CPU`
+  - controls whether to build the CPU-based models or not
+  - default value: `TRUE`
+- `GBKFIT_BUILD_MODELS_GPU`
+  - controls whether to build the GPU-based models or not
+  - default value: `TRUE`
+- `GBKFIT_BUILD_FITTER_MPFIT`
+  - controls whether to build the MPFIT-based Fitter or not
+  - default value: `TRUE`
+- `GBKFIT_BUILD_FITTER_MULTINEST`
+  - controls whether to build the MultiNest-based Fitter or not
+  - default value: `TRUE`
+- `GBKFIT_BUILD_APP_CLI`
+  - controls whether to build the actual GBKFIT application or not
+  - default value: `TRUE`
+
+#### Example
+
+To compile GBKFIT without GPU support, use the following CMake command:
 ```bash
-cmake ../ -DGBKFIT_BUILD_CUDA=FALSE -DGBKFIT_BUILD_FITTER_MULTINEST=FALSE
+cmake ../ -DCMAKE_INSTALL_PREFIX=~/usr/local/gbkfit -DGBKFIT_BUILD_MODELS_GPU=FALSE
 ```
