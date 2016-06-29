@@ -11,6 +11,14 @@ GBKFIT is developed by Georgios Bekiaris (Swinburne University of Technology).
 If you use GBKFIT in a publication please cite:
 [Bekiaris et al. 2016](http://adsabs.harvard.edu/abs/2016MNRAS.455..754B).
 
+## Installation guide
+
+For instructions on how to install GBKFIT read [here](INSTALL.md).
+
+## User guide
+
+For instructions on how to use GBKFIT read [here](USERGUIDE.md).
+
 ## A brief introduction
 
 GBKFIT is a high-performance open-source software for modelling galaxy
@@ -102,10 +110,3 @@ Alternatively, the user can supply a 2D image.
 GBKFIT supports the following Line Spread Function (LSF) models: 1D Gaussian,
 1D Lorentzian, and 1D Moffat. Alternatively, the user can supply an 1D image.
 
-## Installation guide
-
-For instructions on how to install GBKFIT read [here](INSTALL.md).
-
-## User guide
-
-For instructions on how to use GBKFIT read [here](USERGUIDE.md).
