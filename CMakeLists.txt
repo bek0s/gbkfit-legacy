@@ -46,7 +46,7 @@ option(GBKFIT_BUILD_MODELS_CPU "Build CPU-based models" TRUE)
 option(GBKFIT_BUILD_MODELS_GPU "Build GPU-based models" TRUE)
 
 option(GBKFIT_BUILD_FITTER_MPFIT "Build gbkfit_fitter_mpfit" TRUE)
-option(GBKFIT_BUILD_FITTER_MULTINEST "Build gbkfit_fitter_multinest" FALSE)
+option(GBKFIT_BUILD_FITTER_MULTINEST "Build gbkfit_fitter_multinest" TRUE)
 
 option(GBKFIT_BUILD_UNITTESTS_GBKFIT "Build unit tests for gbkfit" FALSE)
 
