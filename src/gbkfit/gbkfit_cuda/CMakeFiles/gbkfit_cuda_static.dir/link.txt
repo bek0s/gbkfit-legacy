@@ -1,2 +1,0 @@
-/usr/bin/ar qc ../../../lib/libgbkfit_cuda_static.a  CMakeFiles/gbkfit_cuda_object.dir/src/ndarray.cpp.o
-/usr/bin/ranlib ../../../lib/libgbkfit_cuda_static.a

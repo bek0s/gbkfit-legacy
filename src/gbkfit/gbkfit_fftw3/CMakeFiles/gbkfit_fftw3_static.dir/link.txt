@@ -1,2 +1,0 @@
-/usr/bin/ar qc ../../../lib/libgbkfit_fftw3_static.a  CMakeFiles/gbkfit_fftw3_object.dir/src/ndarray.cpp.o CMakeFiles/gbkfit_fftw3_object.dir/src/util.cpp.o
-/usr/bin/ranlib ../../../lib/libgbkfit_fftw3_static.a
