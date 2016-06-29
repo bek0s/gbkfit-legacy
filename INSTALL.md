@@ -208,7 +208,7 @@ To download, build, and install GBKFIT run the following:
 6. `make`
 7. `make install`
 
-Congratulations! You just compiled and install GBKFIT successfully!
+Congratulations! You just compiled and installed GBKFIT successfully!
 
 ### Customizing CMake
 
