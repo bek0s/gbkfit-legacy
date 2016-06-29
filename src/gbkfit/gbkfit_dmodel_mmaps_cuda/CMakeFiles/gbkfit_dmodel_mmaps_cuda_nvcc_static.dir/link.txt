@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../lib/libgbkfit_dmodel_mmaps_cuda_nvcc_static.a  CMakeFiles/gbkfit_dmodel_mmaps_cuda_nvcc_static.dir/src/gbkfit_dmodel_mmaps_cuda_nvcc_static_generated_mmaps_cuda_kernels_h.cu.o
+/usr/bin/ranlib ../../../lib/libgbkfit_dmodel_mmaps_cuda_nvcc_static.a

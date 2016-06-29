@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../lib/libgbkfit_dmodel_mmaps_omp_static.a  CMakeFiles/gbkfit_dmodel_mmaps_omp_object.dir/src/mmaps_omp.cpp.o CMakeFiles/gbkfit_dmodel_mmaps_omp_object.dir/src/mmaps_omp_factory.cpp.o CMakeFiles/gbkfit_dmodel_mmaps_omp_object.dir/src/mmaps_omp_kernels.cpp.o
+/usr/bin/ranlib ../../../lib/libgbkfit_dmodel_mmaps_omp_static.a

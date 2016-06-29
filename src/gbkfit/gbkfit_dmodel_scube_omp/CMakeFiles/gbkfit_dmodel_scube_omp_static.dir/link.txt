@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../lib/libgbkfit_dmodel_scube_omp_static.a  CMakeFiles/gbkfit_dmodel_scube_omp_object.dir/src/scube_omp.cpp.o CMakeFiles/gbkfit_dmodel_scube_omp_object.dir/src/scube_omp_factory.cpp.o CMakeFiles/gbkfit_dmodel_scube_omp_object.dir/src/scube_omp_kernels.cpp.o
+/usr/bin/ranlib ../../../lib/libgbkfit_dmodel_scube_omp_static.a

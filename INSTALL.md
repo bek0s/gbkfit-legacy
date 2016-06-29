@@ -182,7 +182,7 @@ library.
 MultiNest library.
 
 It might be useful to mention that the _root directory_ is the directory which
-usually contains the `bin`, `include` and `lib` subdirectories.
+usually contains the `bin`, `include`, and `lib` subdirectories.
 
 Bellow is an example of how to set an environment variable on different
 operating systems:
@@ -192,10 +192,29 @@ operating systems:
   - Windows7+: `setx MULTINEST_ROOT "c:\libraries\multinest"`
 
 
-TODO: CMake instructions
+To download, build, and install GBKFIT run the following:
+
+- `git clone https://github.com/bek0s/gbkfit.git`
+- `cd gbkfit`
+- `mkdir build`
+- `cd build`
+- `cmake ../ -DCMAKE_INSTALL_PREFIX=~/usr/local/gbkfit`
+  - CMake will now try to configure your project and locate all the
+  dependencies.
+- `make`
+- `make install`
+
+Congratulations! You just compiled and install GBKFIT successfully!
+
+### Common build configurations
 
 To compile GBKFIT without GPU support run the following:
-
 ```bash
+cmake ../ -DGBKFIT_BUILD_CUDA=FALSE
+```
 
+To compile GBKFIT without GPU support and without the MultiNest optimizer run
+the following:
+```bash
+cmake ../ -DGBKFIT_BUILD_CUDA=FALSE -DGBKFIT_BUILD_FITTER_MULTINEST=FALSE
 ```

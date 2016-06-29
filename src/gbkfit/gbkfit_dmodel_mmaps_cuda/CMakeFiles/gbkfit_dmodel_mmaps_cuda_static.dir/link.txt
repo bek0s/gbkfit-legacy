@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../lib/libgbkfit_dmodel_mmaps_cuda_static.a  CMakeFiles/gbkfit_dmodel_mmaps_cuda_object.dir/src/mmaps_cuda.cpp.o CMakeFiles/gbkfit_dmodel_mmaps_cuda_object.dir/src/mmaps_cuda_factory.cpp.o
+/usr/bin/ranlib ../../../lib/libgbkfit_dmodel_mmaps_cuda_static.a
