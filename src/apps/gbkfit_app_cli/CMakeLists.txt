@@ -31,6 +31,70 @@ add_executable(gbkfit_app_cli
     ${SOURCE_FILES}
 )
 
+# ==============================================================================
+
+if(NOT ${GBKFIT_BUILD_CUDA})
+    unset(GBKFIT_CUDA_INCLUDE_DIR CACHE)
+    unset(GBKFIT_CUDA_LIBRARY_SHARED CACHE)
+endif()
+
+if(NOT ${GBKFIT_BUILD_FITTER_MULTINEST})
+    unset(GBKFIT_FITTER_MULTINEST_INCLUDE_DIR CACHE)
+    unset(GBKFIT_FITTER_MULTINEST_LIBRARY_SHARED CACHE)
+endif()
+
+if(NOT ${GBKFIT_BUILD_FITTER_MPFIT})
+    unset(GBKFIT_FITTER_MPFIT_INCLUDE_DIR CACHE)
+    unset(GBKFIT_FITTER_MPFIT_LIBRARY_SHARED CACHE)
+endif()
+
+if(NOT ${GBKFIT_BUILD_DMODEL_MMAPS})
+    unset(GBKFIT_DMODEL_MMAPS_INCLUDE_DIR CACHE)
+    unset(GBKFIT_DMODEL_MMAPS_LIBRARY_SHARED CACHE)
+endif()
+
+if(NOT ${GBKFIT_BUILD_DMODEL_MMAPS_OMP})
+    unset(GBKFIT_DMODEL_MMAPS_OMP_INCLUDE_DIR CACHE)
+    unset(GBKFIT_DMODEL_MMAPS_OMP_LIBRARY_SHARED CACHE)
+endif()
+
+if(NOT ${GBKFIT_BUILD_DMODEL_MMAPS_CUDA})
+    unset(GBKFIT_DMODEL_MMAPS_CUDA_INCLUDE_DIR CACHE)
+    unset(GBKFIT_DMODEL_MMAPS_CUDA_LIBRARY_SHARED CACHE)
+endif()
+
+if(NOT ${GBKFIT_BUILD_DMODEL_SCUBE})
+    unset(GBKFIT_DMODEL_SCUBE_INCLUDE_DIR CACHE)
+    unset(GBKFIT_DMODEL_SCUBE_LIBRARY_SHARED CACHE)
+endif()
+
+if(NOT ${GBKFIT_BUILD_DMODEL_SCUBE_OMP})
+    unset(GBKFIT_DMODEL_SCUBE_OMP_INCLUDE_DIR CACHE)
+    unset(GBKFIT_DMODEL_SCUBE_OMP_LIBRARY_SHARED CACHE)
+endif()
+
+if(NOT ${GBKFIT_BUILD_DMODEL_MMAPS_CUDA})
+    unset(GBKFIT_DMODEL_SCUBE_CUDA_INCLUDE_DIR CACHE)
+    unset(GBKFIT_DMODEL_SCUBE_CUDA_LIBRARY_SHARED CACHE)
+endif()
+
+if(NOT ${GBKFIT_BUILD_GMODEL_GMODEL1})
+    unset(GBKFIT_GMODEL_GMODEL1_INCLUDE_DIR CACHE)
+    unset(GBKFIT_GMODEL_GMODEL1_LIBRARY_SHARED CACHE)
+endif()
+
+if(NOT ${GBKFIT_BUILD_GMODEL_GMODEL1_OMP})
+    unset(GBKFIT_GMODEL_GMODEL1_OMP_INCLUDE_DIR CACHE)
+    unset(GBKFIT_GMODEL_GMODEL1_OMP_LIBRARY_SHARED CACHE)
+endif()
+
+if(NOT ${GBKFIT_BUILD_GMODEL_GMODEL1_CUDA})
+    unset(GBKFIT_GMODEL_GMODEL1_CUDA_INCLUDE_DIR CACHE)
+    unset(GBKFIT_GMODEL_GMODEL1_CUDA_LIBRARY_SHARED CACHE)
+endif()
+
+# ==============================================================================
+
 target_include_directories(gbkfit_app_cli
     PRIVATE
     "include"
@@ -67,6 +131,14 @@ target_link_libraries(gbkfit_app_cli
     ${GBKFIT_GMODEL_GMODEL1_OMP_LIBRARY_SHARED}
     ${Boost_LIBRARIES}
 )
+
+# ==============================================================================
+
+
+
+
+
+# ==============================================================================
 
 target_compile_options(gbkfit_app_cli
     PRIVATE

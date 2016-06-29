@@ -40,22 +40,24 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${GBKFIT_LIBRARY_OUTPUT_DIRECTORY}")
 #
 # ==============================================================================
 
+include(CMakeDependentOption)
+
 option(GBKFIT_BUILD_APP_CLI "Build gbkfit_app_cli" TRUE)
 
 option(GBKFIT_BUILD_CUDA "Build gbkfit_cuda" TRUE)
 option(GBKFIT_BUILD_FFTW3 "Build gbkfit_fftw3" TRUE)
 
 option(GBKFIT_BUILD_DMODEL_SCUBE "Build gbkfit_dmodel_scube" TRUE)
-option(GBKFIT_BUILD_DMODEL_SCUBE_CUDA "Build gbkfit_dmodel_scube_cuda" TRUE)
-option(GBKFIT_BUILD_DMODEL_SCUBE_OMP "Build gbkfit_dmodel_scube_omp" TRUE)
+cmake_dependent_option(GBKFIT_BUILD_DMODEL_SCUBE_OMP "Build gbkfit_dmodel_scube_omp" TRUE "GBKFIT_BUILD_DMODEL_SCUBE;GBKFIT_BUILD_FFTW3" FALSE)
+cmake_dependent_option(GBKFIT_BUILD_DMODEL_SCUBE_CUDA "Build gbkfit_dmodel_scube_cuda" TRUE "GBKFIT_BUILD_DMODEL_SCUBE;GBKFIT_BUILD_CUDA" FALSE)
 
 option(GBKFIT_BUILD_DMODEL_MMAPS "Build gbkfit_dmodel_mmaps" TRUE)
-option(GBKFIT_BUILD_DMODEL_MMAPS_CUDA "Build gbkfit_dmodel_mmaps_cuda" TRUE)
-option(GBKFIT_BUILD_DMODEL_MMAPS_OMP "Build gbkfit_dmodel_mmaps_omp" TRUE)
+cmake_dependent_option(GBKFIT_BUILD_DMODEL_MMAPS_OMP "Build gbkfit_dmodel_mmaps_omp" TRUE "GBKFIT_BUILD_DMODEL_MMAPS;GBKFIT_BUILD_DMODEL_SCUBE_OMP" FALSE)
+cmake_dependent_option(GBKFIT_BUILD_DMODEL_MMAPS_CUDA "Build gbkfit_dmodel_mmaps_cuda" TRUE "GBKFIT_BUILD_DMODEL_MMAPS;GBKFIT_BUILD_DMODEL_SCUBE_CUDA;" FALSE)
 
 option(GBKFIT_BUILD_GMODEL_GMODEL1 "Build gbkfit_gmodel_gmodel1" TRUE)
-option(GBKFIT_BUILD_GMODEL_GMODEL1_CUDA "Build gbkfit_gmodel_gmodel1_cuda" TRUE)
-option(GBKFIT_BUILD_GMODEL_GMODEL1_OMP "Build gbkfit_gmodel_gmodel1_omp" TRUE)
+cmake_dependent_option(GBKFIT_BUILD_GMODEL_GMODEL1_OMP "Build gbkfit_gmodel_gmodel1_omp" TRUE "GBKFIT_BUILD_GMODEL_GMODEL1" FALSE)
+cmake_dependent_option(GBKFIT_BUILD_GMODEL_GMODEL1_CUDA "Build gbkfit_gmodel_gmodel1_cuda" TRUE "GBKFIT_BUILD_GMODEL_GMODEL1;GBKFIT_BUILD_CUDA" FALSE)
 
 option(GBKFIT_BUILD_FITTER_MPFIT "Build gbkfit_fitter_mpfit" TRUE)
 option(GBKFIT_BUILD_FITTER_MULTINEST "Build gbkfit_fitter_multinest" TRUE)

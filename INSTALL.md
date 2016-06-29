@@ -135,4 +135,11 @@ operating systems:
 - Windows
   - Windows7+: `setx MULTINEST_ROOT "c:\libraries\multinest"`
 
+
 TODO: CMake instructions
+
+To compile GBKFIT without GPU support run the following:
+
+```bash
+
+```
