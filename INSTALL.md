@@ -19,9 +19,9 @@ GBKFIT has been tested with the following compilers:
 ## Build system
 
 GBKFIT uses the CMake build system. If the version of CMake used for the build
-is too old, GBKFIT will inform the user with an error message. Furthermore,
-for convenience, it is recommended to install at least one of its GUI
-front-ends. To install CMake follow the steps bellow:
+is too old, an error message will inform the user. Furthermore, for
+convenience, it is recommended to install at least one of its GUI front-ends.
+To install CMake follow the steps bellow:
 
 - Linux
   - apt-get: `apt-get install cmake cmake-ncurses-gui cmake-qt-gui`
@@ -86,8 +86,9 @@ GBKFIT applications and libraries have internal dependencies:
 For example: If we want to build the `gbkfit_dmodel_scube_cuda` library, we
 will have to build the libraries `gbkfit_dmodel_scube` and  `gbkfit_cuda`.
 We will also need to build the libraries these two depend on. Thus, we will
-need to build the `gbkfit` library. If this sounds complicated, do not worry.
-CMake will automatically calculate the required dependencies for each library.
+need to build the `gbkfit` library as well. If this sounds complicated, do not
+worry. CMake will automatically calculate the required dependencies for each
+library.
 
 ### External dependencies
 
@@ -183,12 +184,9 @@ library.
 - `MULTINEST_ROOT`. The location of the root directory of the installed
 MultiNest library.
 
-It might be useful to mention that the _root directory_ is the directory which
-usually contains the `bin`, `include`, and `lib` subdirectories.
-
-Bellow is an example of how to set an environment variable on different
+Bellow are examples of how to set an environment variable on different
 operating systems:
-- *nix
+- Linux and Mac OS X
   - bash: `export MULTINEST_ROOT=/home/george/usr/local/multinest`
 - Windows
   - Windows7+: `setx MULTINEST_ROOT "c:\libraries\multinest"`
@@ -203,13 +201,16 @@ To download, build, and install GBKFIT run the following:
 4. `cd build`
 5. `cmake ../ -DCMAKE_INSTALL_PREFIX=~/usr/local/gbkfit`
     - CMake will now try to configure your project and locate all the
-      dependencies.
+      dependencies. If you encounter an error in this step, make sure all the
+      required dependencies are installed. The dependency requirements can be
+      reduced by building a subset of GBKFIT. For more information see
+      [next section](#customizing-cmake)
 6. `make`
 7. `make install`
 
 Congratulations! You just compiled and install GBKFIT successfully!
 
-### Common build configurations
+### Customizing CMake
 
 Several custom CMake options can be used to configure the build:
 
