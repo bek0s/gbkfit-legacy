@@ -208,12 +208,12 @@ Congratulations! You just compiled and install GBKFIT successfully!
 
 ### Common build configurations
 
-To compile GBKFIT without GPU support run the following:
+To compile GBKFIT with GPU support run the following:
 ```bash
 cmake ../ -DGBKFIT_BUILD_CUDA=FALSE
 ```
 
-To compile GBKFIT without GPU support and without the MultiNest optimizer run
+To compile GBKFIT with GPU support and with the MultiNest optimizer run
 the following:
 ```bash
 cmake ../ -DGBKFIT_BUILD_CUDA=FALSE -DGBKFIT_BUILD_FITTER_MULTINEST=FALSE
