@@ -301,7 +301,7 @@ FitterResult* FitterMpfit::fit(const DModel* dmodel,
     {
         mp_par mpfit_param_info;
         std::memset(&mpfit_param_info,0,sizeof(mpfit_param_info));
-        mpfit_param_info.step = params->get(param_name).get<float>("step",0);
+        mpfit_param_info.step = params->get(param_name).get<float>("step",0.01);
         mpfit_param_info.side = params->get(param_name).get<int>("side",0);
         mpfit_param_info.fixed = params->get(param_name).get<bool>("fixed",0);
         mpfit_param_info.limited[0] = params->get(param_name).has("min");
