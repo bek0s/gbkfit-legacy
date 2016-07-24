@@ -23,9 +23,7 @@
 #include <valarray>
 #include <vector>
 
-//#include <boost/current_function.hpp>
-
-#define BOOST_CURRENT_FUNCTION __func__
+#include <boost/current_function.hpp>
 
 namespace gbkfit
 {
