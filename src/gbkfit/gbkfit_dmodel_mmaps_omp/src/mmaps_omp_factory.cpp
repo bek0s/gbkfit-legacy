@@ -16,25 +16,42 @@ const std::string& MMapsOmpFactory::get_type(void) const
 }
 
 DModel* MMapsOmpFactory::create(const std::string& info,
-                                const std::vector<int>& shape,
+                                const std::vector<int>& size,
+                                const std::vector<float>& step,
                                 const Instrument* instrument) const
 {
     nlohmann::json info_root = nlohmann::json::parse(info);
 
     int size_x, size_y;
+    float step_x, step_y;
 
-    if (shape.size() == 2)
+    if (size.size() == 2)
     {
-        size_x = shape[0];
-        size_y = shape[1];
+        size_x = size[0];
+        size_y = size[1];
     }
     else
     {
-        size_x = info_root.at("size_x").get<int>();
-        size_y = info_root.at("size_y").get<int>();
+        size_x = info_root.at("size").at(0).get<int>();
+        size_y = info_root.at("size").at(1).get<int>();
     }
 
-    return new MMapsOmp(size_x, size_y, instrument);
+    if (step.size() == 2)
+    {
+        step_x = step[0];
+        step_y = step[1];
+    }
+    else
+    {
+        step_x = info_root.at("step").at(0).get<float>();
+        step_y = info_root.at("step").at(1).get<float>();
+    }
+
+    return new MMapsOmp(size_x,
+                        size_y,
+                        step_x,
+                        step_y,
+                        instrument);
 }
 
 void MMapsOmpFactory::destroy(DModel* model) const

@@ -30,6 +30,8 @@ private:
     std::vector<gbkfit::FitterFactory*> m_fitter_factories;
 
     std::vector<gbkfit::Dataset*> m_datasets;
+    gbkfit::PointSpreadFunction* m_psf;
+    gbkfit::LineSpreadFunction* m_lsf;
     gbkfit::Instrument* m_instrument;
     gbkfit::DModel* m_dmodel;
     gbkfit::GModel* m_gmodel;

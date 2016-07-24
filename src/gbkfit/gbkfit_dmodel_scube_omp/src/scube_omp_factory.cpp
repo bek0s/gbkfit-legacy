@@ -16,27 +16,48 @@ const std::string& SCubeOmpFactory::get_type(void) const
 }
 
 DModel* SCubeOmpFactory::create(const std::string& info,
-                                const std::vector<int>& shape,
+                                const std::vector<int>& size,
+                                const std::vector<float>& step,
                                 const Instrument* instrument) const
 {
     nlohmann::json info_root = nlohmann::json::parse(info);
 
     int size_x, size_y, size_z;
+    float step_x, step_y, step_z;
 
-    if (shape.size() == 3)
+    if (size.size() == 3)
     {
-        size_x = shape[0];
-        size_y = shape[1];
-        size_z = shape[2];
+        size_x = size[0];
+        size_y = size[1];
+        size_z = size[2];
     }
     else
     {
-        size_x = info_root.at("size_x").get<int>();
-        size_y = info_root.at("size_y").get<int>();
-        size_z = info_root.at("size_z").get<int>();
+        size_x = info_root.at("size").at(0).get<int>();
+        size_y = info_root.at("size").at(1).get<int>();
+        size_z = info_root.at("size").at(2).get<int>();
     }
 
-    return new SCubeOmp(size_x, size_y, size_z, instrument);
+    if (step.size() == 3)
+    {
+        step_x = step[0];
+        step_y = step[1];
+        step_z = step[2];
+    }
+    else
+    {
+        step_x = info_root.at("step").at(0).get<float>();
+        step_y = info_root.at("step").at(1).get<float>();
+        step_z = info_root.at("step").at(2).get<float>();
+    }
+
+    return new SCubeOmp(size_x,
+                        size_y,
+                        size_z,
+                        step_x,
+                        step_y,
+                        step_z,
+                        instrument);
 }
 
 void SCubeOmpFactory::destroy(DModel* dmodel) const

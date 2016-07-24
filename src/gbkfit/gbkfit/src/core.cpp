@@ -139,102 +139,38 @@ std::vector<Dataset*> Core::create_datasets(const std::string& info)
     return datasets;
 }
 
-Instrument* Core::create_instrument(const std::string& info)
+LineSpreadFunction* Core::create_line_spread_function(const std::string& info,
+                                                      float step)
 {
     nlohmann::json info_root = nlohmann::json::parse(info);
 
+    std::string type = info_root.at("type").get<std::string>();
 
-    float sampling_x = info_root.at("sampling_x").get<float>();
-    float sampling_y = info_root.at("sampling_y").get<float>();
-    float sampling_z = info_root.at("sampling_z").get<float>();
-
-    std::string psf_type = info_root.at("psf").at("type").get<std::string>();
-    std::string lsf_type = info_root.at("lsf").at("type").get<std::string>();
-
-    PointSpreadFunction* psf = nullptr;
     LineSpreadFunction* lsf = nullptr;
 
-    //
-    // Create psf
-    //
-
-    if      (psf_type == "gaussian")
+    if      (type == "gaussian")
     {
-        float fwhm_x = info_root.at("psf").at("fwhm_x").get<float>();
-        float fwhm_y = info_root.at("psf").at("fwhm_y").get<float>();
-        float pa = info_root.at("psf").at("pa").get<float>();
-
-        psf = new PointSpreadFunctionGaussian(fwhm_x, fwhm_y, pa);
-    }
-    else if (psf_type == "lorentzian")
-    {
-        float fwhm_x = info_root.at("psf").at("fwhm_x").get<float>();
-        float fwhm_y = info_root.at("psf").at("fwhm_y").get<float>();
-        float pa = info_root.at("psf").at("pa").get<float>();
-
-        psf = new PointSpreadFunctionLorentzian(fwhm_x, fwhm_y, pa);
-
-    }
-    else if (psf_type == "moffat")
-    {
-        float fwhm_x = info_root.at("psf").at("fwhm_x").get<float>();
-        float fwhm_y = info_root.at("psf").at("fwhm_y").get<float>();
-        float beta = info_root.at("psf").at("beta").get<float>();
-        float pa = info_root.at("psf").at("pa").get<float>();
-
-        psf = new PointSpreadFunctionMoffat(fwhm_x, fwhm_y, pa, beta);
-    }
-    else if (psf_type == "image")
-    {
-        std::string file = info_root.at("psf").at("file").get<std::string>();
-
-        std::shared_ptr<NDArrayHost> data = fits::get_data(file);
-
-        psf = new PointSpreadFunctionImage(data->get_host_ptr(),
-                                           data->get_shape()[0],
-                                           data->get_shape()[1],
-                                           sampling_x,
-                                           sampling_y);
-    }
-    else
-    {
-        psf = new PointSpreadFunctionNone();
-    }
-
-    m_psfs.push_back(psf);
-
-    //
-    // Create lsf
-    //
-
-    if      (lsf_type == "gaussian")
-    {
-        float fwhm = info_root.at("lsf").at("fwhm").get<float>();
-
+        float fwhm = info_root.at("fwhm").get<float>();
         lsf = new LineSpreadFunctionGaussian(fwhm);
     }
-    else if (lsf_type == "lorentzian")
+    else if (type == "lorentzian")
     {
-        float fwhm = info_root.at("lsf").at("fwhm").get<float>();
-
+        float fwhm = info_root.at("fwhm").get<float>();
         lsf = new LineSpreadFunctionLorentzian(fwhm);
     }
-    else if (lsf_type == "moffat")
+    else if (type == "moffat")
     {
-        float fwhm = info_root.at("lsf").at("fwhm").get<float>();
-        float beta = info_root.at("lsf").at("beta").get<float>();
-
+        float fwhm = info_root.at("fwhm").get<float>();
+        float beta = info_root.at("beta").get<float>();
         lsf = new LineSpreadFunctionMoffat(fwhm, beta);
     }
-    else if (lsf_type == "array")
+    else if (type == "array")
     {
-        std::string file = info_root.at("lsf").at("file").get<std::string>();
-
+        std::string file = info_root.at("file").get<std::string>();
         std::shared_ptr<NDArrayHost> data = fits::get_data(file);
-
         lsf = new LineSpreadFunctionArray(data->get_host_ptr(),
                                           data->get_shape()[0],
-                                          sampling_z);
+                                          step);
     }
     else
     {
@@ -243,16 +179,70 @@ Instrument* Core::create_instrument(const std::string& info)
 
     m_lsfs.push_back(lsf);
 
-    //
-    // Create instrument
-    //
+    return lsf;
+}
 
-    Instrument* new_instrument = new Instrument(sampling_x, sampling_y, sampling_z, psf, lsf);
+PointSpreadFunction* Core::create_point_spread_function(const std::string& info,
+                                                        float step_x,
+                                                        float step_y)
+{
+    nlohmann::json info_root = nlohmann::json::parse(info);
 
-    m_instruments.push_back(new_instrument);
+    std::string psf_type = info_root.at("type").get<std::string>();
 
-    return new_instrument;
+    PointSpreadFunction* psf = nullptr;
 
+    if      (psf_type == "gaussian")
+    {
+        float fwhm_x = info_root.at("fwhm_x").get<float>();
+        float fwhm_y = info_root.at("fwhm_y").get<float>();
+        float pa = info_root.at("pa").get<float>();
+        psf = new PointSpreadFunctionGaussian(fwhm_x, fwhm_y, pa);
+    }
+    else if (psf_type == "lorentzian")
+    {
+        float fwhm_x = info_root.at("fwhm_x").get<float>();
+        float fwhm_y = info_root.at("fwhm_y").get<float>();
+        float pa = info_root.at("pa").get<float>();
+        psf = new PointSpreadFunctionLorentzian(fwhm_x, fwhm_y, pa);
+
+    }
+    else if (psf_type == "moffat")
+    {
+        float fwhm_x = info_root.at("fwhm_x").get<float>();
+        float fwhm_y = info_root.at("fwhm_y").get<float>();
+        float beta = info_root.at("beta").get<float>();
+        float pa = info_root.at("pa").get<float>();
+        psf = new PointSpreadFunctionMoffat(fwhm_x, fwhm_y, pa, beta);
+    }
+    else if (psf_type == "image")
+    {
+        std::string file = info_root.at("file").get<std::string>();
+        std::shared_ptr<NDArrayHost> data = fits::get_data(file);
+        psf = new PointSpreadFunctionImage(data->get_host_ptr(),
+                                           data->get_shape()[0],
+                                           data->get_shape()[1],
+                                           step_x,
+                                           step_y);
+    }
+    else
+    {
+        psf = new PointSpreadFunctionNone();
+    }
+
+    m_psfs.push_back(psf);
+
+    return psf;
+}
+
+Instrument* Core::create_instrument(PointSpreadFunction* psf,
+                                    LineSpreadFunction* lsf)
+{
+    Instrument* instrument = new Instrument(psf, lsf);
+
+    m_instruments.push_back(instrument);
+
+    return instrument;
 }
 
 const FitterFactory* Core::get_fitter_factory(const std::string& type) const
@@ -265,14 +255,15 @@ const FitterFactory* Core::get_fitter_factory(const std::string& type) const
 }
 
 DModel* Core::create_dmodel(const std::string& info,
-                            const std::vector<int>& shape,
+                            const std::vector<int>& size,
+                            const std::vector<float>& step,
                             const Instrument* instrument)
 {
     nlohmann::json info_root = nlohmann::json::parse(info);
 
     std::string type = info_root.at("type");
 
-    DModel* dmodel = get_dmodel_factory(type)->create(info, shape, instrument);
+    DModel* dmodel = get_dmodel_factory(type)->create(info, size, step, instrument);
 
     m_dmodels.push_back(dmodel);
 

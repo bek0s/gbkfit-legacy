@@ -31,10 +31,14 @@ public:
 
     MMapsCuda(int size_x,
               int size_y,
+              float step_x,
+              float step_y,
               const Instrument* instrument);
 
     MMapsCuda(int size_x,
               int size_y,
+              float step_x,
+              float step_y,
               int upsampling_x,
               int upsampling_y,
               const Instrument* instrument);
@@ -43,7 +47,9 @@ public:
 
     const std::string& get_type(void) const override final;
 
-    const Instrument* get_instrument(void) const override final;
+    const std::vector<int>& get_size(void) const override final;
+
+    const std::vector<float>& get_step(void) const override final;
 
     const GModel* get_galaxy_model(void) const override final;
 

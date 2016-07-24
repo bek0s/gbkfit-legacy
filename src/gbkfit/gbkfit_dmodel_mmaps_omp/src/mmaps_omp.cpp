@@ -12,13 +12,23 @@ namespace mmaps {
 
 MMapsOmp::MMapsOmp(int size_x,
                    int size_y,
+                   float step_x,
+                   float step_y,
                    const Instrument *instrument)
-    : MMapsOmp(size_x, size_y, 1, 1, instrument)
+    : MMapsOmp(size_x,
+               size_y,
+               step_x,
+               step_y,
+               1,
+               1,
+               instrument)
 {
 }
 
 MMapsOmp::MMapsOmp(int size_x,
                    int size_y,
+                   float step_x,
+                   float step_y,
                    int upsampling_x,
                    int upsampling_y,
                    const Instrument *instrument)
@@ -30,6 +40,9 @@ MMapsOmp::MMapsOmp(int size_x,
     m_scube = new scube::SCubeOmp(size_x,
                                   size_y,
                                   151,
+                                  step_x,
+                                  step_y,
+                                  10,
                                   upsampling_x,
                                   upsampling_y,
                                   1,
@@ -72,9 +85,14 @@ const std::string& MMapsOmp::get_type(void) const
     return MMapsOmpFactory::FACTORY_TYPE;
 }
 
-const Instrument* MMapsOmp::get_instrument(void) const
+const std::vector<int>& MMapsOmp::get_size(void) const
 {
-    return m_scube->get_instrument();
+    return m_scube->get_size();
+}
+
+const std::vector<float>& MMapsOmp::get_step(void) const
+{
+    return m_scube->get_step();
 }
 
 const GModel* MMapsOmp::get_galaxy_model(void) const
@@ -97,8 +115,9 @@ const std::map<std::string, NDArrayHost*>& MMapsOmp::evaluate(
     int size_y = cube_shape[1];
     int size_z = cube_shape[2];
 
-    // ...
-    float step_z = get_instrument()->get_step_z();
+    //  float step_z = get_instrument()->get_step_z();
+    //OMG
+    float step_z = 10;
     float zero_z = -size_z/2 * step_z;
 
     kernels_omp::extract_maps_mmnt(cube_data->get_host_ptr(),

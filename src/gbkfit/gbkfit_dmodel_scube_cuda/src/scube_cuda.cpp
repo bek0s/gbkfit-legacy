@@ -23,14 +23,29 @@ namespace scube {
 SCubeCuda::SCubeCuda(int size_x,
                      int size_y,
                      int size_z,
+                     float step_x,
+                     float step_y,
+                     float step_z,
                      const Instrument* instrument)
-    : SCubeCuda(size_x, size_y, size_z, 1, 1, 1, instrument)
+    : SCubeCuda(size_x,
+                size_y,
+                size_z,
+                step_x,
+                step_y,
+                step_z,
+                1,
+                1,
+                1,
+                instrument)
 {
 }
 
 SCubeCuda::SCubeCuda(int size_x,
                      int size_y,
                      int size_z,
+                     float step_x,
+                     float step_y,
+                     float step_z,
                      int upsampling_x,
                      int upsampling_y,
                      int upsampling_z,
@@ -65,9 +80,9 @@ SCubeCuda::SCubeCuda(int size_x,
     };
 
     m_step = {
-        instrument->get_step_x(),
-        instrument->get_step_y(),
-        instrument->get_step_z()
+        step_x,
+        step_y,
+        step_z
     };
 
     m_psfcube_size = instrument->get_psf_size_cube(m_step[0],
@@ -262,9 +277,14 @@ const std::string& SCubeCuda::get_type(void) const
     return SCubeCudaFactory::FACTORY_TYPE;
 }
 
-const Instrument* SCubeCuda::get_instrument(void) const
+const std::vector<int>& SCubeCuda::get_size(void) const
 {
-    return m_instrument;
+    return m_flxcube_size;
+}
+
+const std::vector<float>& SCubeCuda::get_step(void) const
+{
+    return m_step;
 }
 
 const std::map<std::string, NDArrayHost*>& SCubeCuda::evaluate(

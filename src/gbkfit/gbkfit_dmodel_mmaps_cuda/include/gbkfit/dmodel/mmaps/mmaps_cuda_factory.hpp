@@ -22,7 +22,8 @@ public:
     const std::string& get_type(void) const override final;
 
     DModel* create(const std::string& info,
-                   const std::vector<int>& shape,
+                   const std::vector<int>& size,
+                   const std::vector<float>& step,
                    const Instrument* instrument) const override final;
 
     void destroy(DModel* dmodel) const override final;

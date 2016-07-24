@@ -42,17 +42,27 @@ public:
 
     Dataset* create_dataset(const std::string& info);
 
-    Instrument* create_instrument(const std::string& info);
+    Instrument* create_instrument(PointSpreadFunction* psf,
+                                  LineSpreadFunction* lsf);
 
     Fitter* create_fitter(const std::string& info);
 
     Params* create_parameters(const std::string& info);
 
     DModel* create_dmodel(const std::string& info,
-                          const std::vector<int>& shape,
+                          const std::vector<int>& size,
+                          const std::vector<float>& step,
                           const Instrument* instrument);
 
     GModel* create_gmodel(const std::string& info);
+
+
+    LineSpreadFunction* create_line_spread_function(const std::string& info,
+                                                    float step);
+
+    PointSpreadFunction* create_point_spread_function(const std::string& info,
+                                                      float step_x,
+                                                      float step_y);
 
 private:
 

@@ -5,33 +5,28 @@
   "datasets": [
   ],
 
-  "instrument": {
-    "sampling_x": 1.0,
-    "sampling_y": 1.0,
-    "sampling_z": 10.0,
-    "psf": {
-      "type": "gaussian",
-      "fwhm_x": 2.5,
-      "fwhm_y": 2.5,
-      "pa": 0
-    },
-    "lsf": {
-      "type": "gaussian",
-      "fwhm": 30.0
-    }
+  "dmodel": {
+    "type": "gbkfit.dmodel.scube_omp",
+    "size": [49, 49, 101],
+    "step": [1.0, 1.0, 10.0]
+  },
+
+  "psf": {
+    "type": "gaussian",
+    "fwhm_x": 2.5,
+    "fwhm_y": 2.5,
+    "pa": 0
+  },
+
+  "lsf": {
+    "type": "gaussian",
+    "fwhm": 30.0
   },
 
   "gmodel": {
     "type": "gbkfit.gmodel.gmodel1_omp",
     "flx_profile": "exponential",
     "vel_profile": "arctan"
-  },
-
-  "dmodel": {
-    "type": "gbkfit.dmodel.scube_omp",
-    "size_x": 49,
-    "size_y": 49,
-    "size_z": 101
   },
 
   "params": [
@@ -48,3 +43,4 @@
   ]
 
 }
+

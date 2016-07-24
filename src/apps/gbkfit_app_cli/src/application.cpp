@@ -208,8 +208,14 @@ bool Application::initialize(void)
     std::cout << "setting up datasets..." << std::endl;
     m_datasets = m_core->create_datasets(config.at("datasets").dump());
 
+    std::cout << "setting up point spread function..." << std::endl;
+    m_psf = m_core->create_point_spread_function(config.at("psf").dump(), 1, 1);
+
+    std::cout << "setting up line spread function..." << std::endl;
+    m_lsf = m_core->create_line_spread_function(config.at("lsf").dump(), 10);
+
     std::cout << "setting up instrument..." << std::endl;
-    m_instrument = m_core->create_instrument(config.at("instrument").dump());
+    m_instrument = m_core->create_instrument(m_psf, m_lsf);
 
     std::cout << "setting up gmodel..." << std::endl;
     m_gmodel = m_core->create_gmodel(config.at("gmodel").dump());
@@ -232,7 +238,7 @@ bool Application::initialize(void)
     }
 
     std::cout << "setting up dmodel..." << std::endl;
-    m_dmodel = m_core->create_dmodel(config.at("dmodel").dump(), shape, m_instrument);
+    m_dmodel = m_core->create_dmodel(config.at("dmodel").dump(), shape, {}, m_instrument);
 
     m_dmodel->set_galaxy_model(m_gmodel);
 
@@ -289,6 +295,8 @@ void Application::run(void)
             gbkfit::fits::write_to("!"+data.first+"_model.fits", *data.second);
         }
     }
+
+    exit(0);
 
     std::cout << "main execution path completed" << std::endl;
 }

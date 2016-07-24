@@ -17,7 +17,9 @@ public:
 
     virtual const std::string& get_type(void) const = 0;
 
-    virtual const Instrument* get_instrument(void) const = 0;
+    virtual const std::vector<int>& get_size(void) const = 0;
+
+    virtual const std::vector<float>& get_step(void) const = 0;
 
     virtual const GModel* get_galaxy_model(void) const = 0;
 
@@ -40,7 +42,8 @@ public:
     virtual const std::string& get_type(void) const = 0;
 
     virtual DModel* create(const std::string& info,
-                           const std::vector<int>& shape,
+                           const std::vector<int>& size,
+                           const std::vector<float>& step,
                            const Instrument* instrument) const = 0;
 
     virtual void destroy(DModel* dmodel) const = 0;

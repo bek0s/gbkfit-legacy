@@ -7,15 +7,9 @@
 namespace gbkfit
 {
 
-Instrument::Instrument(float step_x,
-                       float step_y,
-                       float step_z,
-                       PointSpreadFunction* psf,
+Instrument::Instrument(PointSpreadFunction* psf,
                        LineSpreadFunction* lsf)
-    : m_step_x(step_x)
-    , m_step_y(step_y)
-    , m_step_z(step_z)
-    , m_psf(psf)
+    : m_psf(psf)
     , m_lsf(lsf)
 {
 }
@@ -24,37 +18,7 @@ Instrument::~Instrument()
 {
 }
 
-float Instrument::get_step_x(void) const
-{
-    return m_step_x;
-}
 
-float Instrument::get_step_y(void) const
-{
-    return m_step_y;
-}
-
-float Instrument::get_step_z(void) const
-{
-    return m_step_z;
-}
-
-NDShape Instrument::get_psf_size_spat(void) const
-{
-    return m_psf->get_size(m_step_x, m_step_y);
-}
-
-NDShape Instrument::get_psf_size_spec(void) const
-{
-    return m_lsf->get_size(m_step_z);
-}
-
-NDShape Instrument::get_psf_size_cube(void) const
-{
-    NDShape psf_shape = get_psf_size_spat();
-    NDShape lsf_shape = get_psf_size_spec();
-    return NDShape({psf_shape[0], psf_shape[1], lsf_shape[0]});
-}
 
 NDShape Instrument::get_psf_size_spat(float step_x, float step_y) const
 {
@@ -71,24 +35,6 @@ NDShape Instrument::get_psf_size_cube(float step_x, float step_y, float step_z) 
     NDShape psf_shape = get_psf_size_spat(step_x, step_y);
     NDShape lsf_shape = get_psf_size_spec(step_z);
     return NDShape({psf_shape[0], psf_shape[1], lsf_shape[0]});
-}
-
-std::unique_ptr<NDArrayHost> Instrument::create_psf_data_spat(void) const
-{
-    return m_psf->as_image(m_step_x, m_step_y);
-}
-
-std::unique_ptr<NDArrayHost> Instrument::create_psf_data_spec(void) const
-{
-    return m_lsf->as_array(m_step_z);
-}
-
-std::unique_ptr<NDArrayHost> Instrument::create_psf_data_cube(void) const
-{
-    std::unique_ptr<NDArrayHost> spat_data = create_psf_data_spat();
-    std::unique_ptr<NDArrayHost> spec_data = create_psf_data_spec();
-    std::unique_ptr<NDArrayHost> cube_data = create_psf_data_cube(spat_data, spec_data);
-    return cube_data;
 }
 
 std::unique_ptr<NDArrayHost> Instrument::create_psf_data_spat(float step_x, float step_y) const

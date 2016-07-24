@@ -48,11 +48,17 @@ public:
     SCubeOmp(int size_x,
              int size_y,
              int size_z,
+             float step_x,
+             float step_y,
+             float step_z,
              const Instrument* instrument);
 
     SCubeOmp(int size_x,
              int size_y,
              int size_z,
+             float step_x,
+             float step_y,
+             float step_z,
              int upsampling_x,
              int upsampling_y,
              int upsampling_z,
@@ -62,7 +68,9 @@ public:
 
     const std::string& get_type(void) const override final;
 
-    const Instrument* get_instrument(void) const override final;
+    const std::vector<int>& get_size(void) const override final;
+
+    const std::vector<float>& get_step(void) const override final;
 
     const std::map<std::string, NDArrayHost*>& evaluate(
             const std::map<std::string, float>& params) const override final;
