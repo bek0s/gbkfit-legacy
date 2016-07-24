@@ -89,8 +89,8 @@ add_library(gbkfit_shared
 target_include_directories(gbkfit_object
     PUBLIC
     "include"
-    PRIVATE
     ${Boost_INCLUDE_DIRS}
+    PRIVATE
     ${CFITSIO_INCLUDE_DIRS}
 )
 
