@@ -18,7 +18,7 @@
   ],
 
   "dmodel": {
-    "type": "gbkfit.dmodel.mmaps_cuda",
+    "type": "gbkfit.dmodel.mmaps_omp",
     "size": [49, 49, 101],
     "step": [1.0, 1.0, 10.0],
     "upsampling": [1, 1, 1]
@@ -37,7 +37,7 @@
   },
 
   "gmodel": {
-    "type": "gbkfit.gmodel.gmodel1_cuda",
+    "type": "gbkfit.gmodel.gmodel1_omp",
     "flx_profile": "exponential",
     "vel_profile": "arctan"
   },
