@@ -52,43 +52,34 @@ GBKFIT applications and libraries have internal dependencies:
   - required: `gbkfit`
 - `gbkfit_fftw3`
   - required: `gbkfit`
-- `gbkfit_dmodel_scube`
+- `gbkfit_dmodel`
   - required: `gbkfit`
-- `gbkfit_dmodel_scube_cuda`
-  - required: `gbkfit_dmodel_scube`, `gbkfit_cuda`
-- `gbkfit_dmodel_scube_omp`
-  - required: `gbkfit_dmodel_scube`, `gbkfit_fftw3`
-- `gbkfit_dmodel_mmaps`
+- `gbkfit_dmodel_omp`
+  - required: `gbkfit_dmodel`, `gbkfit_fftw3`
+- `gbkfit_dmodel_cube`
+  - required: `gbkfit_dmodel`, `gbkfit_cuda`
+- `gbkfit_gmodel`
   - required: `gbkfit`
-- `gbkfit_dmodel_mmaps_cuda`
-  - required: `gbkfit_dmodel_mmaps`, `gbkfit_dmodel_scube_cuda`
-- `gbkfit_dmodel_mmaps_omp`
-  - required: `gbkfit_dmodel_mmaps`, `gbkfit_dmodel_scube_omp`
-- `gbkfit_gmodel_gmodel1`
-  - required: `gbkfit`
-- `gbkfit_gmodel_gmodel1_omp`
-  - required: `gbkfit_gmodel_gmodel1`
-- `gbkfit_gmodel_gmodel1_cuda`
-  - required: `gbkfit_gmodel_gmodel1`, `gbkfit_cuda`
+- `gbkfit_gmodel_omp`
+  - required: `gbkfit_gmodel`
+- `gbkfit_gmodel_cuda`
+  - required: `gbkfit_gmodel`
 - `gbkfit_fitter_mpfit`
   - required: `gbkfit`
 - `gbkfit_fitter_multinest`
   - required: `gbkfit`
 - `gbkfit_app_cli`
   - required: `gbkfit`
-  - optional: `gbkfit_cuda`, `gbkfit_fftw3`, `gbkfit_dmodel_scube`,
-  `gbkfit_dmodel_scube_cuda`, `gbkfit_dmodel_scube_omp`,
-  `gbkfit_dmodel_mmaps`, `gbkfit_dmodel_mmaps_cuda`,
-  `gbkfit_dmodel_mmaps_omp`, `gbkfit_gmodel_gmodel1`,
-  `gbkfit_gmodel_gmodel1_omp`, `gbkfit_gmodel_gmodel1_cuda`,
-  `gbkfit_fitter_mpfit`, `gbkfit_fitter_multinest`
+  - optional: `gbkfit_cuda`, `gbkfit_fftw3`, `gbkfit_dmodel`,
+  `gbkfit_dmodel_omp`, `gbkfit_dmodel_cuda`, `gbkfit_gmodel`,
+  `gbkfit_gmodel_omp`, `gbkfit_gmodel_cuda`, `gbkfit_fitter_mpfit`, 
+  `gbkfit_fitter_multinest`
 
-For example: If we want to build the `gbkfit_dmodel_scube_cuda` library, we
-will have to build the libraries `gbkfit_dmodel_scube` and  `gbkfit_cuda`.
-We will also need to build the libraries these two depend on. Thus, we will
-need to build the `gbkfit` library as well. If this sounds complicated, do not
-worry. CMake will automatically calculate the required dependencies for each
-library.
+For example: If we want to build the `gbkfit_dmodel_cuda` library, we will 
+have to build the libraries `gbkfit_dmodel` and  `gbkfit_cuda`. We will also 
+need to build the libraries these two depend on. Thus, we will need to build 
+the `gbkfit` library as well. If this sounds complicated, do not worry. CMake 
+will automatically calculate the required dependencies for each library.
 
 ### External dependencies
 

@@ -33,13 +33,11 @@ their own custom models and optimization techniques into the software.
 GBKFIT models observations with a combination of two models: a Data Model
 (DModel), and a Galaxy Model (GModel). The former is used to describe the data
 structure of the observation, while the latter is used to describe the
-observed galaxy. Data and galaxy models come in the form of modules, and by
-convention their names start with `gbkfit_dmodel_` and `gbkfit_gmodel_`
-respectively.
+observed galaxy. By convention, the name of the data and galaxy models start 
+with `gbkfit.dmodel.` and `gbkfit.gmodel.` respectively.
 
-Similarly to data and galaxy models, optimization techniques come in the form
-of modules which are called Fitters, and by convention their names start with
-`gbkfit_fitter_`.
+In GBKFIT, the optimization techniques are called fitters, and by convention, 
+their names start with `gbkfit.fitter.`.
 
 ### Performance
 
