@@ -56,14 +56,14 @@ GBKFIT applications and libraries have internal dependencies:
   - required: `gbkfit`
 - `gbkfit_dmodel_omp`
   - required: `gbkfit_dmodel`, `gbkfit_fftw3`
-- `gbkfit_dmodel_cube`
+- `gbkfit_dmodel_cuda`
   - required: `gbkfit_dmodel`, `gbkfit_cuda`
 - `gbkfit_gmodel`
   - required: `gbkfit`
 - `gbkfit_gmodel_omp`
   - required: `gbkfit_gmodel`
 - `gbkfit_gmodel_cuda`
-  - required: `gbkfit_gmodel`
+  - required: `gbkfit_gmodel`, `gbkfit_cuda`
 - `gbkfit_fitter_mpfit`
   - required: `gbkfit`
 - `gbkfit_fitter_multinest`
@@ -92,23 +92,17 @@ GBKFIT applications and libraries have external dependencies:
   - required: [CUDA](https://developer.nvidia.com/cuda-toolkit)
 - `gbkfit_fftw3`
   - required: [FFTW3](http://www.fftw.org/)
-- `gbkfit_dmodel_mmaps`
+- `gbkfit_dmodel`
   - required: None
-- `gbkfit_dmodel_mmaps_cuda`
-  - required: [CUDA](https://developer.nvidia.com/cuda-toolkit)
-- `gbkfit_dmodel_mmaps_omp`
-  - required: [OpenMP](http://openmp.org/)
-- `gbkfit_dmodel_scube`
-  - required: None
-- `gbkfit_dmodel_scube_cuda`
-  - required: [CUDA](https://developer.nvidia.com/cuda-toolkit)
-- `gbkfit_dmodel_scube_omp`
+- `gbkfit_dmodel_omp`
   - required: [OpenMP](http://openmp.org/), [FFTW3](http://www.fftw.org/)
-- `gbkfit_gmodel_gmodel1`
+- `gbkfit_dmodel_cuda`
+  - required: [CUDA](https://developer.nvidia.com/cuda-toolkit)
+- `gbkfit_gmodel`
   - required: None
-- `gbkfit_gmodel_gmodel1_omp`
+- `gbkfit_gmodel_omp`
   - required: [OpenMP](http://openmp.org/)
-- `gbkfit_gmodel_gmodel1_cuda`
+- `gbkfit_gmodel_cuda`
   - required: [CUDA](https://developer.nvidia.com/cuda-toolkit)
 - `gbkfit_fitter_mpfit`
   - required: None

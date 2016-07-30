@@ -69,9 +69,9 @@ Example:
 
 ### The Point Spread Function (`psf`)
 
-The PSF of the observation is specified under the `psf` map. Under this map,
-the key `type` defines the model used for the PSF. Each model comes with its
-own set of parameters:
+The PSF of the observation is specified under the `psf` key. In the map under 
+this key, the key `type` defines the model used for the PSF. Each model comes 
+with its own set of parameters:
 
 - `gaussian`
   - `fhwm_x`
@@ -102,9 +102,9 @@ Example:
 
 ### The Line Spread Function (`lsf`)
 
-The LSF of the observation is specified under the `lsf` map. Under this map,
-the key `type` defines the model used for the LSF. Each model comes with its
-own set of parameters:
+The LSF of the observation is specified under the `lsf` key. In the map under 
+this key, the key `type` defines the model used for the LSF. Each model comes 
+with its own set of parameters:
 
 - `gaussian`
   - `fhwm`
@@ -126,13 +126,6 @@ example:
 ```
 
 ### The data model (`dmodel`)
-
-The spatial sampling of the input data (specified under the `datasets` array)
-are defined using the `step[0]` and `step[1]` keys, and they can be in
-any units. However, the same units have to be used for any of the model
-parameters that describe spatial position or distance. The spectral sampling
-of the input data (specified under the `datasets` array) is defined using the
-`step[2]` key and it should be in `km/s`.
 
 TODO
 
