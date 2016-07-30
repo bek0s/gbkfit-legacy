@@ -39,7 +39,6 @@ class FitterResult;
 class FitterResultMode;
 class GModel;
 class GModelFactory;
-class Instrument;
 class NDArray;
 class NDArrayHost;
 class NDShape;

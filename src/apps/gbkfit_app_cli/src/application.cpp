@@ -16,34 +16,28 @@
 #include "gbkfit/utility.hpp"
 #include "gbkfit/version.hpp"
 
-#ifdef GBKFIT_BUILD_DMODEL_MMAPS_CUDA
-#include "gbkfit/dmodel/mmaps/mmaps_cuda.hpp"
-#include "gbkfit/dmodel/mmaps/mmaps_cuda_factory.hpp"
-#endif
-
-#ifdef GBKFIT_BUILD_DMODEL_MMAPS_OMP
+#ifdef GBKFIT_BUILD_DMODEL_OMP
 #include "gbkfit/dmodel/mmaps/mmaps_omp.hpp"
 #include "gbkfit/dmodel/mmaps/mmaps_omp_factory.hpp"
+#include "gbkfit/dmodel/scube/scube_omp.hpp"
+#include "gbkfit/dmodel/scube/scube_omp_factory.hpp"
 #endif
 
-#ifdef GBKFIT_BUILD_DMODEL_SCUBE_CUDA
+#ifdef GBKFIT_BUILD_DMODEL_CUDA
+#include "gbkfit/dmodel/mmaps/mmaps_cuda.hpp"
+#include "gbkfit/dmodel/mmaps/mmaps_cuda_factory.hpp"
 #include "gbkfit/dmodel/scube/scube_cuda.hpp"
 #include "gbkfit/dmodel/scube/scube_cuda_factory.hpp"
 #endif
 
-#ifdef GBKFIT_BUILD_GMODEL_GMODEL1_CUDA
-#include "gbkfit/gmodel/gmodel1/gmodel1_cuda.hpp"
-#include "gbkfit/gmodel/gmodel1/gmodel1_cuda_factory.hpp"
-#endif
-
-#ifdef GBKFIT_BUILD_GMODEL_GMODEL1_OMP
+#ifdef GBKFIT_BUILD_GMODEL_OMP
 #include "gbkfit/gmodel/gmodel1/gmodel1_omp.hpp"
 #include "gbkfit/gmodel/gmodel1/gmodel1_omp_factory.hpp"
 #endif
 
-#ifdef GBKFIT_BUILD_DMODEL_SCUBE_OMP
-#include "gbkfit/dmodel/scube/scube_omp.hpp"
-#include "gbkfit/dmodel/scube/scube_omp_factory.hpp"
+#ifdef GBKFIT_BUILD_GMODEL_CUDA
+#include "gbkfit/gmodel/gmodel1/gmodel1_cuda.hpp"
+#include "gbkfit/gmodel/gmodel1/gmodel1_cuda_factory.hpp"
 #endif
 
 #ifdef GBKFIT_BUILD_FITTER_MPFIT
@@ -65,7 +59,6 @@ Application::Application(void)
     : m_config_file(DEFAULT_CONFIG_FILE)
     , m_output_dir(DEFAULT_OUTPUT_DIR)
     , m_core(nullptr)
-    , m_instrument(nullptr)
     , m_dmodel(nullptr)
     , m_gmodel(nullptr)
     , m_fitter(nullptr)
@@ -122,25 +115,21 @@ bool Application::initialize(void)
     //
 
     std::cout << "creating dmodel factories..." << std::endl;
-    #ifdef GBKFIT_BUILD_DMODEL_MMAPS_CUDA
-    m_dmodel_factories.push_back(new gbkfit::dmodel::mmaps::MMapsCudaFactory());
-    #endif
-    #ifdef GBKFIT_BUILD_DMODEL_MMAPS_OMP
+    #ifdef GBKFIT_BUILD_DMODEL_OMP
     m_dmodel_factories.push_back(new gbkfit::dmodel::mmaps::MMapsOmpFactory());
-    #endif
-    #ifdef GBKFIT_BUILD_DMODEL_SCUBE_CUDA
-    m_dmodel_factories.push_back(new gbkfit::dmodel::scube::SCubeCudaFactory());
-    #endif
-    #ifdef GBKFIT_BUILD_DMODEL_SCUBE_OMP
     m_dmodel_factories.push_back(new gbkfit::dmodel::scube::SCubeOmpFactory());
+    #endif
+    #ifdef GBKFIT_BUILD_DMODEL_CUDA
+    m_dmodel_factories.push_back(new gbkfit::dmodel::mmaps::MMapsCudaFactory());
+    m_dmodel_factories.push_back(new gbkfit::dmodel::scube::SCubeCudaFactory());
     #endif
 
     std::cout << "creating gmodel factories..." << std::endl;
-    #ifdef GBKFIT_BUILD_GMODEL_GMODEL1_CUDA
-    m_gmodel_factories.push_back(new gbkfit::gmodel::gmodel1::GModel1CudaFactory());
-    #endif
-    #ifdef GBKFIT_BUILD_GMODEL_GMODEL1_OMP
+    #ifdef GBKFIT_BUILD_GMODEL_OMP
     m_gmodel_factories.push_back(new gbkfit::gmodel::gmodel1::GModel1OmpFactory());
+    #endif
+    #ifdef GBKFIT_BUILD_GMODEL_CUDA
+    m_gmodel_factories.push_back(new gbkfit::gmodel::gmodel1::GModel1CudaFactory());
     #endif
 
     std::cout << "creating fitter factories..." << std::endl;
@@ -214,9 +203,6 @@ bool Application::initialize(void)
     std::cout << "setting up line spread function..." << std::endl;
     m_lsf = m_core->create_line_spread_function(config.at("lsf").dump(), 10);
 
-    std::cout << "setting up instrument..." << std::endl;
-    m_instrument = m_core->create_instrument(m_psf, m_lsf);
-
     std::cout << "setting up gmodel..." << std::endl;
     m_gmodel = m_core->create_gmodel(config.at("gmodel").dump());
 
@@ -235,10 +221,11 @@ bool Application::initialize(void)
         }
 
         shape = m_datasets[0]->get_data()->get_shape().as_vector();
+        shape.push_back(151);
     }
 
     std::cout << "setting up dmodel..." << std::endl;
-    m_dmodel = m_core->create_dmodel(config.at("dmodel").dump(), shape, {}, m_instrument);
+    m_dmodel = m_core->create_dmodel(config.at("dmodel").dump(), shape, {}, m_psf, m_lsf);
 
     m_dmodel->set_galaxy_model(m_gmodel);
 
@@ -296,7 +283,7 @@ void Application::run(void)
         }
     }
 
-    exit(0);
+
 
     std::cout << "main execution path completed" << std::endl;
 }

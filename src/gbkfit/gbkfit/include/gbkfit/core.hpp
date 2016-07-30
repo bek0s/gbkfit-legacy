@@ -17,7 +17,6 @@ private:
     std::map<std::string, const GModelFactory*> m_gmodel_factories;
 
     std::vector<Dataset*> m_datasets;
-    std::vector<Instrument*> m_instruments;
     std::vector<PointSpreadFunction*> m_psfs;
     std::vector<LineSpreadFunction*> m_lsfs;
     std::vector<Fitter*> m_fitters;
@@ -42,9 +41,6 @@ public:
 
     Dataset* create_dataset(const std::string& info);
 
-    Instrument* create_instrument(PointSpreadFunction* psf,
-                                  LineSpreadFunction* lsf);
-
     Fitter* create_fitter(const std::string& info);
 
     Params* create_parameters(const std::string& info);
@@ -52,7 +48,8 @@ public:
     DModel* create_dmodel(const std::string& info,
                           const std::vector<int>& size,
                           const std::vector<float>& step,
-                          const Instrument* instrument);
+                          const PointSpreadFunction* psf,
+                          const LineSpreadFunction* lsf);
 
     GModel* create_gmodel(const std::string& info);
 

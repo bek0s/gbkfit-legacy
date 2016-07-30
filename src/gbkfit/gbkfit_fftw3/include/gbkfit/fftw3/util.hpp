@@ -5,6 +5,10 @@
 namespace gbkfit {
 namespace fftw3 {
 
+int init_threads(void);
+
+void cleanup_threads(void);
+
 }
 } // namespace gbkfit
 

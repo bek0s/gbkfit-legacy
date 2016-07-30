@@ -156,6 +156,34 @@ public:
     void as_image(float step_x, float step_y, int size_x, int size_y, float* data) const override final;
 };
 
+namespace spread_function_util
+{
+
+NDShape get_psf_cube_size(const PointSpreadFunction *psf,
+                          const LineSpreadFunction *lsf,
+                          float step_x,
+                          float step_y,
+                          float step_z);
+
+std::unique_ptr<NDArrayHost> create_psf_cube(
+        const PointSpreadFunction* psf,
+        const LineSpreadFunction* lsf,
+        float step_x,
+        float step_y,
+        float step_z);
+
+std::unique_ptr<NDArrayHost> create_psf_cube(
+        const PointSpreadFunction* psf,
+        const LineSpreadFunction* lsf,
+        float step_x,
+        float step_y,
+        float step_z,
+        int size_x,
+        int size_y,
+        int size_z);
+
+} // namespace spread_function_util
+
 } // namespace gbkfit
 
 #endif // GBKFIT_SPREAD_FUNCTIONS_HPP

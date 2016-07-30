@@ -142,7 +142,8 @@ Example:
   "dmodel": {
     "type": "gbkfit.dmodel.mmaps_omp",
     "size": [49, 49, 101],
-    "step": [1.0, 1.0, 1.0]
+    "step": [1.0, 1.0, 1.0],
+    "upsampling": [1, 1, 1]
   }
 }
 ```

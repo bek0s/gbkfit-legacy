@@ -26,7 +26,6 @@ set(HEADER_FILES
     include/gbkfit/fitter.hpp
     include/gbkfit/fitter_result.hpp
     include/gbkfit/gmodel.hpp
-    include/gbkfit/instrument.hpp
     include/gbkfit/json.hpp
     include/gbkfit/math.hpp
     include/gbkfit/ndarray.hpp
@@ -51,7 +50,6 @@ set(SOURCE_FILES
     src/fitter.cpp
     src/fitter_result.cpp
     src/gmodel.cpp
-    src/instrument.cpp
     src/ndarray.cpp
     src/ndarray_host.cpp
     src/ndshape.cpp

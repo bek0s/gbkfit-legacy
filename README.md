@@ -53,22 +53,22 @@ all the cores available on the Central Processing Unit (CPU) through OpenMP.
 ### Data models
 
 GBKFIT comes with the following data models:
-- `gbkfit_dmodel_mmaps_<device_api>`: This model is used to describe moment
+- `gbkfit.dmodel.mmaps_<device_api>`: This model is used to describe moment
 maps extracted from a spectral data cube. Thus, this model should be used to
 perform 2D fits to velocity and velocity dispersion maps. Flux maps are also
 supported but they are currently experimental and should not be used.
-- `gbkfit_dmodel_scube_<device_api>`: This model is used to describe spectral
+- `gbkfit.dmodel.scube_<device_api>`: This model is used to describe spectral
 data cubes. Thus, this model should be used to perform 3D fits to spectral
 data cubes. Support for 3D fitting is experimental and should be avoided for
 now.
 
-`device_api` can be either `omp` (for multi-threaded CPU acceleration) or
+`<device_api>` can be either `omp` (for multi-threaded CPU acceleration) or
 `cuda` (for GPU acceleration).
 
 ### Galaxy models
 
 GBKFIT comes with the following galaxy models:
-- `gbkfit_gmodel_gmodel1_<device_api>`: This model is a combination of a thin
+- `gbkfit.gmodel.gmodel1_<device_api>`: This model is a combination of a thin
 and flat disk, a surface brightness profile, a rotation curve, and an intrinsic
 velocity dispersion which is assumed to be constant across the galactic disk.
 
@@ -85,17 +85,17 @@ velocity dispersion which is assumed to be constant across the galactic disk.
   - Epinat
   ([Epinat et al. 2008](http://adsabs.harvard.edu/abs/2008MNRAS.388..500E))
 
-`device_api` can be either `omp` (for multi-threaded CPU acceleration) or
+`<device_api>` can be either `omp` (for multi-threaded CPU acceleration) or
 `cuda` (for GPU acceleration).
 
 ### Fitters
 
 GBKFIT comes with the following fitters:
-- `gbkfit_fitter_mpfit`: This fitter employs the Levenberg-Marquardt Algorithm
+- `gbkfit.fitter.mpfit`: This fitter employs the Levenberg-Marquardt Algorithm
 through the [MPFIT](https://www.physics.wisc.edu/~craigm/idl/cmpfit.html)
 library.
-- `gbkfit_fitter_multinest`: This fitter employs the Clustered and Importance
-Nested Sampling techniques through the
+- `gbkfit.fitter.multinest`: This fitter employs a modified version of the 
+Nested Sampling technique through the
 [MultiNest](https://ccpforge.cse.rl.ac.uk/gf/project/multinest/) library.
 
 

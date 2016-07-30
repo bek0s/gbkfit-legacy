@@ -44,7 +44,8 @@ public:
     virtual DModel* create(const std::string& info,
                            const std::vector<int>& size,
                            const std::vector<float>& step,
-                           const Instrument* instrument) const = 0;
+                           const PointSpreadFunction* psf,
+                           const LineSpreadFunction* lsf) const = 0;
 
     virtual void destroy(DModel* dmodel) const = 0;
 

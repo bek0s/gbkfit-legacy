@@ -5,7 +5,6 @@
 #include "gbkfit/fits.hpp"
 #include "gbkfit/fitter.hpp"
 #include "gbkfit/gmodel.hpp"
-#include "gbkfit/instrument.hpp"
 #include "gbkfit/json.hpp"
 #include "gbkfit/ndarray_host.hpp"
 #include "gbkfit/params.hpp"
@@ -21,9 +20,6 @@ Core::~Core()
 {
     for(auto& dataset : m_datasets)
         delete dataset;
-
-    for(auto& instrument : m_instruments)
-        delete instrument;
 
     for(auto& psf : m_psfs)
         delete psf;
@@ -235,16 +231,6 @@ PointSpreadFunction* Core::create_point_spread_function(const std::string& info,
     return psf;
 }
 
-Instrument* Core::create_instrument(PointSpreadFunction* psf,
-                                    LineSpreadFunction* lsf)
-{
-    Instrument* instrument = new Instrument(psf, lsf);
-
-    m_instruments.push_back(instrument);
-
-    return instrument;
-}
-
 const FitterFactory* Core::get_fitter_factory(const std::string& type) const
 {
     auto iter = m_fitter_factories.find(type);
@@ -257,13 +243,14 @@ const FitterFactory* Core::get_fitter_factory(const std::string& type) const
 DModel* Core::create_dmodel(const std::string& info,
                             const std::vector<int>& size,
                             const std::vector<float>& step,
-                            const Instrument* instrument)
+                            const PointSpreadFunction* psf,
+                            const LineSpreadFunction* lsf)
 {
     nlohmann::json info_root = nlohmann::json::parse(info);
 
     std::string type = info_root.at("type");
 
-    DModel* dmodel = get_dmodel_factory(type)->create(info, size, step, instrument);
+    DModel* dmodel = get_dmodel_factory(type)->create(info, size, step, psf, lsf);
 
     m_dmodels.push_back(dmodel);
 
