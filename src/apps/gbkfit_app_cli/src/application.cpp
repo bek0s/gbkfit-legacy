@@ -198,10 +198,10 @@ bool Application::initialize(void)
     m_datasets = m_core->create_datasets(config.at("datasets").dump());
 
     std::cout << "setting up point spread function..." << std::endl;
-    m_psf = m_core->create_point_spread_function(config.at("psf").dump(), 1, 1);
+    m_psf = m_core->create_point_spread_function(config.at("psf").dump());
 
     std::cout << "setting up line spread function..." << std::endl;
-    m_lsf = m_core->create_line_spread_function(config.at("lsf").dump(), 10);
+    m_lsf = m_core->create_line_spread_function(config.at("lsf").dump());
 
     std::cout << "setting up gmodel..." << std::endl;
     m_gmodel = m_core->create_gmodel(config.at("gmodel").dump());

@@ -54,12 +54,9 @@ public:
     GModel* create_gmodel(const std::string& info);
 
 
-    LineSpreadFunction* create_line_spread_function(const std::string& info,
-                                                    float step);
+    LineSpreadFunction* create_line_spread_function(const std::string& info);
 
-    PointSpreadFunction* create_point_spread_function(const std::string& info,
-                                                      float step_x,
-                                                      float step_y);
+    PointSpreadFunction* create_point_spread_function(const std::string& info);
 
 private:
 

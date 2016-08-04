@@ -135,8 +135,7 @@ std::vector<Dataset*> Core::create_datasets(const std::string& info)
     return datasets;
 }
 
-LineSpreadFunction* Core::create_line_spread_function(const std::string& info,
-                                                      float step)
+LineSpreadFunction* Core::create_line_spread_function(const std::string& info)
 {
     nlohmann::json info_root = nlohmann::json::parse(info);
 
@@ -165,8 +164,7 @@ LineSpreadFunction* Core::create_line_spread_function(const std::string& info,
         std::string file = info_root.at("file").get<std::string>();
         std::shared_ptr<NDArrayHost> data = fits::get_data(file);
         lsf = new LineSpreadFunctionArray(data->get_host_ptr(),
-                                          data->get_shape()[0],
-                                          step);
+                                          data->get_shape()[0]);
     }
     else
     {
@@ -178,9 +176,7 @@ LineSpreadFunction* Core::create_line_spread_function(const std::string& info,
     return lsf;
 }
 
-PointSpreadFunction* Core::create_point_spread_function(const std::string& info,
-                                                        float step_x,
-                                                        float step_y)
+PointSpreadFunction* Core::create_point_spread_function(const std::string& info)
 {
     nlohmann::json info_root = nlohmann::json::parse(info);
 
@@ -217,9 +213,7 @@ PointSpreadFunction* Core::create_point_spread_function(const std::string& info,
         std::shared_ptr<NDArrayHost> data = fits::get_data(file);
         psf = new PointSpreadFunctionImage(data->get_host_ptr(),
                                            data->get_shape()[0],
-                                           data->get_shape()[1],
-                                           step_x,
-                                           step_y);
+                                           data->get_shape()[1]);
     }
     else
     {

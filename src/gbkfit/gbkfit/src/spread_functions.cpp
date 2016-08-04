@@ -82,9 +82,8 @@ void LineSpreadFunctionNone::as_array(float step, int size, float* data) const
     data[idx] = 1;
 }
 
-LineSpreadFunctionArray::LineSpreadFunctionArray(const float* data, float step, int size)
+LineSpreadFunctionArray::LineSpreadFunctionArray(const float* data, int size)
     : m_data(nullptr)
-    , m_step(step)
     , m_size(size)
 {
     m_data = new float[m_size];
@@ -98,18 +97,14 @@ LineSpreadFunctionArray::~LineSpreadFunctionArray()
 
 NDShape LineSpreadFunctionArray::get_size(float step) const
 {
-    if (step != m_step) {
-        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
-    }
+    (void)step;
     return NDShape({m_size});
 }
 
 void LineSpreadFunctionArray::as_array(float step, int size, float* data) const
 {
+    (void)step;
     if (size != m_size) {
-        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
-    }
-    if (step != m_step) {
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
     }
     std::copy_n(m_data, m_size, data);
@@ -243,10 +238,8 @@ void PointSpreadFunctionNone::as_image(float step_x, float step_y, int size_x, i
     data[idx] = 1;
 }
 
-PointSpreadFunctionImage::PointSpreadFunctionImage(const float* data, float step_x, float step_y, int size_x, int size_y)
+PointSpreadFunctionImage::PointSpreadFunctionImage(const float* data, int size_x, int size_y)
     : m_data(nullptr)
-    , m_step_x(step_x)
-    , m_step_y(step_y)
     , m_size_x(size_x)
     , m_size_y(size_y)
 {
@@ -261,19 +254,16 @@ PointSpreadFunctionImage::~PointSpreadFunctionImage()
 
 NDShape PointSpreadFunctionImage::get_size(float step_x, float step_y) const
 {
-    if (step_x != m_step_x || step_y != m_step_y) {
-        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
-    }
-
+    (void)step_x;
+    (void)step_y;
     return NDShape({m_size_x, m_size_y});
 }
 
 void PointSpreadFunctionImage::as_image(float step_x, float step_y, int size_x, int size_y, float* data) const
 {
+    (void)step_x;
+    (void)step_y;
     if (size_x != m_size_x || size_y != m_size_y) {
-        throw std::runtime_error(BOOST_CURRENT_FUNCTION);
-    }
-    if (step_x != m_step_x || step_y != m_step_y) {
         throw std::runtime_error(BOOST_CURRENT_FUNCTION);
     }
 
