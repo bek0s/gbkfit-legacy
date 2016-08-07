@@ -164,7 +164,7 @@ const int FitterMultinest::DEFAULT_MMODAL = 0;
 const int FitterMultinest::DEFAULT_CEFF = 0;
 const int FitterMultinest::DEFAULT_NLIVE = 50;
 const int FitterMultinest::DEFAULT_MAXITER = 2000;
-const int FitterMultinest::DEFAULT_SEED = 1;
+const int FitterMultinest::DEFAULT_SEED = -1;
 
 FitterMultinest::FitterMultinest(void)
     : m_efr(DEFAULT_EFR)
