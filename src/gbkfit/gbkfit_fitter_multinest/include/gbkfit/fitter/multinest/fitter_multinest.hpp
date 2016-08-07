@@ -22,6 +22,7 @@ public:
     static const int DEFAULT_CEFF;
     static const int DEFAULT_NLIVE;
     static const int DEFAULT_MAXITER;
+    static const int DEFAULT_SEED;
 
 public:
 
@@ -34,6 +35,7 @@ public:
     int m_ceff;
     int m_nlive;
     int m_maxiter;
+    int m_seed;
 
 public:
 

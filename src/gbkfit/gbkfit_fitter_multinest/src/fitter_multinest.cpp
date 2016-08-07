@@ -164,6 +164,7 @@ const int FitterMultinest::DEFAULT_MMODAL = 0;
 const int FitterMultinest::DEFAULT_CEFF = 0;
 const int FitterMultinest::DEFAULT_NLIVE = 50;
 const int FitterMultinest::DEFAULT_MAXITER = 2000;
+const int FitterMultinest::DEFAULT_SEED = 1;
 
 FitterMultinest::FitterMultinest(void)
     : m_efr(DEFAULT_EFR)
@@ -175,6 +176,7 @@ FitterMultinest::FitterMultinest(void)
     , m_ceff(DEFAULT_CEFF)
     , m_nlive(DEFAULT_NLIVE)
     , m_maxiter(DEFAULT_MAXITER)
+    , m_seed(DEFAULT_SEED)
 {
 }
 
@@ -296,7 +298,7 @@ FitterResult* FitterMultinest::fit(const DModel* dmodel, const Params* params, c
     for(int i = 0; i < ndims; i++)
         pWrap[i] = 0;
     char root[100] = "multinest_";             // root for output files
-    int seed = -1;                      // random no. generator seed, if < 0 then take the seed from system clock
+    int seed = m_seed;                  // random no. generator seed, if < 0 then take the seed from system clock
     int fb = 0;                         // need feedback on standard output?
     int resume = 0;                     // resume from a previous job?
     int outfile = 1;                    // write output files?
