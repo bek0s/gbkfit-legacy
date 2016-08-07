@@ -3,6 +3,7 @@
 #include "gbkfit/dmodel/mmaps/mmaps_omp.hpp"
 
 #include "gbkfit/json.hpp"
+#include "gbkfit/utility.hpp"
 
 namespace gbkfit {
 namespace dmodel {
@@ -33,6 +34,11 @@ DModel* MMapsOmpFactory::create(const std::string& info,
 
     if (step_.empty()) {
         step_ = info_root.at("step").get<std::vector<float>>();
+    }
+
+    if (size_.size() == 2) {
+        int sz = util_num::roundu_odd((2*500+200)/step_[2]);
+        size_.push_back(sz);
     }
 
     upsampling = info_root.at("upsampling").get<std::vector<int>>();

@@ -291,7 +291,7 @@ FitterResult* FitterMultinest::fit(const DModel* dmodel, const Params* params, c
     int ndims = free_param_counter;     // dimensionality (no. of free parameters)
     int nPar = free_param_counter;      // total no. of parameters including free & derived parameters
     int nClsPar = free_param_counter;   // no. of parameters to do mode separation on
-    int updInt = 1;                   // after how many iterations feedback is required & the output files should be updated
+    int updInt = 10;                   // after how many iterations feedback is required & the output files should be updated
     double Ztol = -3.40282e+37;                // all the modes with logZ < Ztol are ignored
     int maxModes = 20;                 // expected max no. of modes (used only for memory allocation)
     int* pWrap = new int[ndims];        // which parameters to have periodic boundary conditions?

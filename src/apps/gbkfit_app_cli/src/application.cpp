@@ -221,7 +221,6 @@ bool Application::initialize(void)
         }
 
         shape = m_datasets[0]->get_data()->get_shape().as_vector();
-        shape.push_back(151);
     }
 
     std::cout << "setting up dmodel..." << std::endl;
