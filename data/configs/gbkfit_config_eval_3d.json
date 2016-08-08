@@ -5,12 +5,6 @@
   "datasets": [
   ],
 
-  "dmodel": {
-    "type": "gbkfit.dmodel.scube_omp",
-    "size": [49, 49, 101],
-    "step": [1.0, 1.0, 10.0]
-  },
-
   "psf": {
     "type": "gaussian",
     "fwhm_x": 2.5,
@@ -21,6 +15,12 @@
   "lsf": {
     "type": "gaussian",
     "fwhm": 30.0
+  },
+
+  "dmodel": {
+    "type": "gbkfit.dmodel.scube_omp",
+    "size": [49, 49, 101],
+    "step": [1.0, 1.0, 10.0]
   },
 
   "gmodel": {
