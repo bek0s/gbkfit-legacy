@@ -13,6 +13,7 @@ procedure are relatively up-to-date.
 GBKFIT requires a C++ compiler with C++14 support.
 
 GBKFIT has been tested with the following compilers:
+- GCC 6.1 (Debian Linux, stretch)
 - GCC 5.4 (Debian Linux, stretch)
 - GCC 5.1 (CentOS 6.7)
 
@@ -36,54 +37,7 @@ To install CMake follow the steps bellow:
 
 ## Dependencies
 
-In this section, all the details regarding GBKFIT's internal and external
-extensions are discussed. You can skip most of the reading and go directly
-[here](#installing-external-dependencies). However, if you encounter problems
-during the compilation and installation of GBKFIT and its dependencies, make
-sure you come back and read this entire section.
-
-### Internal dependencies
-
-GBKFIT applications and libraries have internal dependencies:
-
-- `gbkfit`
-  - none
-- `gbkfit_cuda`
-  - required: `gbkfit`
-- `gbkfit_fftw3`
-  - required: `gbkfit`
-- `gbkfit_dmodel`
-  - required: `gbkfit`
-- `gbkfit_dmodel_omp`
-  - required: `gbkfit_dmodel`, `gbkfit_fftw3`
-- `gbkfit_dmodel_cuda`
-  - required: `gbkfit_dmodel`, `gbkfit_cuda`
-- `gbkfit_gmodel`
-  - required: `gbkfit`
-- `gbkfit_gmodel_omp`
-  - required: `gbkfit_gmodel`
-- `gbkfit_gmodel_cuda`
-  - required: `gbkfit_gmodel`, `gbkfit_cuda`
-- `gbkfit_fitter_mpfit`
-  - required: `gbkfit`
-- `gbkfit_fitter_multinest`
-  - required: `gbkfit`
-- `gbkfit_app_cli`
-  - required: `gbkfit`
-  - optional: `gbkfit_cuda`, `gbkfit_fftw3`, `gbkfit_dmodel`,
-  `gbkfit_dmodel_omp`, `gbkfit_dmodel_cuda`, `gbkfit_gmodel`,
-  `gbkfit_gmodel_omp`, `gbkfit_gmodel_cuda`, `gbkfit_fitter_mpfit`, 
-  `gbkfit_fitter_multinest`
-
-For example: If we want to build the `gbkfit_dmodel_cuda` library, we will 
-have to build the libraries `gbkfit_dmodel` and  `gbkfit_cuda`. We will also 
-need to build the libraries these two depend on. Thus, we will need to build 
-the `gbkfit` library as well. If this sounds complicated, do not worry. CMake 
-will automatically calculate the required dependencies for each library.
-
-### External dependencies
-
-GBKFIT applications and libraries have external dependencies:
+GBKFIT applications and libraries have the following software dependencies:
 
 - `gbkfit`
   - required: [Boost C++ libraries](http://www.boost.org/),
@@ -107,12 +61,11 @@ GBKFIT applications and libraries have external dependencies:
 - `gbkfit_fitter_mpfit`
   - required: None
 - `gbkfit_fitter_multinest`
-  - required: [MultiNest](https://ccpforge.cse.rl.ac.uk/gf/project/multinest/)
+  - required: [MultiNest](https://ccpforge.cse.rl.ac.uk/gf/project/multinest/) 
 
-#### Installing external dependencies
+### Installing external dependencies
 
-Bellow are the installation instructions for all the external dependencies on
-different operating systems:
+Bellow are the installation instructions for all the software dependencies:
 
 - Boost C++ libraries
   - Linux
