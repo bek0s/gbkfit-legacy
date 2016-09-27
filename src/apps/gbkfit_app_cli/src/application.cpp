@@ -282,8 +282,6 @@ void Application::run(void)
         }
     }
 
-
-
     std::cout << "main execution path completed" << std::endl;
 }
 

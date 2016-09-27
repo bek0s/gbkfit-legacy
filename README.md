@@ -8,6 +8,11 @@ kinematics from 3D spectroscopic observations.
 
 For instructions on how to install GBKFIT read [here](INSTALL.md).
 
+GBKFIT is a new software and thus it has not been tested in many different 
+platforms. If you find problems or bugs related to the installation process 
+please send me an e-mail or create a new GitHub issue. Your help is greatly 
+appreciated. 
+
 ## User guide
 
 For instructions on how to use GBKFIT read [here](USERGUIDE.md).
