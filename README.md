@@ -19,7 +19,8 @@ For instructions on how to use GBKFIT read [here](USERGUIDE.md).
 
 ## Credits
 
-GBKFIT is developed by Georgios Bekiaris (Swinburne University of Technology).
+GBKFIT is developed by me (Georgios Bekiaris) during my PhD studies at the 
+Swinburne University of Technology and my visit to University of Toronto.
 
 If you use GBKFIT in a publication please cite:
 [Bekiaris et al. 2016](http://adsabs.harvard.edu/abs/2016MNRAS.455..754B).
