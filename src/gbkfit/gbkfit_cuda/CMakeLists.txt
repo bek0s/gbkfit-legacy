@@ -83,7 +83,7 @@ target_compile_options(gbkfit_cuda_object
 set_target_properties(gbkfit_cuda_object
     PROPERTIES
     CXX_EXTENSIONS              OFF
-    CXX_STANDARD                14
+    CXX_STANDARD                11
     CXX_STANDARD_REQUIRED       ON
     POSITION_INDEPENDENT_CODE   ON
 )
