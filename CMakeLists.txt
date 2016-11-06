@@ -80,7 +80,7 @@ SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 set(GBKFIT_VERSION_MAJOR 0)
 set(GBKFIT_VERSION_MINOR 0)
-set(GBKFIT_VERSION_PATCH 1)
+set(GBKFIT_VERSION_PATCH 2)
 
 configure_file(cmake/templates/build_settings.hpp.in ${PROJECT_BINARY_DIR}/include/gbkfit/build_settings.hpp)
 configure_file(cmake/templates/version.cpp.in ${PROJECT_BINARY_DIR}/src/version.cpp)

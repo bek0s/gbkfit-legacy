@@ -8,6 +8,12 @@ namespace gbkfit {
 namespace dmodel {
 namespace mmaps {
 
+enum MomentMethod {
+    moments = 1,
+    gaussian = 2,
+    hermite = 3
+};
+
 class MMaps : public DModel
 {
 };

@@ -22,6 +22,8 @@ private:
 
     std::map<std::string, NDArrayHost*> m_output_map;
 
+    MomentMethod m_method;
+
 public:
 
     MMapsOmp(int size_x,
@@ -33,6 +35,7 @@ public:
              int upsampling_x,
              int upsampling_y,
              int upsampling_z,
+             MomentMethod method,
              const PointSpreadFunction* psf,
              const LineSpreadFunction* lsf);
 

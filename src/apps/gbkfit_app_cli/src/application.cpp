@@ -53,6 +53,7 @@
 namespace gbkfit_app_cli {
 
 const std::string Application::DEFAULT_CONFIG_FILE = "../../data/configs/gbkfit_config_fit_2d.json";
+//const std::string Application::DEFAULT_CONFIG_FILE = "config_fit_3d.json";
 const std::string Application::DEFAULT_OUTPUT_DIR = "output";
 
 Application::Application(void)

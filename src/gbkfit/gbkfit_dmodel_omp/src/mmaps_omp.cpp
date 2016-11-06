@@ -18,8 +18,10 @@ MMapsOmp::MMapsOmp(int size_x,
                    int upsampling_x,
                    int upsampling_y,
                    int upsampling_z,
+                   MomentMethod method,
                    const PointSpreadFunction* psf,
                    const LineSpreadFunction* lsf)
+    : m_method(method)
 {
     //
     // Create spectral cube from which the moment maps are derived
@@ -109,15 +111,30 @@ const std::map<std::string, NDArrayHost*>& MMapsOmp::evaluate(
 
     float zero_z = -size_z/2 * step_z;
 
-    kernels_omp::extract_maps_mmnt(cube_data->get_host_ptr(),
-                                   size_x,
-                                   size_y,
-                                   size_z,
-                                   zero_z,
-                                   step_z,
-                                   m_flxmap->get_host_ptr(),
-                                   m_velmap->get_host_ptr(),
-                                   m_sigmap->get_host_ptr());
+    if (m_method == MomentMethod::moments)
+    {
+        kernels_omp::extract_maps_mmnt(cube_data->get_host_ptr(),
+                                       size_x,
+                                       size_y,
+                                       size_z,
+                                       zero_z,
+                                       step_z,
+                                       m_flxmap->get_host_ptr(),
+                                       m_velmap->get_host_ptr(),
+                                       m_sigmap->get_host_ptr());
+    }
+    else
+    {
+        kernels_omp::extract_maps_gfit(cube_data->get_host_ptr(),
+                                       size_x,
+                                       size_y,
+                                       size_z,
+                                       zero_z,
+                                       step_z,
+                                       m_flxmap->get_host_ptr(),
+                                       m_velmap->get_host_ptr(),
+                                       m_sigmap->get_host_ptr());
+    }
 
     return m_output_map;
 }

@@ -28,6 +28,15 @@ DModel* MMapsOmpFactory::create(const std::string& info,
     std::vector<float> step_ = step;
     std::vector<int> upsampling;
 
+    MomentMethod method = MomentMethod::moments;
+    std::string method_str = info_root.value("method", "moments");
+    if (method_str == "gaussian")
+        method = MomentMethod::gaussian;
+    else if (method_str == "hermite")
+        method = MomentMethod::hermite;
+    else
+        method = MomentMethod::moments;
+
     if (size_.empty()) {
         size_ = info_root.at("size").get<std::vector<int>>();
     }
@@ -52,6 +61,7 @@ DModel* MMapsOmpFactory::create(const std::string& info,
                         upsampling[0],
                         upsampling[1],
                         upsampling[2],
+                        method,
                         psf,
                         lsf);
 }

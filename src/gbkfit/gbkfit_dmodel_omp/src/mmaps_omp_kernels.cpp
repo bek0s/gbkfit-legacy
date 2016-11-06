@@ -1,13 +1,13 @@
 
 #include "gbkfit/dmodel/mmaps/mmaps_omp_kernels.hpp"
 
-//#include "mpfit.h"
+#include "mpfit.h"
 
 namespace gbkfit {
 namespace dmodel {
 namespace mmaps {
 namespace kernels_omp {
-/*
+
 void evaluate_model_gaussian(float& out, float x, float a, float b, float c, float d)
 {
     out = a * expf(-(x-b)*(x-b)/(2*c*c)) + d;
@@ -72,6 +72,7 @@ int mpfit_callback(int num_measurements,
 
 }
 
+
 void extract_maps_gfit(const float* cube,
                        int size_x,
                        int size_y,
@@ -88,7 +89,7 @@ void extract_maps_gfit(const float* cube,
 
     std::memset(params_info, 0, sizeof(params_info));
 
-    params_info[0].step = 0.001;
+    params_info[0].step = 0.00001;
     params_info[0].side = 3;
     params_info[0].fixed = 0;
     params_info[0].limited[0] = 1;
@@ -102,8 +103,8 @@ void extract_maps_gfit(const float* cube,
     params_info[1].fixed = 0;
     params_info[1].limited[0] = 0;
     params_info[1].limited[1] = 0;
-    params_info[1].limits[0] = -200;
-    params_info[1].limits[1] = +200.0;
+    params_info[1].limits[0] = -400;
+    params_info[1].limits[1] = +400.0;
     params_info[1].parname = 0;
 
     params_info[2].step = 0.01;
@@ -120,6 +121,15 @@ void extract_maps_gfit(const float* cube,
     {
         for(int x = 0; x < size_x; ++x)
         {
+            float flx_sum = 0;
+            #pragma omp simd
+            for (int z = 0; z < size_z; ++z)
+            {
+                int idx_cube = z*size_x*size_y + y*size_x + x;
+                float flx = std::max(0.0f, cube[idx_cube]);
+                flx_sum += flx;
+            }
+            mom0[size_x*y + x] = flx_sum;
 
             double params[] = {1.0, 0.0, 50.0, 0.0};
 
@@ -142,7 +152,7 @@ void extract_maps_gfit(const float* cube,
     }
 
 }
-*/
+
 void extract_maps_mmnt(const float* cube,
                        int size_x,
                        int size_y,

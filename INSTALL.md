@@ -13,9 +13,14 @@ procedure are relatively up-to-date.
 GBKFIT requires a C++ compiler with C++14 support.
 
 GBKFIT has been tested with the following compilers:
-- GCC 6.1 (Debian Linux, stretch)
-- GCC 5.4 (Debian Linux, stretch)
-- GCC 5.1 (CentOS 6.7)
+
+Linux:
+- GCC: 5.1, 5.2, 5.3, 6.1, 6.2
+- Clang: 3.8 
+
+MacOS:
+- None. I don't have an Apple machine. If you do, and you managed to compile 
+GBKFIT, please let me know what MacOS/compiler version you used!
 
 ## Build system
 
