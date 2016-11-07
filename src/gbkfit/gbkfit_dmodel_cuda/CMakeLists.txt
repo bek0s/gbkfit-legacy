@@ -25,7 +25,7 @@ set(SOURCE_FILES_NVCC
     src/scube_cuda_kernels_h.cu
 )
 
-SET(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -keep -arch=compute_20 -code=sm_20,sm_30,sm_35 -Xcompiler -fPIC")
+SET(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -keep -arch=compute_30 -code=sm_30,sm_35 -Xcompiler -fPIC")
 
 include_directories(include)
 
