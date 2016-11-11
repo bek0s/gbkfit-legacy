@@ -165,6 +165,7 @@ const int FitterMultinest::DEFAULT_CEFF = 0;
 const int FitterMultinest::DEFAULT_NLIVE = 50;
 const int FitterMultinest::DEFAULT_MAXITER = 2000;
 const int FitterMultinest::DEFAULT_SEED = -1;
+const int FitterMultinest::DEFAULT_OUTFILE = 1;
 
 FitterMultinest::FitterMultinest(void)
     : m_efr(DEFAULT_EFR)
@@ -177,6 +178,7 @@ FitterMultinest::FitterMultinest(void)
     , m_nlive(DEFAULT_NLIVE)
     , m_maxiter(DEFAULT_MAXITER)
     , m_seed(DEFAULT_SEED)
+    , m_outfile(DEFAULT_OUTFILE)
 {
 }
 
@@ -301,7 +303,7 @@ FitterResult* FitterMultinest::fit(const DModel* dmodel, const Params* params, c
     int seed = m_seed;                  // random no. generator seed, if < 0 then take the seed from system clock
     int fb = 0;                         // need feedback on standard output?
     int resume = 0;                     // resume from a previous job?
-    int outfile = 1;                    // write output files?
+    int outfile = m_outfile;             // write output files?
     int initMPI = 0;                    // initialize MPI routines?, relevant only if compiling with MPI
                                         // set it to F if you want your main program to handle MPI initialization
     double logZero = -3.40282e+37;             // points with loglike < logZero will be ignored by MultiNest

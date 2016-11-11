@@ -23,6 +23,7 @@ public:
     static const int DEFAULT_NLIVE;
     static const int DEFAULT_MAXITER;
     static const int DEFAULT_SEED;
+    static const int DEFAULT_OUTFILE;
 
 public:
 
@@ -36,6 +37,7 @@ public:
     int m_nlive;
     int m_maxiter;
     int m_seed;
+    int m_outfile;
 
 public:
 

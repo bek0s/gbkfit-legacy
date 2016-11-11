@@ -49,6 +49,8 @@ Fitter* FitterMultinestFactory::create(const std::string& info) const
         fitter->m_maxiter = info_root["maxiter"].get<int>();
     if (info_root.count("seed"))
         fitter->m_seed = info_root["seed"].get<int>();
+    if (info_root.count("outfile"))
+        fitter->m_outfile = info_root["outfile"].get<int>();
 
     return fitter;
 }
