@@ -153,11 +153,11 @@ typedef int (*mp_func)(int m, /* Number of functions (elts of fvec) */
 #define MP_GTOL (8)              /* gtol is too small; no further improvement*/
 
 /* Double precision numeric constants */
-#define MP_MACHEP0 2.2204460e-16
-#define MP_DWARF   2.2250739e-308
-#define MP_GIANT   1.7976931e+308
+//#define MP_MACHEP0 2.2204460e-16
+//#define MP_DWARF   2.2250739e-308
+//#define MP_GIANT   1.7976931e+308
 
-#if 0
+#if 1 // disabled by default
 /* Float precision */
 #define MP_MACHEP0 1.19209e-07
 #define MP_DWARF   1.17549e-38
