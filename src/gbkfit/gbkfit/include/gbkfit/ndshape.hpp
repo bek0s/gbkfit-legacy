@@ -20,8 +20,7 @@ private:
 
 public:
 
-    NDShape(void)
-        : NDShape({}) {}
+    NDShape(void) {}
 
     template<typename Iterator>
     NDShape(Iterator shape_iter_first, Iterator shape_iter_last)
