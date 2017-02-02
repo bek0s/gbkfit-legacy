@@ -192,7 +192,9 @@ std::unique_ptr<NDArrayHost> get_data(const std::string& filename)
     fits_get_img_dim(fp, &naxis, &status);
     fits_get_img_size(fp, naxis, naxes, &status);
 
-    std::unique_ptr<NDArrayHost> data = std::make_unique<NDArrayHost>(NDShape(naxes, naxes+naxis));
+//  std::unique_ptr<NDArrayHost> data = std::make_unique<NDArrayHost>(NDShape(naxes, naxes+naxis));
+    std::unique_ptr<NDArrayHost> data = std::unique_ptr<NDArrayHost>(new NDArrayHost(NDShape(naxes, naxes+naxis)));
+
     std::fill_n(firstpix, naxis, 1);
     nelem = static_cast<long long>(data->get_size());
 
@@ -226,7 +228,8 @@ void write_to(const std::string& filename, const NDArray& data)
     std::fill_n(firstpix,naxis,1);
 
     // Create a copy of the data on the host. We use std::unique_pointer as an exception guard.
-    std::unique_ptr<NDArrayHost> data_host = std::make_unique<NDArrayHost>(shape);
+//  std::unique_ptr<NDArrayHost> data_host = std::make_unique<NDArrayHost>(shape);
+    std::unique_ptr<NDArrayHost> data_host = std::unique_ptr<NDArrayHost>(new NDArrayHost(shape));
     //data_host->write_data(&data);
 
     data.read_data(data_host->get_host_ptr());

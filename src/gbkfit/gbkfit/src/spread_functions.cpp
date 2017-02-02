@@ -55,7 +55,8 @@ std::unique_ptr<NDArrayHost> LineSpreadFunction::as_array(float step) const
 
 std::unique_ptr<NDArrayHost> LineSpreadFunction::as_array(float step, int size) const
 {
-    std::unique_ptr<NDArrayHost> data = std::make_unique<NDArrayHost>(NDShape({size}));
+//  std::unique_ptr<NDArrayHost> data = std::make_unique<NDArrayHost>(NDShape({size}));
+    std::unique_ptr<NDArrayHost> data = std::unique_ptr<NDArrayHost>(new NDArrayHost(NDShape({size})));
     as_array(step, size, data->get_host_ptr());
     return data;
 }
@@ -209,7 +210,8 @@ std::unique_ptr<NDArrayHost> PointSpreadFunction::as_image(float step_x, float s
 
 std::unique_ptr<NDArrayHost> PointSpreadFunction::as_image(float step_x, float step_y, int size_x, int size_y) const
 {
-    std::unique_ptr<NDArrayHost> data = std::make_unique<NDArrayHost>(NDShape({size_x, size_y}));
+//  std::unique_ptr<NDArrayHost> data = std::make_unique<NDArrayHost>(NDShape({size_x, size_y}));
+    std::unique_ptr<NDArrayHost> data = std::unique_ptr<NDArrayHost>(new NDArrayHost(NDShape({size_x, size_y})));
     as_image(step_x, step_y, size_x, size_y, data->get_host_ptr());
     return data;
 }
@@ -397,7 +399,8 @@ std::unique_ptr<NDArrayHost> create_psf_data_cube(const std::unique_ptr<NDArrayH
     int size_y = data_spat->get_shape()[1];
     int size_z = data_spec->get_shape()[0];
 
-    std::unique_ptr<NDArrayHost> cube_data = std::make_unique<NDArrayHost>(NDShape({size_x, size_y, size_z}));
+//  std::unique_ptr<NDArrayHost> cube_data = std::make_unique<NDArrayHost>(NDShape({size_x, size_y, size_z}));
+    std::unique_ptr<NDArrayHost> cube_data = std::unique_ptr<NDArrayHost>(new NDArrayHost(NDShape({size_x, size_y, size_z})));
 
     const float* spec_data_raw = data_spec->get_host_ptr();
     const float* spat_data_raw = data_spat->get_host_ptr();

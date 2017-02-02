@@ -268,7 +268,6 @@ const std::map<std::string, NDArrayHost*>& SCubeOmp::evaluate(
     // Evaluate model on the cube
     m_gmodel->evaluate(params, zero, m_step_u, m_flxcube_up);
 
-
     // Perform convolution with the psf
     kernels_omp::model_image_3d_convolve_fft(
             m_flxcube_up->get_host_ptr(),
@@ -278,7 +277,7 @@ const std::map<std::string, NDArrayHost*>& SCubeOmp::evaluate(
             m_size_up[1],
             m_size_up[2],
             m_fft_plan_flxcube_r2c,
-            m_fft_plan_flxcube_c2r);//*/
+            m_fft_plan_flxcube_c2r);
 
     // Downsample the upsampled cube to the original size
     int offset_x = m_psfcube_size_u[0]/2;

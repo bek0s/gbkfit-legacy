@@ -124,7 +124,8 @@ target_compile_options(gbkfit_app_cli
 set_target_properties(gbkfit_app_cli
     PROPERTIES
     CXX_EXTENSIONS        OFF
-    CXX_STANDARD          14
+#   CXX_STANDARD          14
+    CXX_STANDARD          11
     CXX_STANDARD_REQUIRED ON
     OUTPUT_NAME           "gbkfit_app_cli"
     DEBUG_POSTFIX         "_d"
