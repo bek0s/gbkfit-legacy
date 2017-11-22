@@ -55,7 +55,7 @@ namespace gbkfit_app_cli {
 const std::string Application::DEFAULT_CONFIG_FILE = "../../data/configs/gbkfit_config_fit_2d.json";
 //const std::string Application::DEFAULT_CONFIG_FILE = "config_fit_3d.json";
 //const std::string Application::DEFAULT_CONFIG_FILE = "gbkfit_config.json";
-const std::string Application::DEFAULT_OUTPUT_DIR = "output";
+const std::string Application::DEFAULT_OUTPUT_DIR = "./";
 
 Application::Application(void)
     : m_config_file(DEFAULT_CONFIG_FILE)
@@ -273,14 +273,14 @@ void Application::run(void)
     {
         gbkfit::FitterResult* result = m_fitter->fit(m_dmodel, m_params, m_datasets);
         std::cout << result->to_string() << std::endl;
-        result->save("results.json");
+        result->save("results.json", m_output_dir);
     }
     else // (m_task == "evaluate")
     {
         std::map<std::string, float> params = m_params->get_map<float>("value");
         std::map<std::string, gbkfit::NDArrayHost*> model_data = m_dmodel->evaluate(params);
         for(auto& data : model_data){
-            gbkfit::fits::write_to("!"+data.first+"_model.fits", *data.second);
+            gbkfit::fits::write_to("!"+m_output_dir+ "/" + data.first+"_model.fits", *data.second);
         }
     }
 

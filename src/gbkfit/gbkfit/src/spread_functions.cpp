@@ -3,6 +3,7 @@
 #include "gbkfit/math.hpp"
 #include "gbkfit/ndarray_host.hpp"
 #include "gbkfit/utility.hpp"
+#include <functional>
 
 namespace gbkfit {
 

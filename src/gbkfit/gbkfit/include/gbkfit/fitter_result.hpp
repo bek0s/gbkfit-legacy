@@ -110,7 +110,7 @@ public:
 
     std::string to_string(void) const;
 
-    void save(const std::string& filename) const;
+    void save(const std::string& filename, const std::string& output_dir) const;
 
 }; // class FitterResult
 

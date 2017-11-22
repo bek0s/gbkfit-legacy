@@ -307,7 +307,7 @@ std::string FitterResult::to_string(void) const
     return str.str();
 }
 
-void FitterResult::save(const std::string& filename) const
+void FitterResult::save(const std::string& filename, const std::string& output_dir) const
 {
     std::size_t dataset_count = get_dataset_count();
     std::size_t param_count = get_param_count();
@@ -336,9 +336,9 @@ void FitterResult::save(const std::string& filename) const
         std::ostringstream file_err;
         std::ostringstream file_msk;
 
-        file_dat << "!" << dataset_name << "_data.fits";
-        file_err << "!" << dataset_name << "_data_error.fits";
-        file_msk << "!" << dataset_name << "_data_mask.fits";
+        file_dat << "!" << output_dir << "/" << dataset_name << "_data.fits";
+        file_err << "!" << output_dir << "/" << dataset_name << "_data_error.fits";
+        file_msk << "!" << output_dir << "/" << dataset_name << "_data_mask.fits";
 
         fits::write_to(file_dat.str(), *m_dataset_data[i]);
         fits::write_to(file_err.str(), *m_dataset_errors[i]);
@@ -388,8 +388,8 @@ void FitterResult::save(const std::string& filename) const
             std::string dataset_name = m_dataset_names[j];
             std::ostringstream file_mdl;
             std::ostringstream file_res;
-            file_mdl << "!mode_" << i << "_" << dataset_name << "_model.fits";
-            file_res << "!mode_" << i << "_" << dataset_name << "_residual.fits";
+            file_mdl << "!" << output_dir << "/" << "mode_" << i << "_" << dataset_name << "_model.fits";
+            file_res << "!" << output_dir << "/" << "mode_" << i << "_" << dataset_name << "_residual.fits";
             fits::write_to(file_mdl.str(), *(get_mode(i).get_models()[j]));
             fits::write_to(file_res.str(), *(get_mode(i).get_residuals()[j]));
         }
@@ -397,7 +397,7 @@ void FitterResult::save(const std::string& filename) const
     }
     root["modes"] = json_modes;
 
-    std::ofstream ofstream(filename.c_str(), std::ios::out);
+    std::ofstream ofstream(output_dir + "/" + filename.c_str(), std::ios::out);
     ofstream << root.dump(2);
     ofstream.close();
 }
