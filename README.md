@@ -4,6 +4,17 @@
 GBKFIT is a high-performance open-source software for modelling galaxy
 kinematics from 3D spectroscopic observations.
 
+## ATTENTION - NEW VERSION COMING SOON
+**GBKFIT is undergoing major changes and a new version will be available soon. Some upcoming features include:**
+- **Language: Python3 support.**
+- **Models: Support for thick disk models.**
+- **Models: Support for piecewise flux, velocity, and velocity dispersion profiles.**
+- **Models: The newly supported piecewise velocity profiles include radial and nonaxissymmetric flows.**
+- **Models: The new design can now support any kind of piecewise models, including tilted-ring models.**
+- **Fitting: Support of simultaneous fitting of multiple models to multiple datasets.**
+- **Fitting: Support for affine-invariant ensemble sampler for Markov Chain Monte Carlo, using the _emcee_ library.**
+- **Fitting: Support for static and dynamic nested sampling, using the _dynesty_ library.**
+
 ## Installation guide
 
 For instructions on how to install GBKFIT read [here](INSTALL.md).
