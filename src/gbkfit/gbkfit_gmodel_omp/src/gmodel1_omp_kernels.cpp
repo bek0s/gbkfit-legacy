@@ -8,7 +8,7 @@ namespace kernels_omp {
 
 float evaluate_profile_gaussian(float x, float mu, float sigma)
 {
-    float a = 1.0f / sigma * std::sqrt(2.0f*(float)M_PI);
+    float a = 1.0f / (sigma * std::sqrt(2.0f*(float)M_PI));
     return a * std::exp(-(x-mu)*(x-mu)/(2.0f*sigma*sigma));
 }
 

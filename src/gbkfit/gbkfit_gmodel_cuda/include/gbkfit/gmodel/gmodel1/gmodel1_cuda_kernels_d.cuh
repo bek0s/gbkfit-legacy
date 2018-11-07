@@ -34,7 +34,7 @@ void map_index_1d_to_3d(int& out_xidx,
 __device__
 float evaluate_profile_gaussian(float x, float mu, float sigma)
 {
-    float a = 1.0f / sigma * sqrtf(2.0f*(float)M_PI);
+    float a = 1.0f / (sigma * sqrtf(2.0f*(float)M_PI));
     return a * expf(-(x-mu)*(x-mu)/(2.0f*sigma*sigma));
 }
 
