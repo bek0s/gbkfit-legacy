@@ -35,7 +35,7 @@ private:
     float* m_data;
     int m_size;
 public:
-    LineSpreadFunctionArray(const float* data, int size);
+    LineSpreadFunctionArray(const float* data, int size, bool normalize);
     ~LineSpreadFunctionArray();
     NDShape get_size(float step) const override final;
     void as_array(float step, int size, float* data) const override final;
@@ -104,7 +104,7 @@ private:
     int m_size_x;
     int m_size_y;
 public:
-    PointSpreadFunctionImage(const float* data, int size_x, int size_y);
+    PointSpreadFunctionImage(const float* data, int size_x, int size_y, bool normalize);
     ~PointSpreadFunctionImage();
     NDShape get_size(float step_x, float step_y) const override final;
     void as_image(float step_x, float step_y, int size_x, int size_y, float* data) const override final;

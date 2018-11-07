@@ -162,9 +162,11 @@ LineSpreadFunction* Core::create_line_spread_function(const std::string& info)
     else if (type == "array")
     {
         std::string file = info_root.at("file").get<std::string>();
+        bool normalize = info_root.value<bool>("normalize", true);
         std::shared_ptr<NDArrayHost> data = fits::get_data(file);
         lsf = new LineSpreadFunctionArray(data->get_host_ptr(),
-                                          data->get_shape()[0]);
+                                          data->get_shape()[0], 
+                                          normalize);
     }
     else
     {
@@ -210,10 +212,12 @@ PointSpreadFunction* Core::create_point_spread_function(const std::string& info)
     else if (psf_type == "image")
     {
         std::string file = info_root.at("file").get<std::string>();
+        bool normalize = info_root.value<bool>("normalize", true);
         std::shared_ptr<NDArrayHost> data = fits::get_data(file);
         psf = new PointSpreadFunctionImage(data->get_host_ptr(),
                                            data->get_shape()[0],
-                                           data->get_shape()[1]);
+                                           data->get_shape()[1],
+                                           normalize);
     }
     else
     {

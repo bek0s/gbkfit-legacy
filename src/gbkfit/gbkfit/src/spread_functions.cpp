@@ -84,12 +84,14 @@ void LineSpreadFunctionNone::as_array(float step, int size, float* data) const
     data[idx] = 1;
 }
 
-LineSpreadFunctionArray::LineSpreadFunctionArray(const float* data, int size)
+LineSpreadFunctionArray::LineSpreadFunctionArray(const float* data, int size, bool normalize)
     : m_data(nullptr)
     , m_size(size)
 {
     m_data = new float[m_size];
     std::copy(data, data+size, m_data);
+    if (normalize)
+        math::normalize_integral(m_data, size);
 }
 
 LineSpreadFunctionArray::~LineSpreadFunctionArray()
@@ -241,13 +243,15 @@ void PointSpreadFunctionNone::as_image(float step_x, float step_y, int size_x, i
     data[idx] = 1;
 }
 
-PointSpreadFunctionImage::PointSpreadFunctionImage(const float* data, int size_x, int size_y)
+PointSpreadFunctionImage::PointSpreadFunctionImage(const float* data, int size_x, int size_y, bool normalize)
     : m_data(nullptr)
     , m_size_x(size_x)
     , m_size_y(size_y)
 {
     m_data = new float[m_size_x*m_size_y];
     std::copy(data, data+size_x*size_y, m_data);
+    if (normalize)
+        math::normalize_integral(m_data, size_x * size_y);
 }
 
 PointSpreadFunctionImage::~PointSpreadFunctionImage()
@@ -421,7 +425,7 @@ std::unique_ptr<NDArrayHost> create_psf_data_cube(const std::unique_ptr<NDArrayH
         }
     }
 
-    math::normalize_integral(cube_data_raw, size_x*size_y*size_z);
+    //math::normalize_integral(cube_data_raw, size_x*size_y*size_z);
 
     return cube_data;
 }
